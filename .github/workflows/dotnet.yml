@@ -5,6 +5,12 @@
 name: .NET
 
 on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Why?"
+        default: "Testing"
+        
   push:
     branches: [ "main" ]
   pull_request:
