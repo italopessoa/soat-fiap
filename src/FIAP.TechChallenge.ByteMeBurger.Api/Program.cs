@@ -1,3 +1,6 @@
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Repositories;
+
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
 public class Program
@@ -13,6 +16,12 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
+
+        #region Injeção de dependências
+
+        //builder.Services.AddTransient<IClienteRepository, ClienteRepository>();
+        builder.Services.AddTransient<IClienteUseCase, ClienteUseCase>();
+        #endregion
 
         var app = builder.Build();
 

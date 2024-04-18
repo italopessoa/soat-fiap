@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Domain\FIAP.TechChallenge.ByteMeBurger.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

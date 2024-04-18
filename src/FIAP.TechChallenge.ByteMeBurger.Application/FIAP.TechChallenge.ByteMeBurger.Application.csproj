@@ -8,8 +8,14 @@
 
     <ItemGroup>
       <Folder Include="Ports\Ingoing\" />
+      <Folder Include="Ports\Ingoing\" />
+      <Folder Include="Ports\Outgoing\" />
       <Folder Include="Ports\Outgoing\" />
       <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Domain\FIAP.TechChallenge.ByteMeBurger.Domain.csproj" />
     </ItemGroup>
 
 </Project>

@@ -9,7 +9,8 @@
 
     <ItemGroup>
       <Folder Include="Base\" />
-      <Folder Include="Entities\" />
+      <Folder Include="Base\" />
+      <Folder Include="ValueObjects\" />
       <Folder Include="ValueObjects\" />
     </ItemGroup>
 
