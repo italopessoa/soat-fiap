@@ -7,10 +7,4 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Base\" />
-      <Folder Include="Entities\" />
-      <Folder Include="ValueObjects\" />
-    </ItemGroup>
-
 </Project>
