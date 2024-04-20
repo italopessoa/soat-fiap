@@ -20,4 +20,8 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Domain\FIAP.TechChallenge.ByteMeBurger.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
