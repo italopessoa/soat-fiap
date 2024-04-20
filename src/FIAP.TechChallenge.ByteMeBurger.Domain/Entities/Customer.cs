@@ -9,46 +9,53 @@ public class Customer : Entity<string>
     public string? Email { get; private set; }
 
     public Customer()
-        : base(Guid.NewGuid().ToString())
+        : base(ValidateId(Guid.NewGuid().ToString()))
     {
+        Name = "Anonymous";
     }
 
     public Customer(string cpf)
-        : base(cpf)
+        : base(ValidateId(cpf))
     {
-        ValidateCpf(cpf);
-        Id = cpf;
     }
 
     public Customer(string cpf, string name, string email)
-        : base(cpf)
+        : base(ValidateId(cpf))
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        ValidateEmail(email);
-        ValidateCpf(cpf);
 
         Name = name;
-        Email = email;
-        Id = cpf;
+        Email = ValidateEmail(email);
+        ;
+        Id = ValidateId(cpf);
     }
 
-    private static void ValidateEmail(string email)
+    private static string ValidateEmail(string email)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(email);
         if (!Regex.IsMatch(email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
             throw new ArgumentException($"Invalid email format '{email}'");
+
+        return email;
     }
 
-    private static void ValidateCpf(string cpf)
+    private static string SanityseCpf(string cpf) => cpf
+        .Replace(".", "")
+        .Replace("-", "")
+        .Trim();
+
+    public static string ValidateId(string cpf)
     {
+        if (Guid.TryParse(cpf, out var validGuid) && Guid.Empty != validGuid)
+            return cpf;
+
         ArgumentException.ThrowIfNullOrWhiteSpace(cpf);
         var isValidCpf = false;
 
         var multiplicador1 = new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
         var multiplicador2 = new[] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
 
-        var workingWpf = cpf.Trim();
-        workingWpf = workingWpf.Replace(".", "").Replace("-", "");
+        var workingWpf = SanityseCpf(cpf);
 
         if (workingWpf.Length == 11 && workingWpf.Distinct().Count() > 1)
         {
@@ -90,5 +97,7 @@ public class Customer : Entity<string>
         {
             throw new ArgumentException($"Invalid CPF value '{cpf}'");
         }
+
+        return workingWpf;
     }
 }

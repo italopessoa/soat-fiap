@@ -21,8 +21,8 @@ public class Product : ValueObject
         ArgumentException.ThrowIfNullOrWhiteSpace(description);
         ArgumentOutOfRangeException.ThrowIfNegative(price);
 
-        Name = name;
-        Description = description;
+        Name = name.ToUpper();
+        Description = description.ToUpper();
         Category = category;
         Price = price;
         Images = images;
