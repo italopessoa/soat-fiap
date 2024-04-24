@@ -48,7 +48,7 @@ public class Order : Entity<Guid>
         }
     }
 
-    public void CreateOrder()
+    public void Checkout()
     {
         Validate();
         CreationDate = DateTime.UtcNow;

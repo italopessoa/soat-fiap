@@ -1,5 +1,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Test.Entities;
 
@@ -12,46 +14,53 @@ public class OrderTests
     {
         // Arrange
         var customerId = Guid.NewGuid().ToString();
-        
+
         // Act
         var order = new Order(customerId);
 
         // Assert
-        Assert.NotEqual(Guid.Empty, order.Id);
-        Assert.Equal(OrderStatus.None, order.Status);
-        Assert.Equal(customerId, order.Customer.Id);
+        using (new AssertionScope())
+        {
+            order.Id.Should().NotBe(Guid.Empty);
+            order.Status.Should().Be(OrderStatus.None);
+            order.Customer.Id.Should().Be(customerId);
+        }
     }
 
     [Fact]
-    public void Order_ConfirmEmptyOrder_ThrowsError()
+    public void Order_CheckoutEmptyOrder_ThrowsError()
     {
         // Arrange
         var order = new Order();
-        
+
         // Act
+        var func = () => order.Checkout();
+
         // Assert
-        Assert.Throws<InvalidOperationException>(() => order.CreateOrder());
+        func.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
-    public void Order_CreateOrder_UpdateStatus()
+    public void Order_CheckoutOrder_UpdateStatus()
     {
         // Arrange
         var order = new Order(CustomerCpf);
         order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
         order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
-        
+
         // Act
-        order.Validate();
-        order.CreateOrder();
+        order.Checkout();
 
         // Assert
-        Assert.NotEqual(Guid.Empty, order.Id);
-        Assert.Equal(OrderStatus.None, order.Status);
-        Assert.True(order.CreationDate != default);
-        Assert.Equal(CustomerCpf.Replace(".", "")
-            .Replace("-", "")
-            .Trim(), order.Customer.Id);
+        using (new AssertionScope())
+        {
+            order.Id.Should().NotBe(Guid.Empty);
+            order.Status.Should().Be(OrderStatus.None);
+            order.CreationDate.Should().NotBe(default);
+            order.Customer.Id.Should().Be(CustomerCpf.Replace(".", "")
+                .Replace("-", "")
+                .Trim(), order.Customer.Id);
+        }
     }
 
     [Fact]
@@ -61,12 +70,13 @@ public class OrderTests
         var order = new Order();
         order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
         order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
-        
+
         // Act
-        var exception = Assert.Throws<InvalidOperationException>(() => order.InitiatePrepare());
+        var func = () => order.InitiatePrepare();
 
         // Assert
-        Assert.Equal("Cannot start preparing if order isn't confirmed.", exception.Message);
+        func.Should().Throw<InvalidOperationException>().And.Message.Should()
+            .Be("Cannot start preparing if order isn't confirmed.");
     }
 
     [Fact]
@@ -76,13 +86,14 @@ public class OrderTests
         var order = new Order();
         order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
         order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
-        order.CreateOrder();
+        order.Checkout();
 
         // Act
-        var exception = Assert.Throws<InvalidOperationException>(() => order.FinishPreparing());
+        var func = () => order.FinishPreparing();
 
         // Assert
-        Assert.Equal("Cannot Finish order if it's not Preparing yet.", exception.Message);
+        func.Should().Throw<InvalidOperationException>().And.Message.Should()
+            .Be("Cannot Finish order if it's not Preparing yet.");
     }
 
     [Fact]
@@ -92,16 +103,17 @@ public class OrderTests
         var order = new Order();
         order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
         order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
-        order.CreateOrder();
+        order.Checkout();
         order.ConfirmPayment();
         order.InitiatePrepare();
-        
+
         // Act
-        var exception = Assert.Throws<InvalidOperationException>(() => order.DeliverOrder());
+        var func = () => order.DeliverOrder();
 
         // Assert
-        Assert.Equal("Cannot Deliver order if it's not Finished yet.", exception.Message);
-        Assert.NotNull(order.TrackingCode);
+        func.Should().Throw<InvalidOperationException>().And.Message.Should()
+            .Be("Cannot Deliver order if it's not Finished yet.");
+        order.TrackingCode.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -112,13 +124,13 @@ public class OrderTests
         DateTime preparingDate;
         DateTime doneDate;
         DateTime finishedDate;
-        
+
         var order = new Order();
         order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
         order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
-        
+
         // Act
-        order.CreateOrder();
+        order.Checkout();
         order.ConfirmPayment();
         order.InitiatePrepare();
         preparingDate = order.LastUpdate;
@@ -128,14 +140,17 @@ public class OrderTests
         finishedDate = order.LastUpdate;
 
         // Assert
-        Assert.NotEqual(Guid.Empty.ToString(), order.Customer.Id);
-        Assert.True(order.CreationDate > initDate, "Create date");
-        Assert.True(preparingDate > order.CreationDate, "Preparing date");
-        Assert.True(doneDate > preparingDate, "Done date");
-        Assert.True(finishedDate > doneDate, "Finish date");
-        Assert.Equal(OrderStatus.Finished, order.Status);
-        Assert.Equal(22, order.Total);
-        Assert.NotNull(order.TrackingCode);
+        using (new AssertionScope())
+        {
+            order.Customer.Id.Should().NotBe(Guid.Empty.ToString());
+            order.CreationDate.Should().BeAfter(initDate);
+            order.CreationDate.Should().BeBefore(preparingDate);
+            doneDate.Should().BeAfter(preparingDate);
+            finishedDate.Should().BeAfter(doneDate);
+            order.Status.Should().Be(OrderStatus.Finished);
+            order.Total.Should().Be(22);
+            order.TrackingCode.Should().NotBeEmpty();
+        }
     }
 
     [Fact]
@@ -149,13 +164,15 @@ public class OrderTests
         order.AddProduct(new Product("ice cream", "the best", ProductCategory.SweatsNTreats, 12, new List<string>()));
 
         // Act
-        order.CreateOrder();
+        order.Checkout();
         order.ConfirmPayment();
 
         // Assert
-        Assert.NotEqual(Guid.Empty.ToString(), order.Customer.Id);
-        Assert.NotNull(order.TrackingCode);
-        Assert.Contains("#", order.TrackingCode);
+        using (new AssertionScope())
+        {
+            order.Customer.Id.Should().NotBe(Guid.Empty.ToString());
+            order.TrackingCode.Should().NotBeNull().And.Contain("#");
+        }
     }
 
     [Fact]
@@ -168,13 +185,15 @@ public class OrderTests
         order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, new List<string>()));
 
         // Act
-        order.CreateOrder();
+        order.Checkout();
         order.ConfirmPayment();
 
         // Assert
-        Assert.NotEqual(Guid.Empty.ToString(), order.Customer.Id);
-        Assert.NotNull(order.TrackingCode);
-        Assert.DoesNotContain("#", order.TrackingCode);
+        using (new AssertionScope())
+        {
+            order.Customer.Id.Should().NotBe(Guid.Empty.ToString());
+            order.TrackingCode.Should().NotBeNull().And.NotContain("#");
+        }
     }
 
     [Fact]
@@ -192,8 +211,9 @@ public class OrderTests
                 order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, default!));
                 order.AddProduct(new Product("ice cream", "the best", ProductCategory.SweatsNTreats, 12, default!));
             }
-            order.CreateOrder();
-            
+
+            order.Checkout();
+
             // Act
             order.ConfirmPayment();
             codes.Add(order.TrackingCode!);
@@ -201,6 +221,6 @@ public class OrderTests
         }
 
         // Assert
-        Assert.True(codes.Count == codes.Distinct().Count(), "Duplicated Order code.");
+        codes.Count.Should().Be(codes.Distinct().Count());
     }
 }

@@ -1,3 +1,8 @@
+using FIAP.TechChallenge.ByteMeBurger.Application.Services;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
+using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
+
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
 public class Program
@@ -10,27 +15,26 @@ public class Program
         builder.Services.AddAuthorization();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
 
+        builder.Services.AddScoped<ICustomerService, CustomerService>();
+        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        // if (app.Environment.IsDevelopment())
-        // {
+        if (app.Environment.IsDevelopment())
+        {
             app.UseSwagger();
             app.UseSwaggerUI();
-        // }
+        }
 
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
         app.MapControllers();
         app.Run();
