@@ -1,4 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Test.Entities;
 
@@ -12,12 +14,15 @@ public class CustomerTests
         // Arrange
         // Act
         var customer = new Customer();
-        
+
         // Assert
-        Assert.False(string.IsNullOrWhiteSpace(customer.Id));
-        Assert.Equal("Anonymous",customer.Name);
+        using (new AssertionScope())
+        {
+            customer.Id.Should().NotBeEmpty();
+            customer.Name.Should().Be("Anonymous");
+        }
     }
-   
+
     [Theory]
     [InlineData("")]
     [InlineData("    ")]
@@ -25,8 +30,10 @@ public class CustomerTests
     {
         // Arrange
         // Act
+        var func = () => new Customer(ValidCpf, name, "email@email.com");
+
         // Assert
-        Assert.Throws<ArgumentException>(() => new Customer(ValidCpf, name, "email@email.com"));
+        func.Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -40,10 +47,12 @@ public class CustomerTests
     {
         // Arrange
         // Act
+        var func = () => new Customer(ValidCpf, "customer name", email);
+
         // Assert
-        Assert.Throws<ArgumentException>(() => new Customer(ValidCpf, "customer name", email));
+        func.Should().Throw<ArgumentException>();
     }
-    
+
     [Theory]
     [InlineData(" ")]
     [InlineData("")]
@@ -55,8 +64,10 @@ public class CustomerTests
     {
         // Arrange
         // Act
+        var func = () => new Customer(cpf);
+
         // Assert
-        Assert.Throws<ArgumentException>(() => new Customer(cpf));
+        func.Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -67,10 +78,17 @@ public class CustomerTests
         // Arrange
         // Act
         var customer = new Customer(cpf, name, email);
-        
+
         // Assert
         Assert.Equal(customer.Id, cpf);
         Assert.Equal(customer.Name, name);
         Assert.Equal(customer.Email, email);
+
+        using (new AssertionScope())
+        {
+            customer.Id.Should().Be(cpf);
+            customer.Name.Should().Be(name);
+            customer.Email.Should().Be(email);
+        }
     }
 }

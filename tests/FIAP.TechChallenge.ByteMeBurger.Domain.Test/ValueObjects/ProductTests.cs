@@ -1,4 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Test.ValueObjects;
 
@@ -9,9 +11,10 @@ public class ProductTests
     {
         // Arrange
         // Act
+        var func = () => new Product(string.Empty, "description", ProductCategory.Beverage, 10m,
+            Enumerable.Empty<string>().ToList());
         // Assert
-        Assert.Throws<ArgumentException>(() => new Product(string.Empty, "description", ProductCategory.Beverage, 10m,
-            Enumerable.Empty<string>().ToList()));
+        func.Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -19,10 +22,11 @@ public class ProductTests
     {
         // Arrange
         // Act
+        var func = () => new Product("product name", string.Empty, ProductCategory.Beverage, 10m,
+            Enumerable.Empty<string>().ToList());
+
         // Assert
-        Assert.Throws<ArgumentException>(() =>
-            new Product("product name", string.Empty, ProductCategory.Beverage, 10m,
-                Enumerable.Empty<string>().ToList()));
+        func.Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -30,10 +34,11 @@ public class ProductTests
     {
         // Arrange
         // Act
+        var func = () => new Product("product name", "description", ProductCategory.Beverage, -1m,
+            Enumerable.Empty<string>().ToList());
+
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(
-            () => new Product("product name", "description", ProductCategory.Beverage, -1m,
-                Enumerable.Empty<string>().ToList()));
+        func.Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Theory]
@@ -43,12 +48,15 @@ public class ProductTests
         // Arrange
         // Act
         var product = new Product(name, description, category, price, Enumerable.Empty<string>().ToList());
-       
+
         // Assert
-        Assert.Equal(category, product.Category);
-        Assert.Equal(description.ToUpper(),product.Description);
-        Assert.Equal(name.ToUpper(),product.Name);
-        Assert.Equal(price,product.Price);
+        using (new AssertionScope())
+        {
+            category.Should().Be(product.Category);
+            description.ToUpper().Should().Be(product.Description);
+            name.ToUpper().Should().Be(product.Name);
+            price.Should().Be(product.Price);
+        }
     }
 
     [Fact]
@@ -58,16 +66,14 @@ public class ProductTests
         // Act
         const string productName = "product name";
         const string productDescription = "description";
-        
+
         var productA = new Product("product Name", productDescription, ProductCategory.Beverage, 1m,
             Enumerable.Empty<string>().ToList());
         var productB = new Product(productName, "descriptioN", ProductCategory.Beverage, 1m,
             Enumerable.Empty<string>().ToList());
-        
+
         // Assert
-        Assert.True(productA.Equals(productB));
-        Assert.Equal(productName.ToUpper(), productA.Name);
-        Assert.Equal(productDescription.ToUpper(), productB.Description);
+        productA.Should().Be(productB);
     }
 
     [Fact]
@@ -79,8 +85,8 @@ public class ProductTests
             Enumerable.Empty<string>().ToList());
         var productB = new Product("product name", "description", ProductCategory.Beverage, 1m,
             Enumerable.Empty<string>().ToList());
-        
+
         // Assert
-        Assert.False(productA.Equals(productB));
+        productA.Should().NotBe(productB);
     }
 }

@@ -26,7 +26,6 @@ public class Customer : Entity<string>
 
         Name = name;
         Email = ValidateEmail(email);
-        ;
         Id = ValidateId(cpf);
     }
 
