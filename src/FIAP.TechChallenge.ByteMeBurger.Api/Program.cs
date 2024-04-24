@@ -1,4 +1,5 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
@@ -21,7 +22,10 @@ public class Program
         builder.Services.AddControllers();
 
         builder.Services.AddScoped<ICustomerService, CustomerService>();
-        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+        builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new []
+        {
+            new Customer("663.781.241-24","Pietro Thales Anderson Rodrigues","pietro_thales_rodrigues@silicotex.net")
+        }));
 
         var app = builder.Build();
 
