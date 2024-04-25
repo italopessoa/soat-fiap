@@ -13,7 +13,13 @@ public class InMemoryProductRepository(IReadOnlyList<Product> products) : IProdu
 
     public Task<Product?> FindByIdAsync(Guid id)
     {
-        return Task.FromResult(_products.FirstOrDefault(p => p.Id == id));
+        var product = _products.AsReadOnly().FirstOrDefault(p => p.Id == id);
+
+        if (product is not null)
+            return Task.FromResult(new Product(product.Id, product.Name, product.Description, product.Category,
+                product.Price, product.Images))!;
+
+        return Task.FromResult(product);
     }
 
     public Task<Product> CreateAsync(Product product)
@@ -50,7 +56,13 @@ public class InMemoryProductRepository(IReadOnlyList<Product> products) : IProdu
 
     public Task<bool> UpdateAsync(Product product)
     {
-        throw new NotImplementedException();
+        var productIndex = _products.FindIndex(p => p.Id == product.Id);
+        if (productIndex < 0)
+            return Task.FromResult(false);
+
+        _products[productIndex] = product;
+
+        return Task.FromResult(true);
     }
 
     public Task<bool> UpdateAsync(Guid id, string name, string description, ProductCategory category, decimal price,

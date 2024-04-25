@@ -20,15 +20,8 @@ public class Product : Entity<Guid>
     public DateTime? LastUpdate { get; set; }
 
     public Product(string name, string description, ProductCategory category, decimal price,
-        IReadOnlyList<string> images) : base(Guid.NewGuid())
+        IReadOnlyList<string> images) : this(Guid.NewGuid(), name, description, category, price, images)
     {
-        Validate(name, description, price);
-
-        Name = name.ToUpper();
-        Description = description.ToUpper();
-        Category = category;
-        Price = price;
-        Images = images;
     }
 
     public Product(Guid id, string name, string description, ProductCategory category, decimal price,
@@ -43,7 +36,7 @@ public class Product : Entity<Guid>
         Price = price;
         Images = images;
     }
-    
+
     public void Create()
     {
         CreationDate = DateTime.UtcNow;
@@ -58,7 +51,7 @@ public class Product : Entity<Guid>
         Images = oldProduct.Images;
         LastUpdate = DateTime.UtcNow;
     }
-    
+
     private static void Validate(string name, string description, decimal price)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);

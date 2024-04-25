@@ -14,6 +14,7 @@ public interface IProductService
     
     Task<IReadOnlyCollection<Product>> FindByCategory(ProductCategory category);
 
+    // TODO fix it, return Product instead of boolean
     Task<bool> UpdateAsync(Guid id, string name, string description, ProductCategory category, decimal price,
         IReadOnlyList<string> images);
 }
