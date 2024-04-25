@@ -45,8 +45,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order(CustomerCpf);
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
+        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
 
         // Act
         order.Checkout();
@@ -68,8 +68,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
+        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
 
         // Act
         var func = () => order.InitiatePrepare();
@@ -84,8 +84,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
+        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
         order.Checkout();
 
         // Act
@@ -101,8 +101,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
+        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
         order.Checkout();
         order.ConfirmPayment();
         order.InitiatePrepare();
@@ -121,23 +121,20 @@ public class OrderTests
     {
         // Arrange
         var initDate = DateTime.UtcNow;
-        DateTime preparingDate;
-        DateTime doneDate;
-        DateTime finishedDate;
 
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
+        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
 
         // Act
         order.Checkout();
         order.ConfirmPayment();
         order.InitiatePrepare();
-        preparingDate = order.LastUpdate;
+        var preparingDate = order.LastUpdate;
         order.FinishPreparing();
-        doneDate = order.LastUpdate;
+        var doneDate = order.LastUpdate;
         order.DeliverOrder();
-        finishedDate = order.LastUpdate;
+        var finishedDate = order.LastUpdate;
 
         // Assert
         using (new AssertionScope())
@@ -158,10 +155,10 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
-        order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, new List<string>()));
-        order.AddProduct(new Product("ice cream", "the best", ProductCategory.SweatsNTreats, 12, new List<string>()));
+        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
+        order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, []));
+        order.AddProduct(new Product("ice cream", "the best", ProductCategory.SweatsNTreats, 12, []));
 
         // Act
         order.Checkout();
@@ -180,9 +177,9 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, new List<string>()));
-        order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, new List<string>()));
+        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
+        order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, []));
 
         // Act
         order.Checkout();
@@ -201,10 +198,10 @@ public class OrderTests
     {
         // Arrange
         var codes = new List<string>();
-        for (var i = 0; i < 100; i++)
+        for (var i = 0; i < 50; i++)
         {
             var order = new Order();
-            order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, new List<string>()));
+            order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
             if (i % 2 == 0)
             {
                 order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, default!));

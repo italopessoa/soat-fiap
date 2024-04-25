@@ -10,6 +10,5 @@ public interface ICustomerService
     
     Task<Customer> CreateAsync(string cpf);
     
-    
     Task<Customer> CreateAsync(string cpf, string name, string email);
 }
