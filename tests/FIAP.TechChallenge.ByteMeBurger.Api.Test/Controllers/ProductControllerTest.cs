@@ -208,7 +208,7 @@ public class ProductControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<BadRequestObjectResult>();
-            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Price cannot be zero ou negative");
+            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Price cannot be zero ou negative.");
 
 
             _serviceMock.Verify(
@@ -258,7 +258,7 @@ public class ProductControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<BadRequestObjectResult>();
-            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Unable to create the product");
+            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Unable to create the product.");
 
             _serviceMock.Verify(
                 s => s.CreateAsync(It.IsAny<string>(), It.IsAny<string>(),
@@ -284,7 +284,7 @@ public class ProductControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<BadRequestObjectResult>();
-            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Unable to update the product");
+            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Unable to update the product.");
 
             _serviceMock.Verify(
                 s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(),
@@ -305,7 +305,7 @@ public class ProductControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<BadRequestObjectResult>();
-            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Invalid Id");
+            response.Result.As<BadRequestObjectResult>().Value.Should().Be("Invalid Id.");
 
             _serviceMock.Verify(
                 s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(),

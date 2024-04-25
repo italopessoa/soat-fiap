@@ -46,7 +46,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             CancellationToken cancellationToken)
         {
             if (newProduct.Price <= 0)
-                return BadRequest("Price cannot be zero ou negative");
+                return BadRequest("Price cannot be zero ou negative.");
 
             try
             {
@@ -56,9 +56,9 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 
                 return Created($"/{product.Id}", product);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return BadRequest("Unable to create the product");
+                return BadRequest("Unable to create the product.");
             }
         }
 
@@ -68,7 +68,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             CancellationToken cancellationToken)
         {
             if (Guid.Empty == id)
-                return BadRequest("Invalid Id");
+                return BadRequest("Invalid Id.");
 
             var updated = await _productService.UpdateAsync(
                 id,
@@ -78,7 +78,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
                 updateProductCommandDto.Price,
                 updateProductCommandDto.Images);
 
-            return updated ? NoContent() : BadRequest("Unable to update the product");
+            return updated ? NoContent() : BadRequest("Unable to update the product.");
         }
     }
 }
