@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
