@@ -22,7 +22,7 @@ public class OrderTests
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.None);
+            order.Status.Should().Be(OrderStatus.PaymentPending);
             order.Customer.Id.Should().Be(customerId);
         }
     }
@@ -45,8 +45,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order(CustomerCpf);
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
+        order.AddOrderItem(Guid.NewGuid(), "bread", 1, 5);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 2, 6);
 
         // Act
         order.Checkout();
@@ -55,7 +55,7 @@ public class OrderTests
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.None);
+            order.Status.Should().Be(OrderStatus.PaymentPending);
             order.CreationDate.Should().NotBe(default);
             order.Customer.Id.Should().Be(CustomerCpf.Replace(".", "")
                 .Replace("-", "")
@@ -68,8 +68,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
+        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
 
         // Act
         var func = () => order.InitiatePrepare();
@@ -84,8 +84,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
+        order.AddOrderItem(Guid.NewGuid(), "bread", 10, 1);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
         order.Checkout();
 
         // Act
@@ -101,8 +101,8 @@ public class OrderTests
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
+        order.AddOrderItem(Guid.NewGuid(), "bread", 2.5m, 4);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
         order.Checkout();
         order.ConfirmPayment();
         order.InitiatePrepare();
@@ -123,8 +123,8 @@ public class OrderTests
         var initDate = DateTime.UtcNow;
 
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
+        order.AddOrderItem(Guid.NewGuid(), "bread", 10, 1);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 6, 2);
 
         // Act
         order.Checkout();
@@ -151,35 +151,13 @@ public class OrderTests
     }
 
     [Fact]
-    public void Order_FullOrderCode()
-    {
-        // Arrange
-        var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
-        order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, []));
-        order.AddProduct(new Product("ice cream", "the best", ProductCategory.SweatsNTreats, 12, []));
-
-        // Act
-        order.Checkout();
-        order.ConfirmPayment();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            order.Customer.Id.Should().NotBe(Guid.Empty.ToString());
-            order.TrackingCode.Should().NotBeNull().And.Contain("#");
-        }
-    }
-
-    [Fact]
     public void Order_SimpleOrderCode()
     {
         // Arrange
         var order = new Order();
-        order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
-        order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, []));
-        order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, []));
+        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
+        order.AddOrderItem(Guid.NewGuid(), "soda", 2, 6);
 
         // Act
         order.Checkout();
@@ -201,12 +179,12 @@ public class OrderTests
         for (var i = 0; i < 50; i++)
         {
             var order = new Order();
-            order.AddProduct(new Product("bread", "the best", ProductCategory.Meal, 10, []));
+            order.AddOrderItem(Guid.NewGuid(), "bread", 10, 1);
             if (i % 2 == 0)
             {
-                order.AddProduct(new Product("milk shake", "the best", ProductCategory.FriesAndSides, 12, default!));
-                order.AddProduct(new Product("soda", "the best", ProductCategory.Beverage, 12, default!));
-                order.AddProduct(new Product("ice cream", "the best", ProductCategory.SweatsNTreats, 12, default!));
+                order.AddOrderItem(Guid.NewGuid(), "milk shake", 12, 1);
+                order.AddOrderItem(Guid.NewGuid(), "soda", 12, 1);
+                order.AddOrderItem(Guid.NewGuid(), "ice cream", 1, 12);
             }
 
             order.Checkout();

@@ -24,6 +24,8 @@ public class Program
 
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<IProductService, ProductService>();
+        builder.Services.AddScoped<IOrderService, OrderService>();
+        builder.Services.AddSingleton  <IOrderRepository, InMemoryOrderRepository>();
         builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
         {
             new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
