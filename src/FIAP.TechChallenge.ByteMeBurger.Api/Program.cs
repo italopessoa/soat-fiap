@@ -58,12 +58,9 @@ public class Program
             return conn;
         });
         builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
-
-
-        // builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
-        // {
-        //     new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
-        // }));
+        {
+            new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
+        }));
 
         builder.Services.AddScoped<ICustomerRepository, CustomerRepositoryDapper>();
         builder.Services.AddSingleton<IProductRepository>(new InMemoryProductRepository(new[]

@@ -19,6 +19,7 @@
       - MySqlSettings__Port=${MYSQL_PORT}
       - MySqlSettings__UserId=${MYSQL_USERID}
       - MySqlSettings__Password=${MYSQL_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=Development
   
   database:
     container_name: mysql_database
