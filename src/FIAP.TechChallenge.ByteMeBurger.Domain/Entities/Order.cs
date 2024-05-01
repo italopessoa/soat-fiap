@@ -5,45 +5,46 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Order : Entity<Guid>
 {
-    private List<Product> _products;
-
+    private List<OrderItem> _orderItems;
+ 
     public Customer Customer { get; private set; }
 
     public string? TrackingCode { get; private set; }
 
     public OrderStatus Status { get; private set; }
 
-    public DateTime CreationDate { get; set; }
+    public DateTime Created { get; private set; }
 
-    public DateTime LastUpdate { get; set; }
+    public DateTime LastUpdate { get; private set; }
 
-    public IReadOnlyList<Product> Products => _products.AsReadOnly();
+    public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
-    public decimal Total => _products.Sum(p => p.Price);
+    public decimal Total => _orderItems.Sum(o => o.UnitPrice * o.Quantity);
 
 
     public Order()
-        : base(Guid.NewGuid())
+        : this(Guid.NewGuid().ToString())
     {
-        _products = Enumerable.Empty<Product>().ToList();
-        Customer = new Customer(Guid.NewGuid().ToString());
     }
 
     public Order(string customerId)
         : base(Guid.NewGuid())
     {
-        _products = Enumerable.Empty<Product>().ToList();
+        _orderItems = Enumerable.Empty<OrderItem>().ToList();
         Customer = new Customer(customerId);
     }
 
-    public void AddProduct(Product product)
+    public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)
     {
-        _products.Add(product);
+        if (Status == OrderStatus.PaymentPending)
+            _orderItems.Add(new OrderItem(this.Id, productId, productName, unitPrice, quantity));
+        else
+            throw new InvalidOperationException($"Cannot add items to an Order if it's {Status}");
     }
 
-    public void Validate()
+    public void ValidateCheckout()
     {
-        if (!Products.Any())
+        if (!_orderItems.Any())
         {
             throw new InvalidOperationException("An Order must have at least one item");
         }
@@ -51,17 +52,17 @@ public class Order : Entity<Guid>
 
     public void Checkout()
     {
-        Validate();
-        CreationDate = DateTime.UtcNow;
+        ValidateCheckout();
+        Created = DateTime.UtcNow;
     }
 
     public void ConfirmPayment()
     {
-        if (CreationDate == default)
+        if (Created == default)
             throw new InvalidOperationException("Cannot confirm");
 
         Status = OrderStatus.Received;
-        TrackingCode = GenerateCode(CreationDate);
+        TrackingCode = GenerateCode(Created);
     }
 
     public void InitiatePrepare()
@@ -93,11 +94,6 @@ public class Order : Entity<Guid>
 
     private void Update() => LastUpdate = DateTime.UtcNow;
 
-    private bool IsFullCombo() => _products
-        .Select(p => p.Category)
-        .Distinct()
-        .Count() == 4;
-
     private static string GetLetter(int number, string alphabet)
     {
         var adjustedNumber = number % alphabet.Length;
@@ -105,6 +101,7 @@ public class Order : Entity<Guid>
 
         return alphabet.Substring(letterIndex, 1);
     }
+
     private string GenerateCode(DateTime confirmationDate)
     {
         const string lettersOnly = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
@@ -123,6 +120,6 @@ public class Order : Entity<Guid>
             .Split("-")[2]
             .Substring(1, 3);
 
-        return $"{partA}{partB}{partC}-{(IsFullCombo() ? "#" : "")}{key}".ToUpper();
+        return $"{partA}{partB}{partC}-{key}".ToUpper();
     }
 };

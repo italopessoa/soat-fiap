@@ -1,5 +1,6 @@
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
@@ -12,6 +13,7 @@ using MySql.Data.MySqlClient;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
+[ExcludeFromCodeCoverage]
 public class Program
 {
     public static void Main(string[] args)
@@ -29,19 +31,13 @@ public class Program
 
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<IProductService, ProductService>();
-
-
-        // builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
-        // {
-        //     new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
-        // }));
-
-        builder.Services.AddScoped<ICustomerRepository, CustomerRepositoryDapper>();
+        builder.Services.AddScoped<IOrderService, OrderService>();
+        // builder.Services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
+        builder.Services.AddScoped<IOrderRepository, OrderRepositoryDapper>();
         builder.Services.Configure<MySqlSettings>(builder.Configuration.GetSection(nameof(MySqlSettings)));
         builder.Services.AddSingleton<DbConnectionStringBuilder>(provider =>
         {
             var mySqlOptions = provider.GetService<IOptions<MySqlSettings>>();
-
             return new MySqlConnectionStringBuilder()
             {
                 Server = mySqlOptions.Value.Server,
@@ -58,10 +54,18 @@ public class Program
             var providerFactory = DbProviderFactories.GetFactory("MySql.Data.MySqlClient");
             var conn = providerFactory.CreateConnection();
             conn.ConnectionString = builder.ConnectionString;
+            
             return conn;
         });
+        builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
 
 
+        // builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
+        // {
+        //     new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
+        // }));
+
+        builder.Services.AddScoped<ICustomerRepository, CustomerRepositoryDapper>();
         builder.Services.AddSingleton<IProductRepository>(new InMemoryProductRepository(new[]
         {
             new Product("pao com ovo", "pao com ovo", ProductCategory.Meal, 2.5m, []),

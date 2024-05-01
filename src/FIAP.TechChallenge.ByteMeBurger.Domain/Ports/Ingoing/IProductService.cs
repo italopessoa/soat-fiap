@@ -8,6 +8,9 @@ public interface IProductService
     Task<Product> CreateAsync(string name, string description, ProductCategory category, decimal price,
         IReadOnlyList<string> images);
     
+    // TODO add new method
+    // Task<Product?> GetAsync(Guid id);
+    
     Task<bool> DeleteAsync(Guid productId);
 
     Task<IReadOnlyCollection<Product>> GetAll();
