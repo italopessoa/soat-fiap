@@ -16,17 +16,18 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IOrderRepository, OrderRepositoryDapper>();
         services.AddScoped<ICustomerRepository, CustomerRepositoryDapper>();
+        services.AddScoped<IProductRepository, ProductRepositoryDapper>();
         services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
         {
             new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
         }));
         
-        services.AddSingleton<IProductRepository>(new InMemoryProductRepository(new[]
-        {
-            new Product("pao com ovo", "pao com ovo", ProductCategory.Meal, 2.5m, []),
-            new Product("milkshake chocrante", "milkshake tijolo do bob'as", ProductCategory.SweatsNTreats, 2.5m, []),
-            new Product("h20", "h20", ProductCategory.Beverage, 2.5m, []),
-            new Product("batata frita", "batata frita", ProductCategory.FriesAndSides, 2.5m, [])
-        }));
+        // services.AddSingleton<IProductRepository>(new InMemoryProductRepository(new[]
+        // {
+        //     new Product("pao com ovo", "pao com ovo", ProductCategory.Meal, 2.5m, []),
+        //     new Product("milkshake chocrante", "milkshake tijolo do bob'as", ProductCategory.SweatsNTreats, 2.5m, []),
+        //     new Product("h20", "h20", ProductCategory.Beverage, 2.5m, []),
+        //     new Product("batata frita", "batata frita", ProductCategory.FriesAndSides, 2.5m, [])
+        // }));
     }
 }

@@ -7,7 +7,7 @@ create table Customer
 );
 
 
-create table Product
+create table Products
 (
     Id          char(36)      not null comment 'product id'
         primary key,
