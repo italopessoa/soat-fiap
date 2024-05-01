@@ -62,7 +62,7 @@ public class CustomerRepositoryDapperTest
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().Be(expectedCustomer);
+            result.Should().BeEquivalentTo(expectedCustomer, options => options.ComparingByMembers<Customer>());
         }
     }
     
