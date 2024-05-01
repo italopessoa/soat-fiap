@@ -40,7 +40,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         public async Task<ActionResult<OrderDto>> Get(Guid id, CancellationToken cancellationToken)
         {
             if (Guid.Empty == id)
-                return BadRequest("Invalid OrderId");
+                return BadRequest("Invalid OrderId: An order ID must not be empty.");
             
             var order = await _orderService.GetAsync(id);
             if (order is null)

@@ -16,7 +16,6 @@ public class OrderRepositoryDapperTest
     private readonly Mock<IDbConnection> _mockConnection;
     private readonly OrderRepositoryDapper _target;
 
-
     public OrderRepositoryDapperTest()
     {
         _mockConnection = new Mock<IDbConnection>();
