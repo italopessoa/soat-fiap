@@ -13,6 +13,7 @@
         <PackageReference Include="AutoFixture.Xunit2" Version="4.18.1" />
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="xunit" Version="2.5.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
@@ -23,7 +24,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Application\FIAP.TechChallenge.ByteMeBurger.Application.csproj" />
       <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Domain\FIAP.TechChallenge.ByteMeBurger.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Ports\Ingoing\" />
     </ItemGroup>
 
 </Project>
