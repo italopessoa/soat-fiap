@@ -7,8 +7,14 @@
       context: ./
       dockerfile: src/FIAP.TechChallenge.ByteMeBurger.Api/Dockerfile
       tags:
-        - techchallenge/api3
+        - techchallenge/apirestaurante
     restart: always
+    healthcheck:
+      test: curl --fail http://localhost:8080/health || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 5s
     networks:
       - tech-challenge
     ports:
@@ -19,6 +25,7 @@
       - MySqlSettings__Port=${MYSQL_PORT}
       - MySqlSettings__UserId=${MYSQL_USERID}
       - MySqlSettings__Password=${MYSQL_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=Development
   
   database:
     container_name: mysql_database
@@ -43,7 +50,7 @@
     image: adminer
     restart: always
     ports:
-      - 8082:8080
+      - 27017:27017
 
 networks:
   tech-challenge:

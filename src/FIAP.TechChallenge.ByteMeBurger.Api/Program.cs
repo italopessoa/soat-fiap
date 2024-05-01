@@ -8,6 +8,8 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
 
@@ -28,56 +30,27 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
-
-        builder.Services.AddScoped<ICustomerService, CustomerService>();
-        builder.Services.AddScoped<IProductService, ProductService>();
-        builder.Services.AddScoped<IOrderService, OrderService>();
-        // builder.Services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
-        builder.Services.AddScoped<IOrderRepository, OrderRepositoryDapper>();
         builder.Services.Configure<MySqlSettings>(builder.Configuration.GetSection(nameof(MySqlSettings)));
-        builder.Services.AddSingleton<DbConnectionStringBuilder>(provider =>
-        {
-            var mySqlOptions = provider.GetService<IOptions<MySqlSettings>>();
-            return new MySqlConnectionStringBuilder()
-            {
-                Server = mySqlOptions.Value.Server,
-                Database = mySqlOptions.Value.Database,
-                Port = mySqlOptions.Value.Port,
-                Password = mySqlOptions.Value.Password,
-                UserID = mySqlOptions.Value.UserId
-            };
-        });
-        builder.Services.AddTransient<IDbConnection>(provider =>
-        {
-            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
-            var builder = provider.GetRequiredService<DbConnectionStringBuilder>();
-            var providerFactory = DbProviderFactories.GetFactory("MySql.Data.MySqlClient");
-            var conn = providerFactory.CreateConnection();
-            conn.ConnectionString = builder.ConnectionString;
-            
-            return conn;
-        });
-        builder.Services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
-        {
-            new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
-        }));
+        builder.ConfigServicesDependencies();
+        builder.Services.RegisterServices();
 
-        builder.Services.AddSingleton<IProductRepository>(new InMemoryProductRepository(new[]
-        {
-            new Product("pao com ovo", "pao com ovo", ProductCategory.Meal, 2.5m, []),
-            new Product("milkshake chocrante", "milkshake tijolo do bob'as", ProductCategory.SweatsNTreats, 2.5m, []),
-            new Product("h20", "h20", ProductCategory.Beverage, 2.5m, []),
-            new Product("batata frita", "batata frita", ProductCategory.FriesAndSides, 2.5m, [])
-        }));
+        builder.Services.AddHealthChecks()
+            .AddMySql(provider => provider.GetRequiredService<DbConnectionStringBuilder>().ConnectionString);
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        // if (app.Environment.IsDevelopment())
-        // {
+        if (app.Environment.IsDevelopment())
+        {
             app.UseSwagger();
             app.UseSwaggerUI();
-        // }
+        }
+
+        app.UseHealthChecks("/health", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter =  UIResponseWriter.WriteHealthCheckUIResponse
+        });
 
         app.UseHttpsRedirection();
 
@@ -86,4 +59,6 @@ public class Program
         app.MapControllers();
         app.Run();
     }
+
+    
 }

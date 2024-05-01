@@ -8,7 +8,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
 [ExcludeFromCodeCoverage]
 public class InMemoryOrderRepository : IOrderRepository
 {
-    private readonly List<Order> _orders = [];
+    private readonly List<Order> _orders = new();
 
     public Task<Order> CreateAsync(Order order)
     {

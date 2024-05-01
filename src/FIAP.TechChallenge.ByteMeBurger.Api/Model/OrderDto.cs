@@ -5,23 +5,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
 
 public class OrderDto
 {
-    public Guid Id { get; set; }
-    
-    public CustomerDto Customer { get; set; }
-
-    public string? TrackingCode { get; set; }
-
-
-    public List<OrderItemDto> OrderItems { get; set; }
-
-    public decimal Total { get; set; }
-
-    public OrderStatus Status { get; set; }
-
-    public DateTime CreationDate { get; set; }
-
-    public DateTime LastUpdate { get; set; }
-
     public OrderDto()
     {
         
@@ -38,4 +21,20 @@ public class OrderDto
         LastUpdate = order.LastUpdate;
         OrderItems = order.OrderItems.Select(o => new OrderItemDto(o)).ToList();
     }
+
+    public Guid Id { get; set; }
+    
+    public CustomerDto Customer { get; set; }
+
+    public string? TrackingCode { get; set; }
+
+    public List<OrderItemDto> OrderItems { get; set; }
+
+    public decimal Total { get; set; }
+
+    public OrderStatus Status { get; set; }
+
+    public DateTime CreationDate { get; set; }
+
+    public DateTime LastUpdate { get; set; }
 }
