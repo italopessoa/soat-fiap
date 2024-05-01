@@ -56,7 +56,7 @@ public class OrderTests
         {
             order.Id.Should().NotBe(Guid.Empty);
             order.Status.Should().Be(OrderStatus.PaymentPending);
-            order.CreationDate.Should().NotBe(default);
+            order.Created.Should().NotBe(default);
             order.Customer.Id.Should().Be(CustomerCpf.Replace(".", "")
                 .Replace("-", "")
                 .Trim(), order.Customer.Id);
@@ -140,8 +140,8 @@ public class OrderTests
         using (new AssertionScope())
         {
             order.Customer.Id.Should().NotBe(Guid.Empty.ToString());
-            order.CreationDate.Should().BeAfter(initDate);
-            order.CreationDate.Should().BeBefore(preparingDate);
+            order.Created.Should().BeAfter(initDate);
+            order.Created.Should().BeBefore(preparingDate);
             doneDate.Should().BeAfter(preparingDate);
             finishedDate.Should().BeAfter(doneDate);
             order.Status.Should().Be(OrderStatus.Finished);

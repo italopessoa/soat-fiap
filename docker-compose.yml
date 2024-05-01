@@ -1,39 +1,27 @@
 ﻿services:
-#  api:
-#    container_name: restaurant_api
-#    build:
-#      context: ./
-#      dockerfile: src/FIAP.TechChallenge.ByteMeBurger.Api/Dockerfile
-#      tags:
-#        - techchallenge/api
-#    restart: always
-#    networks:
-#      - tech-challenge
-#    ports:
-#      - 8080:8080
-#    environment:
-#      - MongoSettings__Username=${MONGO_USERNAME}
-#      - MongoSettings__Password=${MONGO_PASSWORD}
-#      - MongoSettings__Database=${MONGO_DATABASE}
-#      - MongoSettings__Port=${MONGO_PORT}
-#      - MySqlSettings__Server=${MYSQL_SERVER}
-#      - MySqlSettings__Database=${MYSQL_DATABASE}
-#      - MySqlSettings__Port=${MYSQL_PORT}
-#      - MySqlSettings__UserId=${MYSQL_USERID}
-#      - MySqlSettings__Password=${MYSQL_PASSWORD}
-        
-  database:
-    image: mongo
+  api:
+    depends_on:
+      - database
+    container_name: ${DOCKER_REGISTRY-}techchallengeapi
+    build:
+      context: ./
+      dockerfile: src/FIAP.TechChallenge.ByteMeBurger.Api/Dockerfile
+      tags:
+        - techchallenge/api3
     restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     networks:
       - tech-challenge
     ports:
-      - 27017:27017
+      - 8080:8080
+    environment:
+      - MySqlSettings__Server=database
+      - MySqlSettings__Database=${MYSQL_DATABASE}
+      - MySqlSettings__Port=${MYSQL_PORT}
+      - MySqlSettings__UserId=${MYSQL_USERID}
+      - MySqlSettings__Password=${MYSQL_PASSWORD}
   
-  techchallenge-mysql:
+  database:
+    container_name: mysql_database
     image: mysql
     # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
     # (this is just an example, not intended to be a production configuration)
@@ -41,7 +29,7 @@
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=admin
-      - MYSQL_DATABASE=${MYSQL_SERVER}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USERID}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     ports:

@@ -16,18 +16,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 public class OrderControllerTest
 {
     private readonly Mock<IOrderService> _serviceMock;
-    private readonly Mock<IProductService> _productServiceMock;
     private readonly OrderController _target;
 
     public OrderControllerTest()
     {
         _serviceMock = new Mock<IOrderService>();
-        _productServiceMock = new Mock<IProductService>();
         _target = new OrderController(_serviceMock.Object);
     }
-
-    //create, get all, get detail
-
 
     [Fact]
     public async void GetAll_Success()
@@ -110,6 +105,71 @@ public class OrderControllerTest
                     It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()),
                 Times.Once);
 
+            _serviceMock.VerifyAll();
+        }
+    }
+    
+    [Fact]
+    public async void Get_Detail_Success()
+    {
+        // Arrange
+        var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, []);
+        var customerId = Guid.NewGuid().ToString();
+        var expectedOrder = new Order(customerId);
+        expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
+
+        var expectedOrderDto = new OrderDto(expectedOrder);
+
+        _serviceMock.Setup(s => s.GetAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(expectedOrder);
+
+        // Act
+        var response = await _target.Get(expectedOrder.Id, CancellationToken.None);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Result.Should().BeOfType<OkObjectResult>();
+            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedOrderDto);
+
+            _serviceMock.Verify(o => o.GetAsync(It.IsAny<Guid>()), Times.Once);
+            _serviceMock.VerifyAll();
+        }
+    }
+    
+    [Fact]
+    public async void Get_Detail_NotFound()
+    {
+        // Arrange
+        _serviceMock.Setup(s => s.GetAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(default(Order));
+
+        // Act
+        var response = await _target.Get(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Result.Should().BeOfType<NotFoundResult>();
+
+            _serviceMock.Verify(o => o.GetAsync(It.IsAny<Guid>()), Times.Once);
+            _serviceMock.VerifyAll();
+        }
+    }
+    
+    [Fact]
+    public async void Get_Detail_InvalidId_BadRequest()
+    {
+        // Arrange
+        // Act
+        var response = await _target.Get(Guid.Empty, CancellationToken.None);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Result.Should().BeOfType<BadRequestObjectResult>();
+
+            _serviceMock.Verify(o => o.GetAsync(It.IsAny<Guid>()), Times.Never);
             _serviceMock.VerifyAll();
         }
     }

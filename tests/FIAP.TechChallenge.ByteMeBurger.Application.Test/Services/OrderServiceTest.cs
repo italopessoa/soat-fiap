@@ -78,7 +78,7 @@ public class OrderServiceTest
         expectedOrder.Checkout();
 
         _mockRepository.Setup(r => r.CreateAsync(
-                It.Is<Order>(o => o.CreationDate != DateTime.MinValue
+                It.Is<Order>(o => o.Created != DateTime.MinValue
                                   && o.Status == OrderStatus.PaymentPending)))
             .ReturnsAsync(expectedOrder);
 
@@ -90,7 +90,7 @@ public class OrderServiceTest
         {
             result.Should().NotBeNull();
             _mockRepository.Verify(m => m.CreateAsync(
-                It.Is<Order>(o => o.CreationDate != DateTime.MinValue
+                It.Is<Order>(o => o.Created != DateTime.MinValue
                                   && o.Status == OrderStatus.PaymentPending)), Times.Once);
         }
     }

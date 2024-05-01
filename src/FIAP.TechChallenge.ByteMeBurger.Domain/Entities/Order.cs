@@ -6,13 +6,14 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 public class Order : Entity<Guid>
 {
     private List<OrderItem> _orderItems;
+ 
     public Customer Customer { get; private set; }
 
     public string? TrackingCode { get; private set; }
 
     public OrderStatus Status { get; private set; }
 
-    public DateTime CreationDate { get; private set; }
+    public DateTime Created { get; private set; }
 
     public DateTime LastUpdate { get; private set; }
 
@@ -36,7 +37,7 @@ public class Order : Entity<Guid>
     public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)
     {
         if (Status == OrderStatus.PaymentPending)
-            _orderItems.Add(new OrderItem(productId, productName, unitPrice, quantity));
+            _orderItems.Add(new OrderItem(this.Id, productId, productName, unitPrice, quantity));
         else
             throw new InvalidOperationException($"Cannot add items to an Order if it's {Status}");
     }
@@ -52,16 +53,16 @@ public class Order : Entity<Guid>
     public void Checkout()
     {
         ValidateCheckout();
-        CreationDate = DateTime.UtcNow;
+        Created = DateTime.UtcNow;
     }
 
     public void ConfirmPayment()
     {
-        if (CreationDate == default)
+        if (Created == default)
             throw new InvalidOperationException("Cannot confirm");
 
         Status = OrderStatus.Received;
-        TrackingCode = GenerateCode(CreationDate);
+        TrackingCode = GenerateCode(Created);
     }
 
     public void InitiatePrepare()

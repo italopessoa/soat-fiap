@@ -34,7 +34,7 @@ public class OrderDto
         TrackingCode = order.TrackingCode;
         Total = order.Total;
         Status = order.Status;
-        CreationDate = order.CreationDate;
+        CreationDate = order.Created;
         LastUpdate = order.LastUpdate;
         OrderItems = order.OrderItems.Select(o => new OrderItemDto(o)).ToList();
     }

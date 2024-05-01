@@ -40,7 +40,14 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<OrderDto>> Get(Guid id, CancellationToken cancellationToken)
         {
-            return Ok();
+            if (Guid.Empty == id)
+                return BadRequest("Invalid OrderId");
+            
+            var order = await _orderService.GetAsync(id);
+            if (order is null)
+                return NotFound();
+            
+            return Ok(new OrderDto(order));
         }
     }
 }

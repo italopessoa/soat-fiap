@@ -1,8 +1,18 @@
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
-public abstract class Entity<TId>(TId id)
+public abstract class Entity<TId>
 {
-    public TId Id { get; protected set; } = id;
+    protected Entity()
+    {
+        
+    }
+
+    protected Entity(TId id)
+    {
+        Id = id;
+    }
+    
+    public TId Id { get; protected set; }
 
     public override bool Equals(object? obj)
     {
