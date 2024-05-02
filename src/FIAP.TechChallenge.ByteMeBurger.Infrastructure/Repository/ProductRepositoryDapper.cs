@@ -37,9 +37,11 @@ public class ProductRepositoryDapper : IProductRepository
         return product;
     }
 
-    public Task<bool> DeleteAsync(Guid productId)
+    public async Task<bool> DeleteAsync(Guid productId)
     {
-        throw new NotImplementedException();
+        var affectedRows = await _dbConnection.ExecuteAsync("delete from Products where Id = @Id;",
+            new { Id = productId });
+        return affectedRows == 1;
     }
 
     public Task<ReadOnlyCollection<Product>> GetAll()

@@ -27,9 +27,17 @@ public class ProductRepositoryDapperTest
     public async Task Create_Success()
     {
         // Arrange
-        var product = new Product("product", "description", ProductCategory.Beverage, 10, ["image1"]);
+        var product = new Product("product", "description", ProductCategory.Beverage, 10,
+            new List<string> { "image1" });
+        var sql =
+            "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
+        var parameters = new
+        {
+            Name = product.Name, Description = product.Description, Category = product.Category.ToString(),
+            Price = product.Price, Images = string.Join(",", product.Images)
+        };
 
-        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync("", null, null, null, null))
+        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
             .ReturnsAsync(1);
 
         // Act
@@ -39,7 +47,38 @@ public class ProductRepositoryDapperTest
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().Be(product);
+            result.Should().BeEquivalentTo(product, options => options.ComparingByMembers<Product>());
+            _mockConnection.Verify();
         }
+    }
+
+    [Fact]
+    public async Task DeleteAsync_Success()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        _mockConnection.SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+            .ReturnsAsync(1);
+
+        // Act
+        var result = await _target.DeleteAsync(productId);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    
+    [Fact]
+    public async Task DeleteAsync_Fail()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        _mockConnection.SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+            .ReturnsAsync(0);
+
+        // Act
+        var result = await _target.DeleteAsync(productId);
+
+        // Assert
+        result.Should().BeFalse();
     }
 }
