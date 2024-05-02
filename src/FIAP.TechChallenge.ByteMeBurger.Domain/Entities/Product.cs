@@ -19,6 +19,10 @@ public class Product : Entity<Guid>
 
     public DateTime? LastUpdate { get; set; }
 
+    public Product()
+    {
+    }
+
     public Product(string name, string description, ProductCategory category, decimal price,
         IReadOnlyList<string> images) : this(Guid.NewGuid(), name, description, category, price, images)
     {
@@ -40,6 +44,12 @@ public class Product : Entity<Guid>
     public void Create()
     {
         CreationDate = DateTime.UtcNow;
+    }
+
+    public void SetImages(string[] images)
+    {
+        if (images?.Length > 0)
+            Images = images.AsReadOnly();
     }
 
     public void Update(Product oldProduct)

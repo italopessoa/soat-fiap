@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
@@ -49,9 +50,17 @@ public class ProductRepositoryDapper : IProductRepository
         throw new NotImplementedException();
     }
 
-    public Task<ReadOnlyCollection<Product>> FindByCategory(ProductCategory category)
+    [ExcludeFromCodeCoverage(Justification = "unit test is not working due to moq.dapper limitations, maybe one day...")]
+    public async Task<ReadOnlyCollection<Product>> FindByCategory(ProductCategory category)
     {
-        throw new NotImplementedException();
+        return (await _dbConnection.QueryAsync<Product, string, Product>(
+            "SELECT * FROM Products WHERE Category = @Category",
+            (product, s) =>
+            {
+                product.SetImages(s.Split("|"));
+                return product;
+            },
+            splitOn: "Images", param: new { Category = (int)category })).ToList().AsReadOnly();
     }
 
     public Task<bool> UpdateAsync(Product product)

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using AutoFixture;
+using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
@@ -173,7 +174,9 @@ public class ProductServiceTest
     public async Task Update_NotFound()
     {
         // Arrange
-        var product = new Fixture().Create<Product>();
+        var fixture = new Fixture();
+        fixture.Customizations.Add(new ProductGenerator());
+        var product = fixture.Create<Product>();
 
         _mockRepository.Setup(s => s.FindByIdAsync(
                 It.IsAny<Guid>()))
@@ -196,7 +199,9 @@ public class ProductServiceTest
     public async Task Update_Fail()
     {
         // Arrange
-        var product = new Fixture().Create<Product>();
+        var fixture = new Fixture();
+        fixture.Customizations.Add(new ProductGenerator());
+        var product = fixture.Create<Product>();
 
         _mockRepository.Setup(s => s.FindByIdAsync(
                 It.IsAny<Guid>()))
@@ -222,8 +227,10 @@ public class ProductServiceTest
     public async Task Update_Success()
     {
         // Arrange
-        var product = new Fixture().Create<Product>();
-
+        var fixture = new Fixture();
+        fixture.Customizations.Add(new ProductGenerator());
+        var product = fixture.Create<Product>();
+        
         _mockRepository.Setup(s => s.FindByIdAsync(
                 It.IsAny<Guid>()))
             .ReturnsAsync(product);
@@ -242,5 +249,18 @@ public class ProductServiceTest
             updated.Should().BeTrue();
             _mockRepository.VerifyAll();
         }
+    }
+}
+
+public class ProductGenerator : ISpecimenBuilder
+{
+    public object Create(object request, ISpecimenContext context)
+    {
+        var type = request as Type;
+        if (type != typeof(Product))
+            return new NoSpecimen();
+
+        return new Product(context.Create<string>(), context.Create<string>(), context.Create<ProductCategory>(),
+            context.Create<decimal>(), context.CreateMany<string>().ToList().AsReadOnly());
     }
 }

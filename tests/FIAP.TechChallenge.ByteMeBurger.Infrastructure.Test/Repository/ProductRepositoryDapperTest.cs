@@ -57,7 +57,8 @@ public class ProductRepositoryDapperTest
     {
         // Arrange
         var productId = Guid.NewGuid();
-        _mockConnection.SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+        _mockConnection
+            .SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
             .ReturnsAsync(1);
 
         // Act
@@ -66,13 +67,14 @@ public class ProductRepositoryDapperTest
         // Assert
         result.Should().BeTrue();
     }
-    
+
     [Fact]
     public async Task DeleteAsync_Fail()
     {
         // Arrange
         var productId = Guid.NewGuid();
-        _mockConnection.SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+        _mockConnection
+            .SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
             .ReturnsAsync(0);
 
         // Act
@@ -80,5 +82,32 @@ public class ProductRepositoryDapperTest
 
         // Assert
         result.Should().BeFalse();
+    }
+
+    [Fact(Skip = "skipping until a solution is found, or I can just remove it lol")]
+    public async Task FindByIdAsync_NotImplemented()
+    {
+        // Arrange
+        var product = new Product("coca", "coca cola", ProductCategory.Beverage, 10, ["image1", "image 2"]);
+
+        var expected = new[]
+        {
+            product
+        };
+
+        _mockConnection.SetupDapperAsync(c => c.QueryAsync<Product, string, Product>(It.IsAny<string>(),
+                It.IsAny<Func<Product, string, Product>>(), null, null, false, "Images", null, null))
+            .ReturnsAsync(expected);
+
+        // Act
+        var result = await _target.FindByCategory(ProductCategory.Beverage);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            result.Should().NotBeEmpty();
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 }
