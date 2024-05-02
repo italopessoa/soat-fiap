@@ -56,7 +56,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 
                 return Created($"/{product.Id}", product);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return BadRequest("Unable to create the product.");
             }

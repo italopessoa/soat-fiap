@@ -43,6 +43,10 @@ public class OrderRepositoryDapper : IOrderRepository
                 transaction.Rollback();
                 throw;
             }
+            finally
+            {
+                _dbConnection.Close();
+            }
         }
     }
 
