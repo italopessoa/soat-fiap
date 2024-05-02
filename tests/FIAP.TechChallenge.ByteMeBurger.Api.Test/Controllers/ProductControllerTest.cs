@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using AutoFixture;
+using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
@@ -32,7 +33,9 @@ public class ProductControllerTest
     public async Task GetAll_Success()
     {
         // Arrange 
-        var product = new Fixture().Create<Product>();
+        var fixture = new Fixture();
+        fixture.Customizations.Add(new ProductGenerator());
+        var product = fixture.Create<Product>();
         _serviceMock.Setup(s => s.GetAll())
             .ReturnsAsync([product]);
 
@@ -337,5 +340,18 @@ public class ProductControllerTest
                     It.IsAny<ProductCategory>(), It.IsAny<decimal>(), It.IsAny<string[]>()), Times.Once);
             _serviceMock.VerifyAll();
         }
+    }
+}
+
+public class ProductGenerator : ISpecimenBuilder
+{
+    public object Create(object request, ISpecimenContext context)
+    {
+        var type = request as Type;
+        if (type != typeof(Product))
+            return new NoSpecimen();
+
+        return new Product(context.Create<string>(), context.Create<string>(), context.Create<ProductCategory>(),
+            context.Create<decimal>(), context.CreateMany<string>().ToList().AsReadOnly());
     }
 }

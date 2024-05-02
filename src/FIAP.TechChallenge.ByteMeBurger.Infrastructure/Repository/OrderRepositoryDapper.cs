@@ -55,7 +55,7 @@ public class OrderRepositoryDapper : IOrderRepository
         return (await _dbConnection.QueryAsync<Order>("SELECT * FROM Orders")).ToList().AsReadOnly();
     }
 
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "unit test is not working due to moq.dapper limitations, maybe one day...")]
     public async Task<Order?> GetAsync(Guid orderId)
     {
         var ordersDictionary = new Dictionary<Guid, Order>();
