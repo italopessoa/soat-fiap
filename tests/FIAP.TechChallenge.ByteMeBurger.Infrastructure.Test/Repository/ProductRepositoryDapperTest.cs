@@ -31,7 +31,8 @@ public class ProductRepositoryDapperTest
         var product = new Product("product", "description", ProductCategory.Beverage, 10,
             new List<string> { "image1" });
         var parameters = (ProductDto)product;
-        const string sql = "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
+        const string sql =
+            "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
 
         _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
             .ReturnsAsync(1);
@@ -91,6 +92,42 @@ public class ProductRepositoryDapperTest
             Description = "COCA COLA",
             Category = (int)ProductCategory.Beverage,
             Price = 10,
+            Images = "image1|image 2",
+            CreationDate = DateTime.UtcNow
+        };
+
+        _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
+            .ReturnsAsync([product]);
+
+        // Act
+        var result = await _target.FindByIdAsync(product.Id);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(product, options =>
+                options.Excluding(p => p.Images)
+                    .Excluding(p => p.Category)
+                    .Excluding(p => p.CreationDate)
+                    .ComparingByMembers<Product>()
+            );
+            result.Images.Should().BeEquivalentTo(product.Images.Split("|"));
+            result.Category.Should().Be((ProductCategory)product.Category);
+        }
+    }
+
+    [Fact]
+    public async Task FindByCategoryAsync_Success()
+    {
+        // Arrange
+        var product = new ProductDto
+        {
+            Id = Guid.NewGuid(),
+            Name = "COCA",
+            Description = "COCA COLA",
+            Category = (int)ProductCategory.Beverage,
+            Price = 10,
             Images = "image1|image 2"
         };
 
@@ -122,7 +159,8 @@ public class ProductRepositoryDapperTest
         // Arrange
         var product = new Product("product", "description", ProductCategory.Beverage, 10,
             new List<string> { "image1" });
-        const string sql = "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id";
+        const string sql =
+            "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id";
         var parameters = new
         {
             product.Id,
