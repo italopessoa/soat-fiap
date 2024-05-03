@@ -17,9 +17,17 @@ public class ProductRepositoryDapper : IProductRepository
         _dbConnection = dbConnection;
     }
 
-    public Task<Product?> FindByIdAsync(Guid id)
+    public async Task<Product?> FindByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var product = (await _dbConnection.QueryAsync<Product, string, Product>(
+            "SELECT * FROM Products WHERE Id=@Id",
+            (product, s) =>
+            {
+                product.SetImages(s.Split("|"));
+                return product;
+            },
+            splitOn: "Images", param: new { Id = id })).FirstOrDefault();
+        return product;
     }
 
     public async Task<Product> CreateAsync(Product product)
@@ -50,7 +58,8 @@ public class ProductRepositoryDapper : IProductRepository
         throw new NotImplementedException();
     }
 
-    [ExcludeFromCodeCoverage(Justification = "unit test is not working due to moq.dapper limitations, maybe one day...")]
+    [ExcludeFromCodeCoverage(Justification =
+        "unit test is not working due to moq.dapper limitations, maybe one day...")]
     public async Task<ReadOnlyCollection<Product>> FindByCategory(ProductCategory category)
     {
         return (await _dbConnection.QueryAsync<Product, string, Product>(
@@ -63,8 +72,20 @@ public class ProductRepositoryDapper : IProductRepository
             splitOn: "Images", param: new { Category = (int)category })).ToList().AsReadOnly();
     }
 
-    public Task<bool> UpdateAsync(Product product)
+    public async Task<bool> UpdateAsync(Product product)
     {
-        throw new NotImplementedException();
+        var affectedRows = await _dbConnection.ExecuteAsync(
+            "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id",
+            new
+            {
+                product.Id,
+                product.Name,
+                product.Description,
+                product.Category,
+                product.Price,
+                Images = string.Join("|", product.Images)
+            });
+
+        return affectedRows == 1;
     }
 }

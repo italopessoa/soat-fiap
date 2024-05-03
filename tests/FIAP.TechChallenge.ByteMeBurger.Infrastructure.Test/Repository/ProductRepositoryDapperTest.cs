@@ -33,8 +33,11 @@ public class ProductRepositoryDapperTest
             "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
         var parameters = new
         {
-            Name = product.Name, Description = product.Description, Category = product.Category.ToString(),
-            Price = product.Price, Images = string.Join(",", product.Images)
+            product.Name, 
+            product.Description, 
+            Category = (int)product.Category,
+            product.Price, 
+            Images = string.Join("|", product.Images)
         };
 
         _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
@@ -85,7 +88,7 @@ public class ProductRepositoryDapperTest
     }
 
     [Fact(Skip = "skipping until a solution is found, or I can just remove it lol")]
-    public async Task FindByIdAsync_NotImplemented()
+    public async Task FindByIdAsync_Success()
     {
         // Arrange
         var product = new Product("coca", "coca cola", ProductCategory.Beverage, 10, ["image1", "image 2"]);
@@ -108,6 +111,38 @@ public class ProductRepositoryDapperTest
             result.Should().NotBeNull();
             result.Should().NotBeEmpty();
             result.Should().BeEquivalentTo(expected);
+        }
+    }
+    
+    [Fact]
+    public async Task Update_Success()
+    {
+        // Arrange
+        var product = new Product("product", "description", ProductCategory.Beverage, 10,
+            new List<string> { "image1" });
+        var sql =
+            "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id";
+        var parameters = new
+        {
+            product.Id,
+            product.Name, 
+            product.Description, 
+            Category = (int)product.Category,
+            product.Price,
+            Images = string.Join("|", product.Images)
+        };
+
+        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
+            .ReturnsAsync(1);
+
+        // Act
+        var result = await _target.UpdateAsync(product);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeTrue();
+            _mockConnection.Verify();
         }
     }
 }
