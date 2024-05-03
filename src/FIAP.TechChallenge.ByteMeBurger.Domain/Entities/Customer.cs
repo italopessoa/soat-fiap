@@ -6,7 +6,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Customer : Entity<Guid>
 {
-    public Cpf Cpf { get; set; }
+    public Cpf Cpf { get; private set; }
 
     public string? Name { get; private set; }
 

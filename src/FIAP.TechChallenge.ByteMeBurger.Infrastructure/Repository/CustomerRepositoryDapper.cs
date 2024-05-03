@@ -17,8 +17,11 @@ public class CustomerRepositoryDapper : ICustomerRepository
 
     public async Task<Customer?> FindByCpfAsync(string cpf)
     {
-        return await _dbConnection.QuerySingleOrDefaultAsync<Customer>("SELECT * FROM Customers WHERE Cpf=@Cpf",
+        var customerDto = await _dbConnection.QuerySingleOrDefaultAsync<CustomerDto>(
+            "SELECT * FROM Customers WHERE Cpf=@Cpf",
             new { Cpf = cpf });
+
+        return (Customer)customerDto;
     }
 
     public async Task<Customer> CreateAsync(Customer customer)

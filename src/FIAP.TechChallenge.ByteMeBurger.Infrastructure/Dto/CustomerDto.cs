@@ -1,6 +1,4 @@
-using System.Xml;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
 
@@ -21,13 +19,17 @@ public class CustomerDto
     public static implicit operator Customer(CustomerDto? dto) => ToDomain(dto);
 
 
-    public static explicit operator CustomerDto(Customer customer) => new()
+    public static explicit operator CustomerDto(Customer? customer)
     {
-        Id = customer.Id,
-        Name = customer.Name,
-        Email = customer.Email,
-        Cpf = customer.Cpf
-    };
+        if (customer is null) return null;
+        return new CustomerDto
+        {
+            Id = customer.Id,
+            Name = customer.Name,
+            Email = customer.Email,
+            Cpf = customer.Cpf
+        };
+    }
 
     private static Customer? ToDomain(CustomerDto? dto)
     {

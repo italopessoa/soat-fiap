@@ -70,8 +70,6 @@ public class CustomerServiceTests
             customer.Should().NotBeNull();
             customer.Name.Should().Be("Anonymous");
             customer.Email.Should().BeNull();
-            // customer.Id.Should().NotBeNull();
-            // customer.Id.Should().NotMatchRegex(@"^\d{11}$");
         }
     }
 
