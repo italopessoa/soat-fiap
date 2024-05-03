@@ -28,7 +28,6 @@ public class ProductRepositoryDapper : IProductRepository
             },
             splitOn: "Images", param: new { Id = id })).FirstOrDefault();
         return product;
-        throw new NotImplementedException();
     }
 
     public async Task<Product> CreateAsync(Product product)

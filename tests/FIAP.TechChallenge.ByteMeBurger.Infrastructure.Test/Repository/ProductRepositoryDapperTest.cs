@@ -37,7 +37,7 @@ public class ProductRepositoryDapperTest
             product.Description, 
             Category = (int)product.Category,
             product.Price, 
-            Images = string.Join(",", product.Images)
+            Images = string.Join("|", product.Images)
         };
 
         _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
@@ -129,7 +129,7 @@ public class ProductRepositoryDapperTest
             product.Description, 
             Category = (int)product.Category,
             product.Price,
-            Images = string.Join(",", product.Images)
+            Images = string.Join("|", product.Images)
         };
 
         _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
