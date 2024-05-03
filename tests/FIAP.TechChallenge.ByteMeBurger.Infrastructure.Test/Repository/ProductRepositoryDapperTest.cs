@@ -2,6 +2,7 @@ using System.Data;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -29,16 +30,9 @@ public class ProductRepositoryDapperTest
         // Arrange
         var product = new Product("product", "description", ProductCategory.Beverage, 10,
             new List<string> { "image1" });
-        var sql =
+        var parameters = (ProductDto)product;
+        const string sql =
             "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
-        var parameters = new
-        {
-            product.Name, 
-            product.Description, 
-            Category = (int)product.Category,
-            product.Price, 
-            Images = string.Join("|", product.Images)
-        };
 
         _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
             .ReturnsAsync(1);
@@ -87,20 +81,58 @@ public class ProductRepositoryDapperTest
         result.Should().BeFalse();
     }
 
-    [Fact(Skip = "skipping until a solution is found, or I can just remove it lol")]
+    [Fact]
     public async Task FindByIdAsync_Success()
     {
         // Arrange
-        var product = new Product("coca", "coca cola", ProductCategory.Beverage, 10, ["image1", "image 2"]);
-
-        var expected = new[]
+        var product = new ProductDto
         {
-            product
+            Id = Guid.NewGuid(),
+            Name = "COCA",
+            Description = "COCA COLA",
+            Category = (int)ProductCategory.Beverage,
+            Price = 10,
+            Images = "image1|image 2",
+            CreationDate = DateTime.UtcNow
         };
 
-        _mockConnection.SetupDapperAsync(c => c.QueryAsync<Product, string, Product>(It.IsAny<string>(),
-                It.IsAny<Func<Product, string, Product>>(), null, null, false, "Images", null, null))
-            .ReturnsAsync(expected);
+        _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
+            .ReturnsAsync([product]);
+
+        // Act
+        var result = await _target.FindByIdAsync(product.Id);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(product, options =>
+                options.Excluding(p => p.Images)
+                    .Excluding(p => p.Category)
+                    .Excluding(p => p.CreationDate)
+                    .ComparingByMembers<Product>()
+            );
+            result.Images.Should().BeEquivalentTo(product.Images.Split("|"));
+            result.Category.Should().Be((ProductCategory)product.Category);
+        }
+    }
+
+    [Fact]
+    public async Task FindByCategoryAsync_Success()
+    {
+        // Arrange
+        var product = new ProductDto
+        {
+            Id = Guid.NewGuid(),
+            Name = "COCA",
+            Description = "COCA COLA",
+            Category = (int)ProductCategory.Beverage,
+            Price = 10,
+            Images = "image1|image 2"
+        };
+
+        _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
+            .ReturnsAsync([product]);
 
         // Act
         var result = await _target.FindByCategory(ProductCategory.Beverage);
@@ -110,23 +142,30 @@ public class ProductRepositoryDapperTest
         {
             result.Should().NotBeNull();
             result.Should().NotBeEmpty();
-            result.Should().BeEquivalentTo(expected);
+            result.Should().HaveCount(1);
+            var newProduct = result.First();
+            newProduct.Should().BeEquivalentTo(product, options =>
+                options.Excluding(p => p.Images)
+                    .Excluding(p => p.Category)
+            );
+            newProduct.Images.Should().BeEquivalentTo(product.Images.Split("|"));
+            newProduct.Category.Should().Be((ProductCategory)product.Category);
         }
     }
-    
+
     [Fact]
     public async Task Update_Success()
     {
         // Arrange
         var product = new Product("product", "description", ProductCategory.Beverage, 10,
             new List<string> { "image1" });
-        var sql =
+        const string sql =
             "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id";
         var parameters = new
         {
             product.Id,
-            product.Name, 
-            product.Description, 
+            product.Name,
+            product.Description,
             Category = (int)product.Category,
             product.Price,
             Images = string.Join("|", product.Images)
