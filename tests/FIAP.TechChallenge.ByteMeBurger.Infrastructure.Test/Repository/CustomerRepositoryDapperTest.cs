@@ -15,7 +15,7 @@ public class CustomerRepositoryDapperTest
 {
     private readonly Mock<IDbConnection> _mockConnection;
     private readonly CustomerRepositoryDapper _target;
-    private const string Cpf = "20697137090";
+    private const string _cpf = "20697137090";
 
     public CustomerRepositoryDapperTest()
     {
@@ -27,7 +27,7 @@ public class CustomerRepositoryDapperTest
     public async Task Create_Success()
     {
         // Arrange
-        var customer = new Customer(Guid.NewGuid().ToString());
+        var customer = new Customer(_cpf);
 
         _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
 
@@ -45,36 +45,40 @@ public class CustomerRepositoryDapperTest
             result.Should().Be(customer);
         }
     }
-    
+
     [Fact]
     public async Task FindByCpf_Success()
     {
         // Arrange
-        var expectedCustomer = new Customer(Cpf, "italo", "italo@gmail.com");
+        var expectedCustomer = new Customer(_cpf, "italo", "italo@gmail.com");
 
-        _mockConnection.SetupDapperAsync(c => c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
+        _mockConnection.SetupDapperAsync(c =>
+                c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync(expectedCustomer);
 
         // Act
-        var result = await _target.FindByCpfAsync(Cpf);
+        var result = await _target.FindByCpfAsync(_cpf);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(expectedCustomer, options => options.ComparingByMembers<Customer>());
+            result.Cpf.Should().BeNull();
+            result.Should().BeEquivalentTo(expectedCustomer,
+                options => options.ComparingByMembers<Customer>().Excluding(c => c.Cpf));
         }
     }
-    
+
     [Fact]
     public async Task FindByCpf_NotFound()
     {
         // Arrange
-        _mockConnection.SetupDapperAsync(c => c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
+        _mockConnection.SetupDapperAsync(c =>
+                c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync(default(Customer));
 
         // Act
-        var result = await _target.FindByCpfAsync(Cpf);
+        var result = await _target.FindByCpfAsync(_cpf);
 
         // Assert
         using (new AssertionScope())

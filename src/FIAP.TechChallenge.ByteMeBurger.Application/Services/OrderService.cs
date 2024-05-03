@@ -7,10 +7,10 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
 
 public class OrderService(IOrderRepository repository) : IOrderService
 {
-    public async Task<Order> CreateAsync(string customerId,
+    public async Task<Order> CreateAsync(Guid? customerId,
         List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
     {
-        var order = new Order(customerId);
+        var order = customerId.HasValue ? new Order(customerId.Value) : new Order();
         orderItems.ForEach(i => { order.AddOrderItem(i.productId, i.productName, i.unitPrice, i.quantity); });
 
         order.Checkout();

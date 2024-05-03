@@ -7,24 +7,23 @@ public class OrderDto
 {
     public OrderDto()
     {
-        
     }
-    
+
     public OrderDto(Order order)
     {
         Id = order.Id;
-        Customer = new CustomerDto(order.Customer);
         TrackingCode = order.TrackingCode;
         Total = order.Total;
         Status = order.Status;
         CreationDate = order.Created;
         LastUpdate = order.LastUpdate;
         OrderItems = order.OrderItems.Select(o => new OrderItemDto(o)).ToList();
+        Customer = order.Customer is null ? null : new CustomerDto(order.Customer!);
     }
 
     public Guid Id { get; set; }
-    
-    public CustomerDto Customer { get; set; }
+
+    public CustomerDto? Customer { get; set; }
 
     public string? TrackingCode { get; set; }
 

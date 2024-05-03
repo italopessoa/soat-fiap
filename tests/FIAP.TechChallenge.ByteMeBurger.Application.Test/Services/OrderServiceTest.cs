@@ -71,7 +71,7 @@ public class OrderServiceTest
         List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
     {
         // Arrange 
-        var customerId = Guid.NewGuid().ToString();
+        var customerId = Guid.NewGuid();
         var expectedOrder = new Order(customerId);
         orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, i.productName, i.unitPrice, i.quantity); });
 

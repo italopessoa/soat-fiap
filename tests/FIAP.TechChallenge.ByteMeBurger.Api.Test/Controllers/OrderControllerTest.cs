@@ -17,6 +17,7 @@ public class OrderControllerTest
 {
     private readonly Mock<IOrderService> _serviceMock;
     private readonly OrderController _target;
+    private readonly string cpf = "863.917.790-23";
 
     public OrderControllerTest()
     {
@@ -29,8 +30,9 @@ public class OrderControllerTest
     {
         // Arrange
         var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, []);
-        var customerId = Guid.NewGuid().ToString();
-        var expectedOrder = new Order(customerId);
+        var orderId = Guid.NewGuid();
+        var customer = new Customer(Guid.NewGuid(), cpf);
+        var expectedOrder = new Order(orderId, customer);
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
 
         var orders = new[]
@@ -60,10 +62,12 @@ public class OrderControllerTest
     }
 
     [Fact]
-    public async void Create_Success()
+    public async void Create_WithCustomer_Success()
     {
         // Arrange
+        var customer = new Customer(cpf, "name", "email@emil.com");
         var fixture = new Fixture();
+        var orderId = Guid.NewGuid();
         var products = new Product[]
         {
             new(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, [])
@@ -71,13 +75,14 @@ public class OrderControllerTest
         var chosenProduct = products.First();
 
         var createOrderCommand = fixture.Build<CreateOrderCommandDto>()
-            .With(c => c.CustomerId, Guid.NewGuid().ToString)
+            .With(c => c.Cpf, cpf)
             .Create();
-        var expectedOrder = new Order(createOrderCommand.CustomerId!);
+
+        var expectedOrder = new Order(orderId, customer);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.Checkout();
-        
-        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string>(),
+
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Guid?>(),
                 It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()))
             .ReturnsAsync(expectedOrder);
 
@@ -92,16 +97,18 @@ public class OrderControllerTest
 
             // TODO after 1h or so I gave up trying to make this sh*t to assert it all in on line, I'll check it later 
             createdOrder.Id.Should().Be(expectedOrder.Id);
-            createdOrder.Customer.Id.Should().Be(expectedOrder.Customer.Id);
-            createdOrder.Customer.Name.Should().Be(expectedOrder.Customer.Name);
-            createdOrder.Customer.Email.Should().Be(expectedOrder.Customer.Email);
+
+            createdOrder.Customer.Should().NotBeNull();
             createdOrder.Customer.Should()
-                .BeEquivalentTo(expectedOrder.Customer, options => options.ComparingByMembers<Customer>());
+                .BeEquivalentTo(customer, o => o.ComparingByMembers<Customer>()
+                    .Excluding(c => c.Cpf));
+            createdOrder.Customer.Cpf.Should().BeEquivalentTo(customer.Cpf);
+
             createdOrder.OrderItems.Should().BeEquivalentTo(expectedOrder.OrderItems,
                 options => options.ComparingByMembers<OrderItem>());
 
             _serviceMock.Verify(
-                s => s.CreateAsync(It.IsAny<string>(),
+                s => s.CreateAsync(It.IsAny<Guid?>(),
                     It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()),
                 Times.Once);
 
@@ -110,12 +117,59 @@ public class OrderControllerTest
     }
     
     [Fact]
+    public async void Create_NoCustomer_Success()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var orderId = Guid.NewGuid();
+        var products = new Product[]
+        {
+            new(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, [])
+        };
+        var chosenProduct = products.First();
+
+        var createOrderCommand = fixture.Build<CreateOrderCommandDto>()
+            .With(c => c.Cpf, cpf)
+            .Create();
+
+        var expectedOrder = new Order(orderId,null);
+        expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
+        expectedOrder.Checkout();
+
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Guid?>(),
+                It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()))
+            .ReturnsAsync(expectedOrder);
+
+        // Act
+        var response = await _target.Create(createOrderCommand, CancellationToken.None);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Result.Should().BeOfType<CreatedResult>();
+            var createdOrder = response.Result.As<CreatedResult>().Value.As<OrderDto>();
+
+            createdOrder.Id.Should().Be(expectedOrder.Id);
+            createdOrder.Customer.Should().BeNull();
+            createdOrder.OrderItems.Should().BeEquivalentTo(expectedOrder.OrderItems,
+                options => options.ComparingByMembers<OrderItem>());
+
+            _serviceMock.Verify(
+                s => s.CreateAsync(It.IsAny<Guid?>(),
+                    It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()),
+                Times.Once);
+
+            _serviceMock.VerifyAll();
+        }
+    }
+
+    [Fact]
     public async void Get_Detail_Success()
     {
         // Arrange
         var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, []);
-        var customerId = Guid.NewGuid().ToString();
-        var expectedOrder = new Order(customerId);
+        var customerId = Guid.NewGuid();
+        var expectedOrder = new Order(customerId, null);
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
 
         var expectedOrderDto = new OrderDto(expectedOrder);
@@ -136,7 +190,7 @@ public class OrderControllerTest
             _serviceMock.VerifyAll();
         }
     }
-    
+
     [Fact]
     public async void Get_Detail_NotFound()
     {
@@ -156,7 +210,7 @@ public class OrderControllerTest
             _serviceMock.VerifyAll();
         }
     }
-    
+
     [Fact]
     public async void Get_Detail_InvalidId_BadRequest()
     {

@@ -29,8 +29,15 @@ public class CustomerService : ICustomerService
         return await _repository.CreateAsync(new Customer(cpf));
     }
 
-    public async Task<Customer> CreateAsync(string cpf, string name, string email)
+    public async Task<Customer> CreateAsync(string cpf, string? name, string? email)
     {
-        return await _repository.CreateAsync(new Customer(cpf, name, email));
+        var customer = new Customer(cpf);
+        if (name is not null)
+            customer.ChangeName(name);
+
+        if (email is not null)
+            customer.ChangeEmail(email);
+        
+        return await _repository.CreateAsync(customer);
     }
 }

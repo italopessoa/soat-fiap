@@ -2,6 +2,7 @@ using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
@@ -15,7 +16,7 @@ public class CustomerControllerTest
 {
     private readonly Mock<ICustomerService> _serviceMock;
     private readonly CustomerController _target;
-    private const string cpf = "863.917.790-23";
+    private static readonly Cpf cpf = "863.917.790-23";
 
     public CustomerControllerTest()
     {
@@ -48,16 +49,16 @@ public class CustomerControllerTest
     public async Task FindByCpf_Success()
     {
         // Arrange
+        var customerId = Guid.NewGuid();
         var expectedCustomer = new CustomerDto
         {
+            Id = customerId,
             Name = "customer name",
             Email = "customer@email.com",
-            Id = cpf.Replace(".", "")
-                .Replace("-", "")
-                .Trim()
+            Cpf = cpf
         };
         _serviceMock.Setup(s => s.FindByCpfAsync(It.IsAny<string>()))
-            .ReturnsAsync(new Customer(cpf, "customer name", "customer@email.com"));
+            .ReturnsAsync(new Customer(customerId, cpf, "customer name", "customer@email.com"));
 
         // Act
         var response = await _target.GetByCpf("863.917.790-23", CancellationToken.None);
@@ -66,13 +67,16 @@ public class CustomerControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<OkObjectResult>();
-            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedCustomer);
+            response.Result.As<OkObjectResult>()
+                .Value
+                .Should()
+                .BeEquivalentTo(expectedCustomer, o => o.ComparingByMembers<Customer>());
         }
 
         _serviceMock.VerifyAll();
     }
 
-    [Fact]
+    [Fact(Skip = "there will be no anonymous customer")]
     public async Task Create_Anonymous_Customer()
     {
         // Arrange
@@ -116,7 +120,7 @@ public class CustomerControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<OkObjectResult>();
-            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedCustomer);
+            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedCustomer, o=>o.ComparingByMembers<CustomerDto>());
         }
 
         _serviceMock.VerifyAll();

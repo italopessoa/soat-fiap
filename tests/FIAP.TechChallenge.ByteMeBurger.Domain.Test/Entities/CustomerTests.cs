@@ -1,4 +1,5 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
@@ -8,7 +9,7 @@ public class CustomerTests
 {
     private const string ValidCpf = "781.190.140-49";
 
-    [Fact]
+    [Fact(Skip = "changing the business rules")]
     public void Customer_AnonymousCustomer()
     {
         // Arrange
@@ -19,7 +20,7 @@ public class CustomerTests
         using (new AssertionScope())
         {
             customer.Id.Should().NotBeEmpty();
-            customer.Name.Should().Be("Anonymous");
+            customer.Name.Should().BeNull();
         }
     }
 
@@ -58,8 +59,6 @@ public class CustomerTests
     [InlineData("")]
     [InlineData("123.456.125")]
     [InlineData("000.000.000-00")]
-    [InlineData("9f51d2bb-ee4d-4e3c-a963-7938ce74be3")]
-    [InlineData("00000000-0000-0000-0000-000000000000")]
     public void Customer_InvalidId_ThrowsError(string cpf)
     {
         // Arrange
@@ -71,7 +70,6 @@ public class CustomerTests
     }
 
     [Theory]
-    [InlineData("9f51d2bb-ee4d-4e3c-a963-7938ce74be32", "joe", "joe@email.com")]
     [InlineData("78119014049", "joe", "joe@email.com")]
     public void Customer_ValidCustomerInput(string cpf, string name, string email)
     {
@@ -80,13 +78,10 @@ public class CustomerTests
         var customer = new Customer(cpf, name, email);
 
         // Assert
-        Assert.Equal(customer.Id, cpf);
-        Assert.Equal(customer.Name, name);
-        Assert.Equal(customer.Email, email);
-
         using (new AssertionScope())
         {
-            customer.Id.Should().Be(cpf);
+            customer.Id.Should().NotBeEmpty();
+            customer.Cpf.Should().Be(new Cpf(cpf));
             customer.Name.Should().Be(name);
             customer.Email.Should().Be(email);
         }

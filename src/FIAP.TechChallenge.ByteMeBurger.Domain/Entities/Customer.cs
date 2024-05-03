@@ -1,36 +1,56 @@
 using System.Text.RegularExpressions;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-public class Customer : Entity<string>
+public class Customer : Entity<Guid>
 {
+    public Cpf Cpf { get; set; }
+
     public string? Name { get; private set; }
 
     public string? Email { get; private set; }
 
     public Customer()
-        : base(ValidateId(Guid.NewGuid().ToString()))
+        : base(Guid.NewGuid())
     {
-        Name = "Anonymous";
     }
 
-    public Customer(string cpf)
-        : base(ValidateId(cpf))
+    public Customer(Guid id)
+        : base(id)
     {
+    }
+
+    public Customer(Guid id, Cpf cpf)
+        : base(id)
+    {
+        Cpf = cpf;
+    }
+
+    public Customer(Cpf cpf)
+        : base(Guid.NewGuid())
+    {
+        Cpf = cpf;
     }
 
     public Customer(string cpf, string name, string email)
-        : base(ValidateId(cpf))
+        : this(cpf)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-
         Name = name;
-        Email = ValidateEmail(email);
-        Id = ValidateId(cpf);
+        Email = email;
+        Validate();
     }
 
-    private static string ValidateEmail(string email)
+    public Customer(Guid id, string cpf, string name, string email)
+        : this(cpf)
+    {
+        Id = id;
+        ChangeName(name);
+        ChangeEmail(email);
+    }
+
+    private static string ValidateEmail(string? email)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(email);
         if (!Regex.IsMatch(email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
@@ -39,65 +59,20 @@ public class Customer : Entity<string>
         return email;
     }
 
-    private static string SanityseCpf(string cpf) => cpf
-        .Replace(".", "")
-        .Replace("-", "")
-        .Trim();
-
-    public static string ValidateId(string cpf)
+    public void ChangeName(string name)
     {
-        if (Guid.TryParse(cpf, out var validGuid) && Guid.Empty != validGuid)
-            return cpf;
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        Name = name;
+    }
 
-        ArgumentException.ThrowIfNullOrWhiteSpace(cpf);
-        var isValidCpf = false;
+    public void ChangeEmail(string email)
+    {
+        Email = ValidateEmail(email);
+    }
 
-        var multiplicador1 = new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-        var multiplicador2 = new[] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-
-        var workingWpf = SanityseCpf(cpf);
-
-        if (workingWpf.Length == 11 && workingWpf.Distinct().Count() > 1)
-        {
-            var tempCpf = workingWpf.Substring(0, 9);
-            var soma = 0;
-
-            for (int i = 0; i < 9; i++)
-                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
-
-            var resto = soma % 11;
-
-            if (resto < 2)
-                resto = 0;
-            else
-                resto = 11 - resto;
-
-            var digito = resto.ToString();
-
-            tempCpf += digito;
-
-            soma = 0;
-
-            for (int i = 0; i < 10; i++)
-                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
-
-            resto = soma % 11;
-
-            if (resto < 2)
-                resto = 0;
-            else
-                resto = 11 - resto;
-
-            digito += resto.ToString();
-
-            isValidCpf = workingWpf.EndsWith(digito);
-        }
-
-        if (!isValidCpf)
-        {
-            throw new ArgumentException($"Invalid CPF value '{cpf}'");
-        }
-
-        return workingWpf;
+    private void Validate()
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(Name);
+        ValidateEmail(Email);
     }
 }
