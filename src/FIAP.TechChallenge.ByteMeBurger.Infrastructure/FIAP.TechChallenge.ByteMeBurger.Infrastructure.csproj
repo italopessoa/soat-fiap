@@ -16,4 +16,9 @@
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Application\FIAP.TechChallenge.ByteMeBurger.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test" />
+      <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    </ItemGroup>
+
 </Project>
