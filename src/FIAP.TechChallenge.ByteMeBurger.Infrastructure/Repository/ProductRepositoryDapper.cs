@@ -5,6 +5,7 @@ using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
 
@@ -19,30 +20,19 @@ public class ProductRepositoryDapper : IProductRepository
 
     public async Task<Product?> FindByIdAsync(Guid id)
     {
-        var product = (await _dbConnection.QueryAsync<Product, string, Product>(
+        var productDto = await _dbConnection.QuerySingleOrDefaultAsync<ProductDto>(
             "SELECT * FROM Products WHERE Id=@Id",
-            (product, s) =>
-            {
-                product.SetImages(s.Split("|"));
-                return product;
-            },
-            splitOn: "Images", param: new { Id = id })).FirstOrDefault();
-        return product;
+            param: new { Id = id });
+
+        return productDto;
     }
 
     public async Task<Product> CreateAsync(Product product)
     {
+        var param = (ProductDto)product;
         var affectedRows = await _dbConnection.ExecuteAsync(
             "insert into Products (Id, Name, Description, Category, Price, Images) values (@Id, @Name, @Description, @Category, @Price, @Images);",
-            new
-            {
-                product.Id,
-                product.Name,
-                product.Description,
-                product.Category,
-                product.Price,
-                Images = string.Join("|", product.Images)
-            });
+            param);
         return product;
     }
 
@@ -53,38 +43,30 @@ public class ProductRepositoryDapper : IProductRepository
         return affectedRows == 1;
     }
 
-    public Task<ReadOnlyCollection<Product>> GetAll()
+    public async Task<ReadOnlyCollection<Product>> GetAll()
     {
-        throw new NotImplementedException();
+        var productDtoList = await _dbConnection.QueryAsync<ProductDto>(
+            "SELECT * FROM Products");
+
+        return productDtoList.Select(p => (Product)p).ToList().AsReadOnly();
     }
 
     [ExcludeFromCodeCoverage(Justification =
         "unit test is not working due to moq.dapper limitations, maybe one day...")]
     public async Task<ReadOnlyCollection<Product>> FindByCategory(ProductCategory category)
     {
-        return (await _dbConnection.QueryAsync<Product, string, Product>(
+        var productDtoList = await _dbConnection.QueryAsync<ProductDto>(
             "SELECT * FROM Products WHERE Category = @Category",
-            (product, s) =>
-            {
-                product.SetImages(s.Split("|"));
-                return product;
-            },
-            splitOn: "Images", param: new { Category = (int)category })).ToList().AsReadOnly();
+            param: new { Category = (int)category });
+
+        return productDtoList.Select(p => (Product)p).ToList().AsReadOnly();
     }
 
     public async Task<bool> UpdateAsync(Product product)
     {
         var affectedRows = await _dbConnection.ExecuteAsync(
             "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id",
-            new
-            {
-                product.Id,
-                product.Name,
-                product.Description,
-                product.Category,
-                product.Price,
-                Images = string.Join("|", product.Images)
-            });
+            (ProductDto)product);
 
         return affectedRows == 1;
     }
