@@ -26,7 +26,7 @@ public class OrderRepositoryDapperTest
     public async Task GetAll_Success()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid().ToString());
+        var order = new Order(Guid.NewGuid());
         order.AddOrderItem(Guid.NewGuid(), "banana", 10, 1);
         order.Checkout();
         order.ConfirmPayment();
@@ -55,7 +55,7 @@ public class OrderRepositoryDapperTest
     public async Task Create_Success()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid().ToString());
+        var order = new Order(Guid.NewGuid());
         order.AddOrderItem(Guid.NewGuid(), "banana", 10, 1);
         order.Checkout();
 

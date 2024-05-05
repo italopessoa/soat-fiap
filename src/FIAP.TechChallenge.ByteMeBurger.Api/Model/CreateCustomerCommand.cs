@@ -9,6 +9,7 @@ public class CreateCustomerCommand
     [EmailAddress]
     public string? Email { get; set; }
 
+    [Required]
     [MaxLength(14)]
-    public string? Cpf { get; set; }
+    public string Cpf { get; set; }
 }

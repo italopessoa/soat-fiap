@@ -5,9 +5,9 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Order : Entity<Guid>
 {
-    private List<OrderItem> _orderItems;
- 
-    public Customer Customer { get; private set; }
+    private List<OrderItem> _orderItems = Enumerable.Empty<OrderItem>().ToList();
+
+    public Customer? Customer { get; private set; }
 
     public string? TrackingCode { get; private set; }
 
@@ -23,15 +23,19 @@ public class Order : Entity<Guid>
 
 
     public Order()
-        : this(Guid.NewGuid().ToString())
+        : base(Guid.NewGuid())
     {
     }
 
-    public Order(string customerId)
-        : base(Guid.NewGuid())
+    public Order(Guid customerId)
+        : this(Guid.NewGuid(), new Customer(customerId))
     {
-        _orderItems = Enumerable.Empty<OrderItem>().ToList();
-        Customer = new Customer(customerId);
+    }
+
+    public Order(Guid id, Customer customer)
+        : base(id)
+    {
+        Customer = customer;
     }
 
     public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)

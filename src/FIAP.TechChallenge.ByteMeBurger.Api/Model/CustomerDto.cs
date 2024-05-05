@@ -4,8 +4,10 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
 
 public class CustomerDto
 {
-    public string? Id { get; set; }
+    public Guid Id { get; set; }
 
+    public string Cpf { get; set; }
+    
     public string? Name { get; set; }
 
     public string? Email { get; set; }
@@ -17,6 +19,7 @@ public class CustomerDto
     public CustomerDto(Customer customer)
     {
         Id = customer.Id;
+        Cpf = customer.Cpf;
         Name = customer.Name;
         Email = customer.Email;
     }

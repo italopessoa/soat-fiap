@@ -5,7 +5,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 
 public interface IOrderService
 {
-    Task<Order> CreateAsync(string customerId, List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems);
+    Task<Order> CreateAsync(Guid? customerId, List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems);
     
     Task<ReadOnlyCollection<Order>> GetAllAsync();
     

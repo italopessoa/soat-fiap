@@ -1,9 +1,10 @@
-create table Customer
+create table Customers
 (
-    Id    varchar(34)  not null comment 'customer''s cpf of guid for anonymous customer'
+    Id    char(36)  not null
         primary key,
-    Name  varchar(100) not null,
-    Email varchar(100) not null
+    Cpf   varchar(11) not null,
+    Name  varchar(100) null,
+    Email varchar(100) null
 );
 
 

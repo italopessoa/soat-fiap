@@ -33,16 +33,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         public async Task<ActionResult<CustomerDto>> Create([FromBody] CreateCustomerCommand createCustomerCommand,
             CancellationToken cancellationToken)
         {
-            var createCustomerTask = string.IsNullOrWhiteSpace(createCustomerCommand.Cpf)
-                ? _customerService.CreateAnonymousAsync()
-                : _customerService.CreateAsync(
-                    createCustomerCommand.Cpf,
-                    createCustomerCommand.Name ?? string.Empty,
-                    createCustomerCommand.Email ?? string.Empty);
-            
-            await createCustomerTask.WaitAsync(cancellationToken);
+            var customer = await _customerService.CreateAsync(
+                createCustomerCommand.Cpf,
+                createCustomerCommand.Name,
+                createCustomerCommand.Email);
 
-            return Ok(new CustomerDto(createCustomerTask.Result));
+
+            return Ok(new CustomerDto(customer));
         }
     }
 }

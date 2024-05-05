@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -27,7 +28,7 @@ public class CustomerRepositoryDapperTest
     public async Task Create_Success()
     {
         // Arrange
-        var customer = new Customer(Guid.NewGuid().ToString());
+        var customer = new Customer(Cpf);
 
         _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
 
@@ -45,14 +46,21 @@ public class CustomerRepositoryDapperTest
             result.Should().Be(customer);
         }
     }
-    
+
     [Fact]
     public async Task FindByCpf_Success()
     {
         // Arrange
-        var expectedCustomer = new Customer(Cpf, "italo", "italo@gmail.com");
+        var expectedCustomer = new CustomerDto()
+        {
+            Id = Guid.NewGuid(),
+            Cpf = Cpf,
+            Name = "italo",
+            Email = "italo@gmail.com"
+        };
 
-        _mockConnection.SetupDapperAsync(c => c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
+        _mockConnection.SetupDapperAsync(c =>
+                c.QuerySingleOrDefaultAsync<CustomerDto>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync(expectedCustomer);
 
         // Act
@@ -62,15 +70,18 @@ public class CustomerRepositoryDapperTest
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(expectedCustomer, options => options.ComparingByMembers<Customer>());
+            result.Should().BeEquivalentTo(expectedCustomer,
+                options => options.ComparingByMembers<CustomerDto>().Excluding(c => c.Cpf));
+            result.Cpf.Value.Should().Be(expectedCustomer.Cpf);
         }
     }
-    
+
     [Fact]
     public async Task FindByCpf_NotFound()
     {
         // Arrange
-        _mockConnection.SetupDapperAsync(c => c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
+        _mockConnection.SetupDapperAsync(c =>
+                c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync(default(Customer));
 
         // Act

@@ -17,10 +17,10 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<IOrderRepository, OrderRepositoryDapper>();
         services.AddScoped<ICustomerRepository, CustomerRepositoryDapper>();
         services.AddScoped<IProductRepository, ProductRepositoryDapper>();
-        services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
-        {
-            new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
-        }));
+        // services.AddSingleton<ICustomerRepository>(new InMemoryCustomerRepository(new[]
+        // {
+        //     new Customer("663.781.241-24", "Pietro Thales Anderson Rodrigues", "pietro_thales_rodrigues@silicotex.net")
+        // }));
         
         // services.AddSingleton<IProductRepository>(new InMemoryProductRepository(new[]
         // {

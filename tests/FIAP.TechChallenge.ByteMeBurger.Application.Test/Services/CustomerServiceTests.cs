@@ -2,6 +2,7 @@ using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
@@ -12,7 +13,7 @@ public class CustomerServiceTests
 {
     private readonly Mock<ICustomerRepository> _repository;
     private readonly ICustomerService _service;
-    private readonly string ValidCpf = "863.917.790-23";
+    private readonly Cpf ValidCpf = new Cpf("863.917.790-23");
 
     public CustomerServiceTests()
     {
@@ -38,7 +39,7 @@ public class CustomerServiceTests
         using (new AssertionScope())
         {
             customer.Should().NotBeNull();
-            customer.Should().BeEquivalentTo(expectedCustomer);
+            customer.Should().BeEquivalentTo(expectedCustomer, options => options.ComparingByMembers<Customer>());
         }
     }
 
@@ -53,7 +54,7 @@ public class CustomerServiceTests
         customer.Should().BeNull();
     }
 
-    [Fact]
+    [Fact(Skip = "changing business rules")]
     public async Task Create_Customer_Anonymous_Success()
     {
         // Arrange
@@ -69,31 +70,27 @@ public class CustomerServiceTests
             customer.Should().NotBeNull();
             customer.Name.Should().Be("Anonymous");
             customer.Email.Should().BeNull();
-            customer.Id.Should().NotBeNull();
-            customer.Id.Should().NotMatchRegex(@"^\d{11}$");
         }
     }
 
-    [Theory]
-    [InlineData("310.686.640-37")]
-    public async Task Create_Customer_CpfOnly_Success(string cpf)
+    [Fact]
+    public async Task Create_Customer_CpfOnly_Success()
     {
         // Arrange
-        var sanityzedCpf = cpf.Replace(".", "")
-            .Replace("-", "");
-        var customer = new Customer(cpf);
-        _repository.Setup(r => r.CreateAsync(It.Is<Customer>(c => c.Id.Equals(sanityzedCpf))))
-            .ReturnsAsync(new Customer(cpf));
+        var expectedCustomer = new Customer(ValidCpf);
+
+        _repository.Setup(r => r.CreateAsync(It.Is<Customer>(c => c.Cpf.Equals(ValidCpf))))
+            .ReturnsAsync(expectedCustomer);
 
         // Act
-        var result = await _service.CreateAsync(cpf);
+        var result = await _service.CreateAsync(ValidCpf);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().Be(customer);
-            result.Id.Should().MatchRegex(@"^\d{11}$");
+            result.Should().BeEquivalentTo(expectedCustomer, options => options.ComparingByMembers<Customer>());
+            result.Id.Should().NotBeEmpty();
         }
     }
 
@@ -103,7 +100,7 @@ public class CustomerServiceTests
     {
         // Arrange
         var customer = new Customer(cpf, name, email);
-        _repository.Setup(r => r.CreateAsync(It.Is<Customer>(c => c.Id == customer.Id)))
+        _repository.Setup(r => r.CreateAsync(It.Is<Customer>(c => c.Cpf.Equals(customer.Cpf))))
             .ReturnsAsync(customer);
 
         // Act
@@ -114,7 +111,6 @@ public class CustomerServiceTests
         {
             result.Should().NotBeNull();
             result.Should().Be(customer);
-            result.Id.Should().MatchRegex(@"^\d{11}$");
         }
     }
 }

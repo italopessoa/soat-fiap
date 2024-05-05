@@ -7,13 +7,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Test.Entities;
 
 public class OrderTests
 {
-    private const string CustomerCpf = "946.571.740-10";
+    private static readonly Cpf CustomerCpf = "946.571.740-10";
 
     [Fact]
     public void Order_NewOrder_HasId()
     {
         // Arrange
-        var customerId = Guid.NewGuid().ToString();
+        var customerId = Guid.NewGuid();
 
         // Act
         var order = new Order(customerId);
@@ -23,10 +23,27 @@ public class OrderTests
         {
             order.Id.Should().NotBe(Guid.Empty);
             order.Status.Should().Be(OrderStatus.PaymentPending);
-            order.Customer.Id.Should().Be(customerId);
+            order.Customer.Should().NotBeNull();
+            order.Customer!.Id.Should().Be(customerId);
         }
     }
 
+    [Fact]
+    public void Order_NoCustomer_HasId()
+    {
+        // Arrange
+        // Act
+        var order = new Order();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            order.Id.Should().NotBe(Guid.Empty);
+            order.Status.Should().Be(OrderStatus.PaymentPending);
+            order.Customer.Should().BeNull();
+        }
+    }
+    
     [Fact]
     public void Order_CheckoutEmptyOrder_ThrowsError()
     {
@@ -44,7 +61,8 @@ public class OrderTests
     public void Order_CheckoutOrder_UpdateStatus()
     {
         // Arrange
-        var order = new Order(CustomerCpf);
+        var customerId = Guid.NewGuid();
+        var order = new Order(customerId);
         order.AddOrderItem(Guid.NewGuid(), "bread", 1, 5);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 2, 6);
 
@@ -57,9 +75,7 @@ public class OrderTests
             order.Id.Should().NotBe(Guid.Empty);
             order.Status.Should().Be(OrderStatus.PaymentPending);
             order.Created.Should().NotBe(default);
-            order.Customer.Id.Should().Be(CustomerCpf.Replace(".", "")
-                .Replace("-", "")
-                .Trim(), order.Customer.Id);
+            order.Customer.Should().NotBeNull();
         }
     }
 
@@ -121,8 +137,9 @@ public class OrderTests
     {
         // Arrange
         var initDate = DateTime.UtcNow;
+        var customerId = Guid.NewGuid();
 
-        var order = new Order();
+        var order = new Order(customerId);
         order.AddOrderItem(Guid.NewGuid(), "bread", 10, 1);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 6, 2);
 
@@ -139,7 +156,8 @@ public class OrderTests
         // Assert
         using (new AssertionScope())
         {
-            order.Customer.Id.Should().NotBe(Guid.Empty.ToString());
+            order.Customer.Should().NotBeNull();
+            order.Customer!.Id.Should().Be(customerId);
             order.Created.Should().BeAfter(initDate);
             order.Created.Should().BeBefore(preparingDate);
             doneDate.Should().BeAfter(preparingDate);
@@ -166,7 +184,7 @@ public class OrderTests
         // Assert
         using (new AssertionScope())
         {
-            order.Customer.Id.Should().NotBe(Guid.Empty.ToString());
+            order.Customer.Should().BeNull();
             order.TrackingCode.Should().NotBeNull().And.NotContain("#");
         }
     }
