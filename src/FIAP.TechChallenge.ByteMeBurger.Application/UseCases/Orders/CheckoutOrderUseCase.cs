@@ -40,8 +40,6 @@ public class CheckoutOrderUseCase : ICheckoutOrderUseCase
             order.AddOrderItem(product.Id, product.Name, product.Price, item.quantity);
         }
 
-        await Parallel.ForEachAsync(orderItems, async (item, cancellationToken) => { });
-
         order.Checkout();
         return await _repository.CreateAsync(order);
     }
