@@ -12,17 +12,17 @@ using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
-[TestSubject(typeof(OrderController))]
-public class OrderControllerTest
+[TestSubject(typeof(OrdersController))]
+public class OrdersControllerTest
 {
     private readonly Mock<IOrderService> _serviceMock;
-    private readonly OrderController _target;
+    private readonly OrdersController _target;
     private readonly string cpf = "863.917.790-23";
 
-    public OrderControllerTest()
+    public OrdersControllerTest()
     {
         _serviceMock = new Mock<IOrderService>();
-        _target = new OrderController(_serviceMock.Object);
+        _target = new OrdersController(_serviceMock.Object);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class OrderControllerTest
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.Checkout();
 
-        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Guid?>(),
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
                 It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()))
             .ReturnsAsync(expectedOrder);
 
@@ -108,7 +108,7 @@ public class OrderControllerTest
                 options => options.ComparingByMembers<OrderItem>());
 
             _serviceMock.Verify(
-                s => s.CreateAsync(It.IsAny<Guid?>(),
+                s => s.CreateAsync(It.IsAny<Cpf?>(),
                     It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()),
                 Times.Once);
 
@@ -136,7 +136,7 @@ public class OrderControllerTest
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.Checkout();
 
-        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Guid?>(),
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
                 It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()))
             .ReturnsAsync(expectedOrder);
 
@@ -155,7 +155,7 @@ public class OrderControllerTest
                 options => options.ComparingByMembers<OrderItem>());
 
             _serviceMock.Verify(
-                s => s.CreateAsync(It.IsAny<Guid?>(),
+                s => s.CreateAsync(It.IsAny<Cpf?>(),
                     It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()),
                 Times.Once);
 

@@ -1,32 +1,17 @@
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases;
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
 
-public class CustomerService : ICustomerService
+public class CustomerService(
+    ICreateCustomerUseCase createCustomerUseCase,
+    IFindCustomerByCpfUseCase findCustomerByCpfUseCase) : ICustomerService
 {
-    private readonly ICustomerRepository _repository;
-
-    public CustomerService(ICustomerRepository repository)
-    {
-        _repository = repository;
-    }
-
-
     public async Task<Customer?> FindByCpfAsync(string cpf)
     {
-        return await _repository.FindByCpfAsync(cpf);
-    }
-
-    public async Task<Customer> CreateAnonymousAsync()
-    {
-        return await _repository.CreateAsync(new Customer());
-    }
-
-    public async Task<Customer> CreateAsync(string cpf)
-    {
-        return await _repository.CreateAsync(new Customer(cpf));
+        return await findCustomerByCpfUseCase.Execute(cpf);
     }
 
     public async Task<Customer> CreateAsync(string cpf, string? name, string? email)
@@ -37,7 +22,7 @@ public class CustomerService : ICustomerService
 
         if (email is not null)
             customer.ChangeEmail(email);
-        
-        return await _repository.CreateAsync(customer);
+
+        return await createCustomerUseCase.Execute(cpf, name, email);
     }
 }

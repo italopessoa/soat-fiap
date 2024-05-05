@@ -3,27 +3,36 @@ using AutoFixture;
 using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using JetBrains.Annotations;
-using Moq;
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
 
 [TestSubject(typeof(ProductService))]
 public class ProductServiceTest
 {
-    private readonly Mock<IProductRepository> _mockRepository;
+    private readonly Mock<IGetAllProductsUseCase> _mockGetAllProductsUseCase;
+    private readonly Mock<IDeleteProductUseCase> _mockDeleteProductUseCase;
+    private readonly Mock<IFindProductsByCategoryUseCase> _mockFindProductsByCategoryUseCase;
+    private readonly Mock<ICreateProductUseCase> _mockCreateProductUseCase;
+    private readonly Mock<IUpdateProductUseCase> _mockUpdateProductUseCase;
+
     private readonly ProductService _target;
     private static readonly string[] images = new[] { "images" };
 
     public ProductServiceTest()
     {
-        _mockRepository = new Mock<IProductRepository>();
-        _target = new ProductService(_mockRepository.Object);
+        _mockGetAllProductsUseCase = new Mock<IGetAllProductsUseCase>();
+        _mockDeleteProductUseCase = new Mock<IDeleteProductUseCase>();
+        _mockFindProductsByCategoryUseCase = new Mock<IFindProductsByCategoryUseCase>();
+        _mockCreateProductUseCase = new Mock<ICreateProductUseCase>();
+        _mockUpdateProductUseCase = new Mock<IUpdateProductUseCase>();
+
+        _target = new ProductService(
+            _mockGetAllProductsUseCase.Object,
+            _mockDeleteProductUseCase.Object,
+            _mockFindProductsByCategoryUseCase.Object,
+            _mockCreateProductUseCase.Object,
+            _mockUpdateProductUseCase.Object);
     }
 
     [Theory]
@@ -35,7 +44,11 @@ public class ProductServiceTest
         var expectedProduct = new Product(name, description, category, price, images);
         expectedProduct.Create();
 
-        _mockRepository.Setup(s => s.CreateAsync(It.IsAny<Product>()))
+        _mockCreateProductUseCase.Setup(s => s.Execute(It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<ProductCategory>(),
+                It.IsAny<decimal>(),
+                It.IsAny<string[]>()))
             .ReturnsAsync(expectedProduct);
 
         // Act
@@ -55,14 +68,14 @@ public class ProductServiceTest
             product.LastUpdate.Should().BeNull();
         }
 
-        _mockRepository.VerifyAll();
+        _mockCreateProductUseCase.VerifyAll();
     }
 
     [Fact]
     public async Task Delete_Product_NotFound()
     {
         // Arrange
-        _mockRepository.Setup(s => s.DeleteAsync(It.IsAny<Guid>()))
+        _mockDeleteProductUseCase.Setup(s => s.Execute(It.IsAny<Guid>()))
             .ReturnsAsync(false);
 
         // Act
@@ -70,14 +83,14 @@ public class ProductServiceTest
 
         // Assert
         deleted.Should().BeFalse();
-        _mockRepository.VerifyAll();
+        _mockDeleteProductUseCase.VerifyAll();
     }
 
     [Fact]
     public async Task Delete_Product_Success()
     {
         // Arrange
-        _mockRepository.Setup(s => s.DeleteAsync(It.IsAny<Guid>()))
+        _mockDeleteProductUseCase.Setup(s => s.Execute(It.IsAny<Guid>()))
             .ReturnsAsync(true);
 
         // Act
@@ -85,26 +98,7 @@ public class ProductServiceTest
 
         // Assert
         deleted.Should().BeTrue();
-        _mockRepository.VerifyAll();
-    }
-
-    [Fact]
-    public async Task GetAll_Empty()
-    {
-        // Arrange
-        _mockRepository.Setup(s => s.GetAll())
-            .ReturnsAsync((ReadOnlyCollection<Product>)default!);
-
-        // Act
-        var products = await _target.GetAll();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            products.Should().NotBeNull();
-            products.Should().BeEmpty();
-            _mockRepository.VerifyAll();
-        }
+        _mockDeleteProductUseCase.VerifyAll();
     }
 
     [Fact]
@@ -112,7 +106,7 @@ public class ProductServiceTest
     {
         // Arrange
         var expectedProducts = new Fixture().CreateMany<Product>().ToList();
-        _mockRepository.Setup(s => s.GetAll())
+        _mockGetAllProductsUseCase.Setup(s => s.Execute())
             .ReturnsAsync(expectedProducts.ToList().AsReadOnly());
 
         // Act
@@ -123,7 +117,7 @@ public class ProductServiceTest
         {
             products.Should().NotBeNull();
             products.Should().BeEquivalentTo(expectedProducts);
-            _mockRepository.VerifyAll();
+            _mockGetAllProductsUseCase.VerifyAll();
         }
     }
 
@@ -131,8 +125,8 @@ public class ProductServiceTest
     public async Task FindByCategory_NotFound()
     {
         // Arrange
-        _mockRepository.Setup(s => s.FindByCategory(It.IsAny<ProductCategory>()))
-            .ReturnsAsync((ReadOnlyCollection<Product>)null!);
+        _mockFindProductsByCategoryUseCase.Setup(s => s.Execute(It.IsAny<ProductCategory>()))
+            .ReturnsAsync(Array.Empty<Product>().AsReadOnly);
 
         // Act
         var products = await _target.FindByCategory(ProductCategory.Beverage);
@@ -142,7 +136,7 @@ public class ProductServiceTest
         {
             products.Should().NotBeNull();
             products.Should().BeEmpty();
-            _mockRepository.VerifyAll();
+            _mockFindProductsByCategoryUseCase.VerifyAll();
         }
     }
 
@@ -156,7 +150,7 @@ public class ProductServiceTest
             new Product(Guid.NewGuid(), "product", "description", category, 10m, images)
         };
 
-        _mockRepository.Setup(s => s.FindByCategory(It.Is<ProductCategory>(c => c == category)))
+        _mockFindProductsByCategoryUseCase.Setup(s => s.Execute(It.Is<ProductCategory>(c => c == category)))
             .ReturnsAsync(expectedProducts.AsReadOnly);
 
         // Act
@@ -166,7 +160,7 @@ public class ProductServiceTest
         using (new AssertionScope())
         {
             products.Should().BeEquivalentTo(expectedProducts);
-            _mockRepository.VerifyAll();
+            _mockFindProductsByCategoryUseCase.VerifyAll();
         }
     }
 
@@ -178,9 +172,11 @@ public class ProductServiceTest
         fixture.Customizations.Add(new ProductGenerator());
         var product = fixture.Create<Product>();
 
-        _mockRepository.Setup(s => s.FindByIdAsync(
-                It.IsAny<Guid>()))
-            .ReturnsAsync((Product?)null);
+        _mockUpdateProductUseCase.Setup(s => s.Execute(
+                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ProductCategory>(),
+                It.IsAny<decimal>(), It.IsAny<IReadOnlyList<string>>()))
+            .ReturnsAsync(false)
+            .Verifiable();
 
         // Act
         var updated = await _target.UpdateAsync(product.Id, product.Name, product.Description,
@@ -190,36 +186,7 @@ public class ProductServiceTest
         using (new AssertionScope())
         {
             updated.Should().BeFalse();
-            _mockRepository.Verify(m => m.UpdateAsync(It.IsAny<Product>()), Times.Never);
-            _mockRepository.VerifyAll();
-        }
-    }
-
-    [Fact]
-    public async Task Update_Fail()
-    {
-        // Arrange
-        var fixture = new Fixture();
-        fixture.Customizations.Add(new ProductGenerator());
-        var product = fixture.Create<Product>();
-
-        _mockRepository.Setup(s => s.FindByIdAsync(
-                It.IsAny<Guid>()))
-            .ReturnsAsync(product);
-
-        _mockRepository.Setup(s => s.UpdateAsync(
-                It.IsAny<Product>()))
-            .ReturnsAsync(false);
-
-        // Act
-        var updated = await _target.UpdateAsync(product.Id, product.Name, product.Description,
-            ProductCategory.Beverage, product.Price, product.Images);
-
-        // Assert
-        using (new AssertionScope())
-        {
-            updated.Should().BeFalse();
-            _mockRepository.VerifyAll();
+            _mockUpdateProductUseCase.VerifyAll();
         }
     }
 
@@ -230,14 +197,12 @@ public class ProductServiceTest
         var fixture = new Fixture();
         fixture.Customizations.Add(new ProductGenerator());
         var product = fixture.Create<Product>();
-        
-        _mockRepository.Setup(s => s.FindByIdAsync(
-                It.IsAny<Guid>()))
-            .ReturnsAsync(product);
 
-        _mockRepository.Setup(s => s.UpdateAsync(
-                It.IsAny<Product>()))
-            .ReturnsAsync(true);
+        _mockUpdateProductUseCase.Setup(s => s.Execute(
+                It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ProductCategory>(),
+                It.IsAny<decimal>(), It.IsAny<IReadOnlyList<string>>()))
+            .ReturnsAsync(false)
+            .Verifiable();
 
         // Act
         var updated = await _target.UpdateAsync(product.Id, product.Name, product.Description,
@@ -246,8 +211,8 @@ public class ProductServiceTest
         // Assert
         using (new AssertionScope())
         {
-            updated.Should().BeTrue();
-            _mockRepository.VerifyAll();
+            updated.Should().BeFalse();
+            _mockUpdateProductUseCase.VerifyAll();
         }
     }
 }

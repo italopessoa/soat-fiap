@@ -11,18 +11,17 @@ using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
-[TestSubject(typeof(CustomerController))]
-public class CustomerControllerTest
+[TestSubject(typeof(CustomersController))]
+public class CustomersControllerTest
 {
     private readonly Mock<ICustomerService> _serviceMock;
-    private readonly CustomerController _target;
+    private readonly CustomersController _target;
     private static readonly Cpf cpf = "863.917.790-23";
 
-    public CustomerControllerTest()
+    public CustomersControllerTest()
     {
         _serviceMock = new Mock<ICustomerService>();
-
-        _target = new CustomerController(_serviceMock.Object);
+        _target = new CustomersController(_serviceMock.Object);
     }
 
     [Fact]
@@ -76,28 +75,6 @@ public class CustomerControllerTest
         _serviceMock.VerifyAll();
     }
 
-    [Fact(Skip = "there will be no anonymous customer")]
-    public async Task Create_Anonymous_Customer()
-    {
-        // Arrange
-        var anonymousCustomer = new Customer();
-        var expectedCustomer = new CustomerDto(anonymousCustomer);
-        _serviceMock.Setup(s => s.CreateAnonymousAsync())
-            .ReturnsAsync(anonymousCustomer);
-
-        // Act
-        var response = await _target.Create(new CreateCustomerCommand(), CancellationToken.None);
-
-        // Assert
-        using (new AssertionScope())
-        {
-            response.Result.Should().BeOfType<OkObjectResult>();
-            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedCustomer);
-        }
-
-        _serviceMock.VerifyAll();
-    }
-
     [Fact]
     public async Task Create_CpfOnly_Customer()
     {
@@ -120,7 +97,8 @@ public class CustomerControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<OkObjectResult>();
-            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedCustomer, o=>o.ComparingByMembers<CustomerDto>());
+            response.Result.As<OkObjectResult>().Value.Should()
+                .BeEquivalentTo(expectedCustomer, o => o.ComparingByMembers<CustomerDto>());
         }
 
         _serviceMock.VerifyAll();

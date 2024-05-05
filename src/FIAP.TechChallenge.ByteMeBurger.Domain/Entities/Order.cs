@@ -32,6 +32,12 @@ public class Order : Entity<Guid>
     {
     }
 
+    public Order(Customer customer)
+        : base(Guid.NewGuid())
+    {
+        Customer = customer;
+    }
+    
     public Order(Guid id, Customer customer)
         : base(id)
     {

@@ -2,6 +2,7 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
+using FIAP.TechChallenge.ByteMeBurger.Application;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
@@ -27,12 +28,13 @@ public class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
+        builder.Services.AddUseCases();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
         builder.Services.Configure<MySqlSettings>(builder.Configuration.GetSection(nameof(MySqlSettings)));
         builder.ConfigServicesDependencies();
-        builder.Services.RegisterServices();
+        builder.Services.RegisterServices();    
 
         builder.Services.AddHealthChecks()
             .AddMySql(provider => provider.GetRequiredService<DbConnectionStringBuilder>().ConnectionString);

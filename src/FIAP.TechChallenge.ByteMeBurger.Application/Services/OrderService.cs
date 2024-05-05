@@ -1,30 +1,32 @@
 using System.Collections.ObjectModel;
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases;
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
 
-public class OrderService(IOrderRepository repository) : IOrderService
+public class OrderService(
+    ICheckoutOrderUseCase checkoutOrderUseCase,
+    IGetOrderDetailsUseCase getOrderDetailsUseCase,
+    IOrderGetAllUseCase orderGetAllUseCase)
+    : IOrderService
 {
-    public async Task<Order> CreateAsync(Guid? customerId,
+    public async Task<Order> CreateAsync(Cpf? customerCpf,
         List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
     {
-        var order = customerId.HasValue ? new Order(customerId.Value) : new Order();
-        orderItems.ForEach(i => { order.AddOrderItem(i.productId, i.productName, i.unitPrice, i.quantity); });
-
-        order.Checkout();
-        return await repository.CreateAsync(order);
+        return await checkoutOrderUseCase.Execute(customerCpf, orderItems);
     }
 
     public async Task<ReadOnlyCollection<Order>> GetAllAsync()
     {
-        var orders = await repository.GetAllAsync();
-        return orders is null ? Array.Empty<Order>().AsReadOnly() : orders;
+        return await orderGetAllUseCase.Execute();
     }
 
     public async Task<Order?> GetAsync(Guid id)
     {
-        return id == Guid.Empty ? null : await repository.GetAsync(id);
+        return await getOrderDetailsUseCase.Execute(id);
     }
 }
