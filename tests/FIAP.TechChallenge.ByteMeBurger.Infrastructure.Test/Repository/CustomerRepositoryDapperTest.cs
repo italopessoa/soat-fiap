@@ -16,7 +16,7 @@ public class CustomerRepositoryDapperTest
 {
     private readonly Mock<IDbConnection> _mockConnection;
     private readonly CustomerRepositoryDapper _target;
-    private const string _cpf = "20697137090";
+    private const string Cpf = "20697137090";
 
     public CustomerRepositoryDapperTest()
     {
@@ -28,7 +28,7 @@ public class CustomerRepositoryDapperTest
     public async Task Create_Success()
     {
         // Arrange
-        var customer = new Customer(_cpf);
+        var customer = new Customer(Cpf);
 
         _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
 
@@ -54,7 +54,7 @@ public class CustomerRepositoryDapperTest
         var expectedCustomer = new CustomerDto()
         {
             Id = Guid.NewGuid(),
-            Cpf = _cpf,
+            Cpf = Cpf,
             Name = "italo",
             Email = "italo@gmail.com"
         };
@@ -64,14 +64,14 @@ public class CustomerRepositoryDapperTest
             .ReturnsAsync(expectedCustomer);
 
         // Act
-        var result = await _target.FindByCpfAsync(_cpf);
+        var result = await _target.FindByCpfAsync(Cpf);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(expectedCustomer,
-                options => options.ComparingByMembers<Customer>().Excluding(c => c.Cpf));
+                options => options.ComparingByMembers<CustomerDto>().Excluding(c => c.Cpf));
             result.Cpf.Value.Should().Be(expectedCustomer.Cpf);
         }
     }
@@ -85,7 +85,7 @@ public class CustomerRepositoryDapperTest
             .ReturnsAsync(default(Customer));
 
         // Act
-        var result = await _target.FindByCpfAsync(_cpf);
+        var result = await _target.FindByCpfAsync(Cpf);
 
         // Assert
         using (new AssertionScope())

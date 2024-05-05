@@ -28,11 +28,10 @@ public class Order : Entity<Guid>
     }
 
     public Order(Guid customerId)
-        : base(Guid.NewGuid())
+        : this(Guid.NewGuid(), new Customer(customerId))
     {
-        Customer = new Customer(customerId);
     }
-    
+
     public Order(Guid id, Customer customer)
         : base(id)
     {
