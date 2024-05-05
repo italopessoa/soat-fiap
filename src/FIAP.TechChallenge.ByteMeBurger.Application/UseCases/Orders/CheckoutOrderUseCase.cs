@@ -29,14 +29,14 @@ public class CheckoutOrderUseCase : ICheckoutOrderUseCase
             if (customer is not null)
                 order = new Order(Guid.NewGuid(), customer);
             else
-                throw new DomainException("Customer not found.");
+                throw new UseCaseException("Customer not found.");
         }
 
         foreach (var item in orderItems)
         {
             var product = await GetProduct(item);
             if (product is null)
-                throw new DomainException($"Product '{item.productName}' not found.");
+                throw new UseCaseException($"Product '{item.productName}' not found.");
             order.AddOrderItem(product.Id, product.Name, product.Price, item.quantity);
         }
 

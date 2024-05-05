@@ -1,4 +1,5 @@
 using AutoFixture.Xunit2;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
@@ -18,7 +19,7 @@ public class ProductTest
         // Assert
         using (new AssertionScope())
         {
-            product.Should().Throw<ArgumentException>().And.ParamName.Should().Be("name");
+            product.Should().ThrowExactly<DomainException>();
         }
     }
 
@@ -32,7 +33,7 @@ public class ProductTest
         // Assert
         using (new AssertionScope())
         {
-            product.Should().Throw<ArgumentException>().And.ParamName.Should().Be("description");
+            product.Should().ThrowExactly<DomainException>();
         }
     }
 
@@ -46,7 +47,7 @@ public class ProductTest
         // Assert
         using (new AssertionScope())
         {
-            product.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("price");
+            product.Should().ThrowExactly<DomainException>();
         }
     }
 

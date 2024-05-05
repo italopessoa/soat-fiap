@@ -64,8 +64,8 @@ public class Product : Entity<Guid>
 
     private static void Validate(string name, string description, decimal price)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        ArgumentException.ThrowIfNullOrWhiteSpace(description);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
+        AssertionConcern.AssertArgumentNotEmpty(name, nameof(name));
+        AssertionConcern.AssertArgumentNotEmpty(description,nameof(description));
+        AssertionConcern. AssertArgumentNotZeroOrNegative(price, nameof(price));
     }
 }

@@ -52,10 +52,13 @@ public class OrderRepositoryDapper : IOrderRepository
 
     public async Task<ReadOnlyCollection<Order>> GetAllAsync()
     {
-        return (await _dbConnection.QueryAsync<Order>("SELECT * FROM Orders")).ToList().AsReadOnly();
+        return (await _dbConnection.QueryAsync<Order>(
+                "select * from Orders o inner join OrderItems oi on oi.OrderId = o.Id"))
+            .ToList().AsReadOnly();
     }
 
-    [ExcludeFromCodeCoverage(Justification = "unit test is not working due to moq.dapper limitations, maybe one day...")]
+    [ExcludeFromCodeCoverage(Justification =
+        "unit test is not working due to moq.dapper limitations, maybe one day...")]
     public async Task<Order?> GetAsync(Guid orderId)
     {
         var ordersDictionary = new Dictionary<Guid, Order>();

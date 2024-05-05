@@ -49,14 +49,14 @@ public class Order : Entity<Guid>
         if (Status == OrderStatus.PaymentPending)
             _orderItems.Add(new OrderItem(this.Id, productId, productName, unitPrice, quantity));
         else
-            throw new InvalidOperationException($"Cannot add items to an Order if it's {Status}");
+            throw new DomainException($"Cannot add items to an Order if it's {Status}");
     }
 
     public void ValidateCheckout()
     {
         if (!_orderItems.Any())
         {
-            throw new InvalidOperationException("An Order must have at least one item");
+            throw new DomainException("An Order must have at least one item");
         }
     }
 
@@ -69,7 +69,7 @@ public class Order : Entity<Guid>
     public void ConfirmPayment()
     {
         if (Created == default)
-            throw new InvalidOperationException("Cannot confirm");
+            throw new DomainException("Cannot confirm");
 
         Status = OrderStatus.Received;
         TrackingCode = GenerateCode(Created);
@@ -78,7 +78,7 @@ public class Order : Entity<Guid>
     public void InitiatePrepare()
     {
         if (Status != OrderStatus.Received)
-            throw new InvalidOperationException("Cannot start preparing if order isn't confirmed.");
+            throw new DomainException("Cannot start preparing if order isn't confirmed.");
 
         Status = OrderStatus.Preparing;
         Update();
@@ -87,7 +87,7 @@ public class Order : Entity<Guid>
     public void FinishPreparing()
     {
         if (Status != OrderStatus.Preparing)
-            throw new InvalidOperationException("Cannot Finish order if it's not Preparing yet.");
+            throw new DomainException("Cannot Finish order if it's not Preparing yet.");
 
         Status = OrderStatus.Done;
         Update();
@@ -96,7 +96,7 @@ public class Order : Entity<Guid>
     public void DeliverOrder()
     {
         if (Status != OrderStatus.Done)
-            throw new InvalidOperationException("Cannot Deliver order if it's not Finished yet.");
+            throw new DomainException("Cannot Deliver order if it's not Finished yet.");
 
         Status = OrderStatus.Finished;
         Update();

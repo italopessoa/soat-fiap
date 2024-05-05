@@ -52,16 +52,16 @@ public class Customer : Entity<Guid>
 
     private static string ValidateEmail(string? email)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        AssertionConcern.AssertArgumentNotEmpty(email, nameof(email));
         if (!Regex.IsMatch(email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
-            throw new ArgumentException($"Invalid email format '{email}'");
+            throw new DomainException($"Invalid email format '{email}'");
 
         return email;
     }
 
     public void ChangeName(string name)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        AssertionConcern.AssertArgumentNotEmpty(name, nameof(name));
         Name = name;
     }
 
@@ -72,7 +72,7 @@ public class Customer : Entity<Guid>
 
     private void Validate()
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(Name);
+        AssertionConcern.AssertArgumentNotEmpty(Name, nameof(Name));
         ValidateEmail(Email);
     }
 }

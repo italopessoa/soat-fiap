@@ -11,7 +11,7 @@ public class CreateCustomerUseCase(ICustomerRepository customerRepository) : ICr
     {
         if (await customerRepository.FindByCpfAsync(cpf.Value) is not null)
         {
-            throw new DomainException("There's already a customer using the provided CPF value.");
+            throw new UseCaseException("There's already a customer using the provided CPF value.");
         }
 
         var customer = new Customer(cpf);

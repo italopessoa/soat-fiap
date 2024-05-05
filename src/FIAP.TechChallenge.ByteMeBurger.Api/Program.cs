@@ -8,6 +8,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Facade;
 using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -34,7 +35,7 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.Configure<MySqlSettings>(builder.Configuration.GetSection(nameof(MySqlSettings)));
         builder.ConfigServicesDependencies();
-        builder.Services.RegisterServices();    
+        builder.Services.RegisterFacade();
 
         builder.Services.AddHealthChecks()
             .AddMySql(provider => provider.GetRequiredService<DbConnectionStringBuilder>().ConnectionString);

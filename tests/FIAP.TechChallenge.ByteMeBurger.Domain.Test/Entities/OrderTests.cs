@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
@@ -54,7 +55,7 @@ public class OrderTests
         var func = () => order.Checkout();
 
         // Assert
-        func.Should().Throw<InvalidOperationException>();
+        func.Should().ThrowExactly<DomainException>();
     }
 
     [Fact]
@@ -91,7 +92,7 @@ public class OrderTests
         var func = () => order.InitiatePrepare();
 
         // Assert
-        func.Should().Throw<InvalidOperationException>().And.Message.Should()
+        func.Should().ThrowExactly<DomainException>().And.Message.Should()
             .Be("Cannot start preparing if order isn't confirmed.");
     }
 
@@ -108,7 +109,7 @@ public class OrderTests
         var func = () => order.FinishPreparing();
 
         // Assert
-        func.Should().Throw<InvalidOperationException>().And.Message.Should()
+        func.Should().ThrowExactly<DomainException>().And.Message.Should()
             .Be("Cannot Finish order if it's not Preparing yet.");
     }
 
@@ -127,7 +128,7 @@ public class OrderTests
         var func = () => order.DeliverOrder();
 
         // Assert
-        func.Should().Throw<InvalidOperationException>().And.Message.Should()
+        func.Should().ThrowExactly<DomainException>().And.Message.Should()
             .Be("Cannot Deliver order if it's not Finished yet.");
         order.TrackingCode.Should().NotBeEmpty();
     }

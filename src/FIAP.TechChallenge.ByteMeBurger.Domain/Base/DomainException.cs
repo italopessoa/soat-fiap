@@ -7,6 +7,7 @@ public class DomainException : Exception
     /// </summary>
     public DomainException()
     {
+        
     }
 
     /// <summary>

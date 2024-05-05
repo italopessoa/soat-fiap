@@ -70,7 +70,7 @@ public class CreateCustomerUseCaseTest
         // Assert
         using (new AssertionScope())
         {
-            (await func.Should().ThrowAsync<DomainException>())
+            (await func.Should().ThrowExactlyAsync<UseCaseException>())
                 .And
                 .Message
                 .Should()
