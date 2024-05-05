@@ -1,6 +1,7 @@
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
 using FIAP.TechChallenge.ByteMeBurger.Application;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
@@ -29,10 +30,13 @@ public class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
-        builder.Services.AddUseCases();
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
         builder.Services.Configure<MySqlSettings>(builder.Configuration.GetSection(nameof(MySqlSettings)));
         builder.ConfigServicesDependencies();
         builder.Services.RegisterFacade();
@@ -52,7 +56,7 @@ public class Program
         app.UseHealthChecks("/health", new HealthCheckOptions
         {
             Predicate = _ => true,
-            ResponseWriter =  UIResponseWriter.WriteHealthCheckUIResponse
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
 
         app.UseHttpsRedirection();
@@ -62,6 +66,4 @@ public class Program
         app.MapControllers();
         app.Run();
     }
-
-    
 }

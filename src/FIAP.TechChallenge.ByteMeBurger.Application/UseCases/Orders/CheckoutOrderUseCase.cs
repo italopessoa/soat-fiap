@@ -19,8 +19,7 @@ public class CheckoutOrderUseCase : ICheckoutOrderUseCase
         _customerRepository = customerRepository;
     }
 
-    public async Task<Order> Execute(Cpf? customerCpf,
-        List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
+    public async Task<Order> Execute(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems)
     {
         var order = new Order();
         if (customerCpf is not null)
@@ -34,9 +33,9 @@ public class CheckoutOrderUseCase : ICheckoutOrderUseCase
 
         foreach (var item in orderItems)
         {
-            var product = await GetProduct(item);
+            var product = await GetProduct(item.productId);
             if (product is null)
-                throw new UseCaseException($"Product '{item.productName}' not found.");
+                throw new UseCaseException($"Product '{item.productId}' not found.");
             order.AddOrderItem(product.Id, product.Name, product.Price, item.quantity);
         }
 
@@ -44,9 +43,8 @@ public class CheckoutOrderUseCase : ICheckoutOrderUseCase
         return await _repository.CreateAsync(order);
     }
 
-    private async Task<Product?> GetProduct(
-        (Guid productId, string productName, int quantity, decimal unitPrice) productTuple)
+    private async Task<Product?> GetProduct(Guid productId)
     {
-        return await _productRepository.FindByIdAsync(productTuple.productId);
+        return await _productRepository.FindByIdAsync(productId);
     }
 }

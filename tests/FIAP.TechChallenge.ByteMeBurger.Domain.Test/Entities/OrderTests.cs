@@ -160,9 +160,9 @@ public class OrderTests
             order.Customer.Should().NotBeNull();
             order.Customer!.Id.Should().Be(customerId);
             order.Created.Should().BeAfter(initDate);
-            order.Created.Should().BeBefore(preparingDate);
-            doneDate.Should().BeAfter(preparingDate);
-            finishedDate.Should().BeAfter(doneDate);
+            order.Created.Should().BeBefore(preparingDate.Value);
+            doneDate.Should().BeAfter(preparingDate.Value);
+            finishedDate.Should().BeAfter(doneDate.Value);
             order.Status.Should().Be(OrderStatus.Finished);
             order.Total.Should().Be(22);
             order.TrackingCode.Should().NotBeEmpty();

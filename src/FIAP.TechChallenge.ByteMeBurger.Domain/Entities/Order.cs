@@ -15,7 +15,7 @@ public class Order : Entity<Guid>
 
     public DateTime Created { get; private set; }
 
-    public DateTime LastUpdate { get; private set; }
+    public DateTime? LastUpdate { get; private set; }
 
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
@@ -37,19 +37,34 @@ public class Order : Entity<Guid>
     {
         Customer = customer;
     }
-    
+
     public Order(Guid id, Customer customer)
         : base(id)
     {
         Customer = customer;
     }
 
+    public Order(Guid id, Customer customer, OrderStatus status, string? trackingCode, DateTime created, DateTime? updated)
+        : base(id)
+    {
+        Customer = customer;
+        Status = status;
+        TrackingCode = trackingCode;
+        Created = created;
+        LastUpdate = updated;
+    }
+
     public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)
     {
         if (Status == OrderStatus.PaymentPending)
-            _orderItems.Add(new OrderItem(this.Id, productId, productName, unitPrice, quantity));
+            _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
         else
             throw new DomainException($"Cannot add items to an Order if it's {Status}");
+    }
+
+    public void LoadItems(Guid productId, string productName, decimal unitPrice, int quantity)
+    {
+        _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
     }
 
     public void ValidateCheckout()

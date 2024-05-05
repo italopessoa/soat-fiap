@@ -5,5 +5,5 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 public interface ICheckoutOrderUseCase
 {
-    Task<Order> Execute(Cpf? customerCpf, List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems);
+    Task<Order> Execute(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems);
 }

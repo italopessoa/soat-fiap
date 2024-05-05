@@ -25,13 +25,13 @@ public class CheckoutOrderUseCaseTest
     [Theory]
     [InlineAutoData]
     public async Task Checkout_Success(
-        List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
+        List<(Guid productId, int quantity)> orderItems)
     {
         // Arrange 
         var product = new Product("product", "description", ProductCategory.Beverage, 10, []);
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, i.productName, i.unitPrice, i.quantity); });
+        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, product.Name, product.Price, i.quantity); });
 
         expectedOrder.Checkout();
 
@@ -70,12 +70,12 @@ public class CheckoutOrderUseCaseTest
     [Theory]
     [InlineAutoData]
     public async Task Checkout_CustomerNofFound_Error(
-        List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
+        List<(Guid productId, int quantity)> orderItems)
     {
         // Arrange 
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, i.productName, i.unitPrice, i.quantity); });
+        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "productName", 1, i.quantity); });
         expectedOrder.Checkout();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
@@ -108,12 +108,12 @@ public class CheckoutOrderUseCaseTest
     [Theory]
     [InlineAutoData]
     public async Task Checkout_ProductNotFound_Error(
-        List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
+        List<(Guid productId,int quantity)> orderItems)
     {
         // Arrange 
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, i.productName, i.unitPrice, i.quantity); });
+        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "productName", 2, i.quantity); });
         expectedOrder.Checkout();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
@@ -134,7 +134,7 @@ public class CheckoutOrderUseCaseTest
                 .And
                 .Message
                 .Should()
-                .Be($"Product '{orderItems.First().productName}' not found.");
+                .Be($"Product '{orderItems.First().productId}' not found.");
 
             _orderRepository.Verify(m => m.CreateAsync(
                 It.IsAny<Order>()), Times.Never);

@@ -68,16 +68,16 @@ public class OrderServiceTest
     [Theory]
     [InlineAutoData]
     public async Task Create_Success(
-        List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
+        List<(Guid productId, int quantity)> orderItems)
     {
         // Arrange 
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, i.productName, i.unitPrice, i.quantity); });
+        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "product name", 1, i.quantity); });
 
         expectedOrder.Checkout();
         _mockCheckoutOrderUseCase.Setup(s => s.Execute(It.IsAny<Cpf?>(),
-                It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()))
+                It.IsAny<List<(Guid productId, int quantity)>>()))
             .ReturnsAsync(expectedOrder);
 
         // Act
@@ -88,7 +88,7 @@ public class OrderServiceTest
         {
             result.Should().NotBeNull();
             _mockCheckoutOrderUseCase.Verify(s => s.Execute(It.IsAny<Cpf?>(),
-                It.IsAny<List<(Guid productId, string productName, int quantity, decimal unitPrice)>>()), Times.Once);
+                It.IsAny<List<(Guid productId,int quantity)>>()), Times.Once);
         }
     }
 

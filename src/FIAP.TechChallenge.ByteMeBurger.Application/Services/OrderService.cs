@@ -14,8 +14,7 @@ public class OrderService(
     IOrderGetAllUseCase orderGetAllUseCase)
     : IOrderService
 {
-    public async Task<Order> CreateAsync(Cpf? customerCpf,
-        List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems)
+    public async Task<Order> CreateAsync(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems)
     {
         return await checkoutOrderUseCase.Execute(customerCpf, orderItems);
     }

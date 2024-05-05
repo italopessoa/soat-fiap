@@ -15,7 +15,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             CreateOrderCommandDto newOrder,
             CancellationToken cancellationToken)
         {
-            var orderItems = newOrder.Items.Select(i => (i.ProductId, i.ProductName, i.Quantity, i.UnitPrice));
+            var orderItems = newOrder.Items.Select(i => (i.ProductId, i.Quantity));
             var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
             return Created($"{order.Id}", new OrderDto(order));
