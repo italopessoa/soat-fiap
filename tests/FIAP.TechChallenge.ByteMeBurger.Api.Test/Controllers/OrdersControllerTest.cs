@@ -8,7 +8,9 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
+using ILogger = Castle.Core.Logging.ILogger;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
@@ -22,7 +24,7 @@ public class OrdersControllerTest
     public OrdersControllerTest()
     {
         _serviceMock = new Mock<IOrderService>();
-        _target = new OrdersController(_serviceMock.Object);
+        _target = new OrdersController(_serviceMock.Object, Mock.Of<ILogger<OrdersController>>());
     }
 
     [Fact]

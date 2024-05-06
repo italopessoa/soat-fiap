@@ -8,24 +8,22 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Produces("application/json")]
+    public class ProductsController(IProductService productService, ILogger<ProductsController> logger)
+        : ControllerBase
     {
-        private readonly IProductService _productService;
-
-        public ProductsController(IProductService productService)
-        {
-            _productService = productService;
-        }
-
         [HttpGet]
         public async Task<ActionResult<ReadOnlyCollection<ProductDto>>> Get(
             [FromQuery] ProductCategory? productCategory, CancellationToken cancellationToken)
         {
+            logger.LogInformation("Getting products by category: {ProductCategory}", productCategory);
             var productsTask = productCategory.HasValue
-                ? _productService.FindByCategory(productCategory!.Value)
-                : _productService.GetAll();
+                ? productService.FindByCategory(productCategory!.Value)
+                : productService.GetAll();
 
             var products = await productsTask.WaitAsync(cancellationToken);
+            logger.LogInformation("Retrieved {Count} products", products.Count);
             return Ok(products.Select(p => new ProductDto(p))
                 .ToList()
                 .AsReadOnly());
@@ -34,10 +32,21 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
+            logger.LogInformation("Deleting product with ID: {ProductId}", id);
             if (Guid.Empty == id)
                 return BadRequest();
 
-            return await _productService.DeleteAsync(id) ? Ok() : NoContent();
+            var result = await productService.DeleteAsync(id);
+            if (result)
+            {
+                logger.LogInformation("Product with ID: {ProductId} deleted", id);
+                return Ok();
+            }
+            else
+            {
+                logger.LogWarning("Product with ID: {ProductId} not found", id);
+                return NoContent();
+            }
         }
 
         [HttpPost]
@@ -45,19 +54,22 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             CreateProductCommandDto newProduct,
             CancellationToken cancellationToken)
         {
+            logger.LogInformation("Creating product with name: {ProductName}", newProduct.Name);
             if (newProduct.Price <= 0)
                 return BadRequest("Price cannot be zero ou negative.");
 
             try
             {
-                var product = await _productService.CreateAsync(newProduct.Name, newProduct.Description,
+                var product = await productService.CreateAsync(newProduct.Name, newProduct.Description,
                     newProduct.Category,
                     newProduct.Price, newProduct.Images);
 
+                logger.LogInformation("Product with ID: {ProductId} created", product.Id);
                 return Created($"/{product.Id}", product);
             }
             catch (Exception e)
             {
+                logger.LogError(e, "Error creating product with name: {ProductName}", newProduct.Name);
                 return BadRequest("Unable to create the product.");
             }
         }
@@ -67,10 +79,11 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             UpdateProductCommandDto updateProductCommandDto,
             CancellationToken cancellationToken)
         {
+            logger.LogInformation("Updating product with ID: {ProductId}", id);
             if (Guid.Empty == id)
                 return BadRequest("Invalid Id.");
 
-            var updated = await _productService.UpdateAsync(
+            var updated = await productService.UpdateAsync(
                 id,
                 updateProductCommandDto.Name,
                 updateProductCommandDto.Description,
@@ -78,7 +91,14 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
                 updateProductCommandDto.Price,
                 updateProductCommandDto.Images);
 
-            return updated ? NoContent() : BadRequest("Unable to update the product.");
+            if (updated)
+            {
+                logger.LogInformation("Product with ID: {ProductId} updated", id);
+                return NoContent();
+            }
+
+            logger.LogWarning("Unable to update product with ID: {ProductId}", id);
+            return BadRequest("Unable to update the product.");
         }
     }
 }

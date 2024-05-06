@@ -11,6 +11,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
@@ -24,10 +25,8 @@ public class ProductsControllerTest
     public ProductsControllerTest()
     {
         _serviceMock = new Mock<IProductService>();
-
-        _target = new ProductsController(_serviceMock.Object);
+        _target = new ProductsController(_serviceMock.Object, Mock.Of<ILogger<ProductsController>>());
     }
-    // create, update
 
     [Fact]
     public async Task GetAll_Success()

@@ -7,6 +7,7 @@ using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Dapper;
 
@@ -21,7 +22,7 @@ public class OrderRepositoryDapperTest
     public OrderRepositoryDapperTest()
     {
         _mockConnection = new Mock<IDbConnection>();
-        _target = new OrderRepositoryDapper(_mockConnection.Object);
+        _target = new OrderRepositoryDapper(_mockConnection.Object, Mock.Of<ILogger<OrderRepositoryDapper>>());
     }
 
     [Fact(Skip = "I'll double check it later")]
