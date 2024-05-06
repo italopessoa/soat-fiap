@@ -7,20 +7,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomersController(ICustomerService customerService) : ControllerBase
     {
-        private readonly ICustomerService _customerService;
-
-        public CustomerController(ICustomerService customerService)
-        {
-            _customerService = customerService;
-        }
-
         [HttpGet]
         public async Task<ActionResult<CustomerDto>> GetByCpf([FromQuery] [MaxLength(14)] string cpf,
             CancellationToken cancellationToken)
         {
-            var customer = await _customerService.FindByCpfAsync(cpf);
+            var customer = await customerService.FindByCpfAsync(cpf);
             if (customer is null)
             {
                 return NotFound();
@@ -33,11 +26,10 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         public async Task<ActionResult<CustomerDto>> Create([FromBody] CreateCustomerCommand createCustomerCommand,
             CancellationToken cancellationToken)
         {
-            var customer = await _customerService.CreateAsync(
+            var customer = await customerService.CreateAsync(
                 createCustomerCommand.Cpf,
                 createCustomerCommand.Name,
                 createCustomerCommand.Email);
-
 
             return Ok(new CustomerDto(customer));
         }

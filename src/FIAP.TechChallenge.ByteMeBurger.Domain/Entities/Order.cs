@@ -5,7 +5,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Order : Entity<Guid>
 {
-    private List<OrderItem> _orderItems = Enumerable.Empty<OrderItem>().ToList();
+    private List<OrderItem> _orderItems = Array.Empty<OrderItem>().ToList();
 
     public Customer? Customer { get; private set; }
 
@@ -15,7 +15,7 @@ public class Order : Entity<Guid>
 
     public DateTime Created { get; private set; }
 
-    public DateTime LastUpdate { get; private set; }
+    public DateTime? LastUpdate { get; private set; }
 
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
@@ -32,25 +32,46 @@ public class Order : Entity<Guid>
     {
     }
 
+    public Order(Customer customer)
+        : base(Guid.NewGuid())
+    {
+        Customer = customer;
+    }
+
     public Order(Guid id, Customer customer)
         : base(id)
     {
         Customer = customer;
     }
 
+    public Order(Guid id, Customer customer, OrderStatus status, string? trackingCode, DateTime created, DateTime? updated)
+        : base(id)
+    {
+        Customer = customer;
+        Status = status;
+        TrackingCode = trackingCode;
+        Created = created;
+        LastUpdate = updated;
+    }
+
     public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)
     {
         if (Status == OrderStatus.PaymentPending)
-            _orderItems.Add(new OrderItem(this.Id, productId, productName, unitPrice, quantity));
+            _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
         else
-            throw new InvalidOperationException($"Cannot add items to an Order if it's {Status}");
+            throw new DomainException($"Cannot add items to an Order if it's {Status}");
+    }
+
+    public void LoadItems(Guid productId, string productName, decimal unitPrice, int quantity)
+    {
+        _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
     }
 
     public void ValidateCheckout()
     {
         if (!_orderItems.Any())
         {
-            throw new InvalidOperationException("An Order must have at least one item");
+            throw new DomainException("An Order must have at least one item");
         }
     }
 
@@ -63,7 +84,7 @@ public class Order : Entity<Guid>
     public void ConfirmPayment()
     {
         if (Created == default)
-            throw new InvalidOperationException("Cannot confirm");
+            throw new DomainException("Cannot confirm");
 
         Status = OrderStatus.Received;
         TrackingCode = GenerateCode(Created);
@@ -72,7 +93,7 @@ public class Order : Entity<Guid>
     public void InitiatePrepare()
     {
         if (Status != OrderStatus.Received)
-            throw new InvalidOperationException("Cannot start preparing if order isn't confirmed.");
+            throw new DomainException("Cannot start preparing if order isn't confirmed.");
 
         Status = OrderStatus.Preparing;
         Update();
@@ -81,7 +102,7 @@ public class Order : Entity<Guid>
     public void FinishPreparing()
     {
         if (Status != OrderStatus.Preparing)
-            throw new InvalidOperationException("Cannot Finish order if it's not Preparing yet.");
+            throw new DomainException("Cannot Finish order if it's not Preparing yet.");
 
         Status = OrderStatus.Done;
         Update();
@@ -90,7 +111,7 @@ public class Order : Entity<Guid>
     public void DeliverOrder()
     {
         if (Status != OrderStatus.Done)
-            throw new InvalidOperationException("Cannot Deliver order if it's not Finished yet.");
+            throw new DomainException("Cannot Deliver order if it's not Finished yet.");
 
         Status = OrderStatus.Finished;
         Update();

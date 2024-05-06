@@ -7,30 +7,24 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OrdersController(IOrderService orderService) : ControllerBase
     {
-        private readonly IOrderService _orderService;
-
-        public OrderController(IOrderService orderService)
-        {
-            _orderService = orderService;
-        }
-
+        [Route("checkout")]
         [HttpPost]
         public async Task<ActionResult<OrderDto>> Create(
             CreateOrderCommandDto newOrder,
             CancellationToken cancellationToken)
         {
-            var orderItems = newOrder.Items.Select(i => (i.ProductId, i.ProductName, i.Quantity, i.UnitPrice));
-            var order = await _orderService.CreateAsync(newOrder.CustomerId, orderItems.ToList());
-            
+            var orderItems = newOrder.Items.Select(i => (i.ProductId, i.Quantity));
+            var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
+
             return Created($"{order.Id}", new OrderDto(order));
         }
 
         [HttpGet]
         public async Task<ActionResult<ReadOnlyCollection<OrderDto>>> Get(CancellationToken cancellationToken)
         {
-            var orders = await _orderService.GetAllAsync();
+            var orders = await orderService.GetAllAsync();
             var ordersDto = orders.Select(o => new OrderDto(o));
 
             return Ok(ordersDto);
@@ -41,11 +35,11 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         {
             if (Guid.Empty == id)
                 return BadRequest("Invalid OrderId: An order ID must not be empty.");
-            
-            var order = await _orderService.GetAsync(id);
+
+            var order = await orderService.GetAsync(id);
             if (order is null)
                 return NotFound();
-            
+
             return Ok(new OrderDto(order));
         }
     }

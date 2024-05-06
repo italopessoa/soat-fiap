@@ -1,49 +1,42 @@
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
 
-public class ProductService(IProductRepository repository) : IProductService
+public class ProductService(
+    IGetAllProductsUseCase getAllProductsUseCase, 
+    IDeleteProductUseCase deleteProductUseCase, 
+    IFindProductsByCategoryUseCase findProductsByCategoryUseCase,
+    ICreateProductUseCase createProductUseCase,
+    IUpdateProductUseCase updateProductUseCase) : IProductService
 {
-    private readonly IProductRepository _repository = repository;
-
     public async Task<Product> CreateAsync(string name, string description, ProductCategory category, decimal price,
         IReadOnlyList<string> images)
     {
-        var newProduct = new Product(name, description, category, price, images);
-        newProduct.Create();
-        return await _repository.CreateAsync(newProduct);
+        return await createProductUseCase.Execute(name, description, category, price, images.ToArray());
     }
 
     public async Task<bool> DeleteAsync(Guid productId)
     {
-        return await _repository.DeleteAsync(productId);
+        return await deleteProductUseCase.Execute(productId);
     }
 
     public async Task<IReadOnlyCollection<Product>> GetAll()
     {
-        return (await _repository.GetAll()) ?? Enumerable.Empty<Product>().ToList().AsReadOnly();
+        return await getAllProductsUseCase.Execute();
     }
 
     public async Task<IReadOnlyCollection<Product>> FindByCategory(ProductCategory category)
     {
-        return (await _repository.FindByCategory(category))
-               ?? Enumerable.Empty<Product>().ToList().AsReadOnly();
+        return await findProductsByCategoryUseCase.Execute(category);
     }
 
     public async Task<bool> UpdateAsync(Guid id, string name, string description, ProductCategory category,
         decimal price,
         IReadOnlyList<string> images)
     {
-        var currentProduct = await _repository.FindByIdAsync(id);
-        if (currentProduct is null)
-        {
-            return false;
-        }
-
-        currentProduct.Update(new Product(id, name, description, category, price, images));
-        return await _repository.UpdateAsync(currentProduct);
+        return await updateProductUseCase.Execute(id, name, description, category, price, images);
     }
 }

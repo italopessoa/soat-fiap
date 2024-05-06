@@ -6,9 +6,5 @@ public interface ICustomerService
 {
     Task<Customer?> FindByCpfAsync(string cpf);
 
-    Task<Customer> CreateAnonymousAsync();
-    
-    Task<Customer> CreateAsync(string cpf);
-    
     Task<Customer> CreateAsync(string cpf, string? name, string? email);
 }

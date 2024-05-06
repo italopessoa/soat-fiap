@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
@@ -9,21 +10,6 @@ public class CustomerTests
 {
     private const string ValidCpf = "781.190.140-49";
 
-    [Fact(Skip = "changing the business rules")]
-    public void Customer_AnonymousCustomer()
-    {
-        // Arrange
-        // Act
-        var customer = new Customer();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            customer.Id.Should().NotBeEmpty();
-            customer.Name.Should().BeNull();
-        }
-    }
-
     [Theory]
     [InlineData("")]
     [InlineData("    ")]
@@ -34,7 +20,7 @@ public class CustomerTests
         var func = () => new Customer(ValidCpf, name, "email@email.com");
 
         // Assert
-        func.Should().Throw<ArgumentException>();
+        func.Should().ThrowExactly<DomainException>();
     }
 
     [Theory]
@@ -51,7 +37,7 @@ public class CustomerTests
         var func = () => new Customer(ValidCpf, "customer name", email);
 
         // Assert
-        func.Should().Throw<ArgumentException>();
+        func.Should().ThrowExactly<DomainException>();
     }
 
     [Theory]
@@ -66,7 +52,7 @@ public class CustomerTests
         var func = () => new Customer(cpf);
 
         // Assert
-        func.Should().Throw<ArgumentException>();
+        func.Should().ThrowExactly<DomainException>();
     }
 
     [Theory]

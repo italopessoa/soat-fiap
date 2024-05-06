@@ -34,7 +34,7 @@ public class Cpf : ValueObject
 
     private static string Validate(string cpf)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(cpf);
+        AssertionConcern.AssertArgumentNotEmpty(cpf, nameof(cpf));
         var isValidCpf = false;
 
         var multiplicador1 = new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -80,7 +80,7 @@ public class Cpf : ValueObject
 
         if (!isValidCpf)
         {
-            throw new ArgumentException($"Invalid CPF value '{cpf}'");
+            throw new DomainException($"Invalid CPF value '{cpf}'");
         }
 
         return workingWpf;

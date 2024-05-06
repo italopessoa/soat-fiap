@@ -1,11 +1,12 @@
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 
 public interface IOrderService
 {
-    Task<Order> CreateAsync(Guid? customerId, List<(Guid productId, string productName, int quantity, decimal unitPrice)> orderItems);
+    Task<Order> CreateAsync(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems);
     
     Task<ReadOnlyCollection<Order>> GetAllAsync();
     

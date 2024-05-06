@@ -35,5 +35,5 @@ public class OrderDto
 
     public DateTime CreationDate { get; set; }
 
-    public DateTime LastUpdate { get; set; }
+    public DateTime? LastUpdate { get; set; }
 }

@@ -15,17 +15,17 @@ using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
-[TestSubject(typeof(ProductController))]
-public class ProductControllerTest
+[TestSubject(typeof(ProductsController))]
+public class ProductsControllerTest
 {
     private readonly Mock<IProductService> _serviceMock;
-    private readonly ProductController _target;
+    private readonly ProductsController _target;
 
-    public ProductControllerTest()
+    public ProductsControllerTest()
     {
         _serviceMock = new Mock<IProductService>();
 
-        _target = new ProductController(_serviceMock.Object);
+        _target = new ProductsController(_serviceMock.Object);
     }
     // create, update
 
