@@ -1,20 +1,9 @@
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
-using FIAP.TechChallenge.ByteMeBurger.Application;
-using FIAP.TechChallenge.ByteMeBurger.Application.Services;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
-using FIAP.TechChallenge.ByteMeBurger.Facade;
-using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Options;
-using MySql.Data.MySqlClient;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 

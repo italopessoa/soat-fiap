@@ -9,6 +9,6 @@ public class FindProductsByCategoryUseCase(IProductRepository repository) : IFin
     public async Task<IReadOnlyCollection<Product>> Execute(ProductCategory category)
     {
         return await repository.FindByCategory(category)
-               ?? Enumerable.Empty<Product>().ToList().AsReadOnly();
+               ?? Array.Empty<Product>().ToList().AsReadOnly();
     }
 }

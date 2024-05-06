@@ -7,6 +7,6 @@ public class GetAllProductsUseCase(IProductRepository repository) : IGetAllProdu
 {
     public async Task<IReadOnlyCollection<Product>> Execute()
     {
-        return await repository.GetAll() ?? Enumerable.Empty<Product>().ToList().AsReadOnly();
+        return await repository.GetAll() ?? Array.Empty<Product>().AsReadOnly() ;
     }
 }

@@ -2,7 +2,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
 public static class AssertionConcern
 {
-    public static void AssertArgumentNotEmpty(string value, string arg)
+    public static void AssertArgumentNotEmpty(string? value, string arg)
     {
         if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
         {

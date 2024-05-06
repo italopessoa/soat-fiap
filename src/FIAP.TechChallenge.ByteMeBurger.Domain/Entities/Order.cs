@@ -5,7 +5,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Order : Entity<Guid>
 {
-    private List<OrderItem> _orderItems = Enumerable.Empty<OrderItem>().ToList();
+    private List<OrderItem> _orderItems = Array.Empty<OrderItem>().ToList();
 
     public Customer? Customer { get; private set; }
 
