@@ -7,6 +7,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
@@ -21,7 +22,7 @@ public class CustomersControllerTest
     public CustomersControllerTest()
     {
         _serviceMock = new Mock<ICustomerService>();
-        _target = new CustomersController(_serviceMock.Object);
+        _target = new CustomersController(_serviceMock.Object, Mock.Of<ILogger<CustomersController>>());
     }
 
     [Fact]

@@ -7,18 +7,32 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController(ICustomerService customerService) : ControllerBase
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Produces("application/json")]
+    public class CustomersController : ControllerBase
     {
+        private readonly ICustomerService _customerService;
+        private readonly ILogger<CustomersController> _logger;
+
+        public CustomersController(ICustomerService customerService, ILogger<CustomersController> logger)
+        {
+            _customerService = customerService;
+            _logger = logger;
+        }
+
         [HttpGet]
         public async Task<ActionResult<CustomerDto>> GetByCpf([FromQuery] [MaxLength(14)] string cpf,
             CancellationToken cancellationToken)
         {
-            var customer = await customerService.FindByCpfAsync(cpf);
+            _logger.LogInformation("Getting customer by CPF: {Cpf}", cpf);
+            var customer = await _customerService.FindByCpfAsync(cpf);
             if (customer is null)
             {
+                _logger.LogWarning("Customer with CPF: {Cpf} not found", cpf);
                 return NotFound();
             }
 
+            _logger.LogInformation("Customer with CPF: {Cpf} found @{customer}", cpf, customer);
             return Ok(new CustomerDto(customer));
         }
 
@@ -26,11 +40,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         public async Task<ActionResult<CustomerDto>> Create([FromBody] CreateCustomerCommand createCustomerCommand,
             CancellationToken cancellationToken)
         {
-            var customer = await customerService.CreateAsync(
+            _logger.LogInformation("Creating customer with CPF: {Cpf}", createCustomerCommand.Cpf);
+            var customer = await _customerService.CreateAsync(
                 createCustomerCommand.Cpf,
                 createCustomerCommand.Name,
                 createCustomerCommand.Email);
 
+            _logger.LogInformation("Customer with CPF: {Cpf} created", createCustomerCommand.Cpf);
             return Ok(new CustomerDto(customer));
         }
     }
