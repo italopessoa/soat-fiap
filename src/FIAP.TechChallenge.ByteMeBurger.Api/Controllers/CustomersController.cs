@@ -9,30 +9,22 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Produces("application/json")]
-    public class CustomersController : ControllerBase
+    public class CustomersController(ICustomerService customerService, ILogger<CustomersController> logger)
+        : ControllerBase
     {
-        private readonly ICustomerService _customerService;
-        private readonly ILogger<CustomersController> _logger;
-
-        public CustomersController(ICustomerService customerService, ILogger<CustomersController> logger)
-        {
-            _customerService = customerService;
-            _logger = logger;
-        }
-
         [HttpGet]
         public async Task<ActionResult<CustomerDto>> GetByCpf([FromQuery] [MaxLength(14)] string cpf,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Getting customer by CPF: {Cpf}", cpf);
-            var customer = await _customerService.FindByCpfAsync(cpf);
+            logger.LogInformation("Getting customer by CPF: {Cpf}", cpf);
+            var customer = await customerService.FindByCpfAsync(cpf);
             if (customer is null)
             {
-                _logger.LogWarning("Customer with CPF: {Cpf} not found", cpf);
+                logger.LogWarning("Customer with CPF: {Cpf} not found", cpf);
                 return NotFound();
             }
 
-            _logger.LogInformation("Customer with CPF: {Cpf} found @{customer}", cpf, customer);
+            logger.LogInformation("Customer with CPF: {Cpf} found @{customer}", cpf, customer);
             return Ok(new CustomerDto(customer));
         }
 
@@ -40,13 +32,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         public async Task<ActionResult<CustomerDto>> Create([FromBody] CreateCustomerCommand createCustomerCommand,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Creating customer with CPF: {Cpf}", createCustomerCommand.Cpf);
-            var customer = await _customerService.CreateAsync(
+            logger.LogInformation("Creating customer with CPF: {Cpf}", createCustomerCommand.Cpf);
+            var customer = await customerService.CreateAsync(
                 createCustomerCommand.Cpf,
                 createCustomerCommand.Name,
                 createCustomerCommand.Email);
 
-            _logger.LogInformation("Customer with CPF: {Cpf} created", createCustomerCommand.Cpf);
+            logger.LogInformation("Customer with CPF: {Cpf} created", createCustomerCommand.Cpf);
             return Ok(new CustomerDto(customer));
         }
     }
