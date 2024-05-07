@@ -31,7 +31,7 @@ public class OrderItem : Entity<Guid>
 
     public Guid ProductId { get; private set; }
 
-    public string ProductName { get; private set; }
+    public string ProductName { get; private set; } = string.Empty;
 
     public decimal UnitPrice { get; private set; }
 

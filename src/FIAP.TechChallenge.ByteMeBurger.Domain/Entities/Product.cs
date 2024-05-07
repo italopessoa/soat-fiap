@@ -5,15 +5,15 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Product : Entity<Guid>
 {
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
 
-    public string Description { get; private set; }
+    public string Description { get; private set; } = string.Empty;
 
     public ProductCategory Category { get; private set; }
 
     public decimal Price { get; private set; }
 
-    public IReadOnlyList<string> Images { get; private set; }
+    public IReadOnlyList<string> Images { get; private set; } = [];
 
     public DateTime CreationDate { get; set; }
 
@@ -65,7 +65,7 @@ public class Product : Entity<Guid>
     private static void Validate(string name, string description, decimal price)
     {
         AssertionConcern.AssertArgumentNotEmpty(name, nameof(name));
-        AssertionConcern.AssertArgumentNotEmpty(description,nameof(description));
-        AssertionConcern. AssertArgumentNotZeroOrNegative(price, nameof(price));
+        AssertionConcern.AssertArgumentNotEmpty(description, nameof(description));
+        AssertionConcern.AssertArgumentNotZeroOrNegative(price, nameof(price));
     }
 }
