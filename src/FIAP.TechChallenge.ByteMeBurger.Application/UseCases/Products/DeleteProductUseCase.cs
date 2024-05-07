@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
@@ -6,6 +7,10 @@ public class DeleteProductUseCase(IProductRepository repository) : IDeleteProduc
 {
     public async Task<bool> Execute(Guid productId)
     {
-        return await repository.DeleteAsync(productId);
+        var deleted = await repository.DeleteAsync(productId);
+        if (deleted)
+            DomainEventTrigger.RaiseProductDeleted(new ProductDeleted(productId));
+        
+        return deleted;
     }
 }

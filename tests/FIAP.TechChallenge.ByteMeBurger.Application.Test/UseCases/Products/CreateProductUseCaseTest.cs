@@ -6,6 +6,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Products;
 [TestSubject(typeof(CreateProductUseCase))]
 public class CreateProductUseCaseTest : BaseProductsUseCaseTests
 {
+
     [Theory]
     [InlineAutoData]
     public async Task Create_Product_Success(string name, string description, ProductCategory category, decimal price,
@@ -17,7 +18,7 @@ public class CreateProductUseCaseTest : BaseProductsUseCaseTests
 
         _productRepository.Setup(s => s.CreateAsync(It.IsAny<Product>()))
             .ReturnsAsync(expectedProduct);
-
+        
         // Act
         var product = await _createProductUseCase.Execute(name, description, category, price, images);
 
@@ -33,8 +34,7 @@ public class CreateProductUseCaseTest : BaseProductsUseCaseTests
             product.Images.Should().BeEquivalentTo(images);
             product.CreationDate.Should().NotBe(default);
             product.LastUpdate.Should().BeNull();
+            _productRepository.VerifyAll();
         }
-
-        _productRepository.VerifyAll();
     }
 }

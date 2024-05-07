@@ -2,6 +2,9 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
+/// <summary>
+/// Cpf value object
+/// </summary>
 public class Cpf : ValueObject
 {
     public Cpf(string cpf)

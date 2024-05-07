@@ -1,4 +1,6 @@
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -9,8 +11,11 @@ public class CreateProductUseCase(IProductRepository repository) : ICreateProduc
     public async Task<Product> Execute(string name, string description, ProductCategory category, decimal price,
         string[] images)
     {
-        var newProduct = new Product(name, description, category, price, images);
-        newProduct.Create();
-        return await repository.CreateAsync(newProduct);
+        var product = new Product(name, description, category, price, images);
+        product.Create();
+
+        var newProduct = await repository.CreateAsync(product);
+        DomainEventTrigger.RaiseProductCreated(new ProductCreated(product));
+        return newProduct;
     }
 }

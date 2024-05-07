@@ -1,4 +1,5 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -16,6 +17,12 @@ public class UpdateProductUseCase(IProductRepository repository) : IUpdateProduc
         }
 
         currentProduct.Update(new Product(id, name, description, category, price, images));
-        return await repository.UpdateAsync(currentProduct);
+        if (await repository.UpdateAsync(currentProduct))
+        {
+            DomainEventTrigger.RaiseProductUpdated(new ProductUpdated((currentProduct, currentProduct)));
+            return true;
+        }
+
+        return false;
     }
 }

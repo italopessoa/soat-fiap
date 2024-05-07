@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
+    /// <summary>
+    /// Customers controller
+    /// </summary>
+    /// <param name="customerService">Customer service (port implementation).</param>
+    /// <param name="logger">Logger</param>
     [Route("api/[controller]")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
@@ -12,6 +17,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
     public class CustomersController(ICustomerService customerService, ILogger<CustomersController> logger)
         : ControllerBase
     {
+        /// <summary>
+        /// Find customers by Cpf
+        /// </summary>
+        /// <param name="cpf">Customer's cpf</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Customer</returns>
         [HttpGet]
         public async Task<ActionResult<CustomerDto>> GetByCpf([FromQuery] [MaxLength(14)] string cpf,
             CancellationToken cancellationToken)
@@ -24,10 +35,16 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
                 return NotFound();
             }
 
-            logger.LogInformation("Customer with CPF: {Cpf} found @{customer}", cpf, customer);
+            logger.LogInformation("Customer with CPF: {Cpf} found {@customer}", cpf, customer);
             return Ok(new CustomerDto(customer));
         }
 
+        /// <summary>
+        /// Create new customer
+        /// </summary>
+        /// <param name="createCustomerCommand">Create new customer parameters</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Customer</returns>
         [HttpPost]
         public async Task<ActionResult<CustomerDto>> Create([FromBody] CreateCustomerCommand createCustomerCommand,
             CancellationToken cancellationToken)
