@@ -6,6 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
+    /// <summary>
+    /// Products controller
+    /// </summary>
+    /// <param name="productService">Products service (port implementation). </param>
+    /// <param name="logger">Logger</param>
     [Route("api/[controller]")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
@@ -13,6 +18,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
     public class ProductsController(IProductService productService, ILogger<ProductsController> logger)
         : ControllerBase
     {
+        /// <summary>
+        /// Get all products or filter by category
+        /// </summary>
+        /// <param name="productCategory">Product category.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Product list.</returns>
         [HttpGet]
         public async Task<ActionResult<ReadOnlyCollection<ProductDto>>> Get(
             [FromQuery] ProductCategory? productCategory, CancellationToken cancellationToken)
@@ -29,6 +40,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
                 .AsReadOnly());
         }
 
+        /// <summary>
+        /// Delete existing product
+        /// </summary>
+        /// <param name="id">Product Id.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Operation result</returns>
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
@@ -49,6 +66,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Create new product
+        /// </summary>
+        /// <param name="newProduct">Create product params.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Product</returns>
         [HttpPost]
         public async Task<ActionResult<ProductDto>> Create(
             CreateProductCommandDto newProduct,
@@ -74,6 +97,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Update product
+        /// </summary>
+        /// <param name="id">Product Id.</param>
+        /// <param name="updateProductCommandDto">Update product params.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Updated product</returns>
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<ProductDto>> Update([FromRoute] Guid id,
             UpdateProductCommandDto updateProductCommandDto,

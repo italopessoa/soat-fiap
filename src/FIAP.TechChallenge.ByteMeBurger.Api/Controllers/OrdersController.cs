@@ -6,6 +6,11 @@ using Microsoft.Extensions.Logging;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
+    /// <summary>
+    /// Order controller
+    /// </summary>
+    /// <param name="orderService">Orders service (port implementation).</param>
+    /// <param name="logger">Logger</param>
     [Route("api/[controller]")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
@@ -13,6 +18,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
     public class OrdersController(IOrderService orderService, ILogger<OrdersController> logger)
         : ControllerBase
     {
+        /// <summary>
+        /// Create a new order with selected items
+        /// </summary>
+        /// <param name="newOrder">Create new order command</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Order</returns>
         [Route("checkout")]
         [HttpPost]
         public async Task<ActionResult<OrderDto>> Create(
@@ -27,6 +38,11 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             return Created($"{order.Id}", new OrderDto(order));
         }
 
+        /// <summary>
+        /// Get all orders that are not Finished
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Active orders list</returns>
         [HttpGet]
         public async Task<ActionResult<ReadOnlyCollection<OrderDto>>> Get(CancellationToken cancellationToken)
         {
@@ -38,6 +54,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             return Ok(ordersDto);
         }
 
+        /// <summary>
+        /// Return an order details by its Id
+        /// </summary>
+        /// <param name="id">Order id.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Order details</returns>
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<OrderDto>> Get(Guid id, CancellationToken cancellationToken)
         {

@@ -1,9 +1,11 @@
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
@@ -17,35 +19,41 @@ public class Program
 
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
         try
         {
             // Add services to the container.
             builder.Services.AddAuthorization();
+            builder.Services.AddSingleton<DomainEventsHandler>();
+            builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddControllers().AddJsonOptions(options =>
+            builder.Services.AddSwaggerGen(c =>
             {
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Challenge API", Version = "v1" });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
+            builder.Services.AddControllers(options => { options.Filters.Add<DomainExceptionFilter>(); })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
             builder.Services.Configure<MySqlSettings>(builder.Configuration.GetSection(nameof(MySqlSettings)));
             builder.ConfigServicesDependencies();
             builder.Services.RegisterFacade();
 
-            builder.Services.AddHealthChecks()
-                .AddMySql(provider => provider.GetRequiredService<DbConnectionStringBuilder>().ConnectionString);
+            AddHealthChecks(builder);
 
             var app = builder.Build();
+            app.Services.GetRequiredService<DomainEventsHandler>();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -73,5 +81,11 @@ public class Program
         {
             Log.CloseAndFlush();
         }
+    }
+
+    private static void AddHealthChecks(WebApplicationBuilder builder)
+    {
+        builder.Services.AddHealthChecks()
+            .AddMySql(provider => provider.GetRequiredService<DbConnectionStringBuilder>().ConnectionString);
     }
 }

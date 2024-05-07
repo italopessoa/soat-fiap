@@ -6,5 +6,9 @@
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Application" />
+    </ItemGroup>
 
 </Project>

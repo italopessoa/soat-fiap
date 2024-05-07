@@ -1,5 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -21,6 +22,11 @@ public class CreateCustomerUseCase(ICustomerRepository customerRepository) : ICr
         if (email is not null)
             customer.ChangeEmail(email);
 
-        return await customerRepository.CreateAsync(customer);
+        var newCustomer = await customerRepository.CreateAsync(customer);
+        if (newCustomer is null)
+            throw new UseCaseException("An error occurred while trying to create the customer.");
+
+        DomainEventTrigger.RaiseCustomerRegistered(new CustomerRegistered(customer));
+        return newCustomer;
     }
 }
