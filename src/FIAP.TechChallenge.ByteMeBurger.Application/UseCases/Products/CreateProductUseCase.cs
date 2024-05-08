@@ -1,4 +1,3 @@
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
