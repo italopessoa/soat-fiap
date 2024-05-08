@@ -5,6 +5,9 @@
 name: Build and Test
 
 on:
+  schedule:
+    # every day fridays at 3:00am UTC
+    - cron: "0 0 3 * * *"
   workflow_dispatch:
     inputs:
       name:
