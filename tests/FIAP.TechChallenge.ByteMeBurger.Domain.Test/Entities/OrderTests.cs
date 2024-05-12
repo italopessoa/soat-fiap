@@ -44,15 +44,15 @@ public class OrderTests
             order.Customer.Should().BeNull();
         }
     }
-    
+
     [Fact]
-    public void Order_CheckoutEmptyOrder_ThrowsError()
+    public void Order_CreateEmptyOrder_ThrowsError()
     {
         // Arrange
         var order = new Order();
 
         // Act
-        var func = () => order.Checkout();
+        var func = () => order.Create();
 
         // Assert
         func.Should().ThrowExactly<DomainException>();
@@ -68,7 +68,7 @@ public class OrderTests
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 2, 6);
 
         // Act
-        order.Checkout();
+        order.Create();
 
         // Assert
         using (new AssertionScope())
@@ -78,6 +78,39 @@ public class OrderTests
             order.Created.Should().NotBe(default);
             order.Customer.Should().NotBeNull();
         }
+    }
+
+    [Fact]
+    public void Order_ConfirmPayment_NotPending_ThrowsError()
+    {
+        // Arrange
+        var order = new Order();
+        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
+        order.Create();
+        order.ConfirmPayment();
+        // Act
+        var func = () => order.ConfirmPayment();
+
+        // Assert
+        func.Should().ThrowExactly<DomainException>().And.Message.Should()
+            .Be("Payment cannot be confirmed if order isn't pending.");
+    }
+
+    [Fact]
+    public void Order_ConfirmReceiving_NoPayment_ThrowsError()
+    {
+        // Arrange
+        var order = new Order();
+        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
+        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
+        order.Create();
+        // Act
+        var func = () => order.ConfirmReceiving();
+
+        // Assert
+        func.Should().ThrowExactly<DomainException>().And.Message.Should()
+            .Be("Cannot confirm receiving if payment isn't confirmed.");
     }
 
     [Fact]
@@ -93,24 +126,19 @@ public class OrderTests
 
         // Assert
         func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Cannot start preparing if order isn't confirmed.");
+            .Be("Cannot start preparing if order isn't received.");
     }
 
     [Fact]
     public void Order_Finish_NotInitiated_ThrowsError()
     {
         // Arrange
-        var order = new Order();
-        order.AddOrderItem(Guid.NewGuid(), "bread", 10, 1);
-        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
-        order.Checkout();
-
         // Act
-        var func = () => order.FinishPreparing();
+        var func = () => new Order().FinishPreparing();
 
         // Assert
         func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Cannot Finish order if it's not Preparing yet.");
+            .Be("Cannot Finish order if it's not In Preparation yet.");
     }
 
     [Fact]
@@ -120,8 +148,9 @@ public class OrderTests
         var order = new Order();
         order.AddOrderItem(Guid.NewGuid(), "bread", 2.5m, 4);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
-        order.Checkout();
+        order.Create();
         order.ConfirmPayment();
+        order.ConfirmReceiving();
         order.InitiatePrepare();
 
         // Act
@@ -129,7 +158,7 @@ public class OrderTests
 
         // Assert
         func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Cannot Deliver order if it's not Finished yet.");
+            .Be("Cannot Deliver order if it's not Completed yet.");
         order.TrackingCode.Should().NotBeEmpty();
     }
 
@@ -145,8 +174,9 @@ public class OrderTests
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 6, 2);
 
         // Act
-        order.Checkout();
+        order.Create();
         order.ConfirmPayment();
+        order.ConfirmReceiving();
         order.InitiatePrepare();
         var preparingDate = order.LastUpdate;
         order.FinishPreparing();
@@ -163,7 +193,7 @@ public class OrderTests
             order.Created.Should().BeBefore(preparingDate.Value);
             doneDate.Should().BeAfter(preparingDate.Value);
             finishedDate.Should().BeAfter(doneDate.Value);
-            order.Status.Should().Be(OrderStatus.Finished);
+            order.Status.Should().Be(OrderStatus.Completed);
             order.Total.Should().Be(22);
             order.TrackingCode.Should().NotBeEmpty();
         }
@@ -179,7 +209,7 @@ public class OrderTests
         order.AddOrderItem(Guid.NewGuid(), "soda", 2, 6);
 
         // Act
-        order.Checkout();
+        order.Create();
         order.ConfirmPayment();
 
         // Assert
@@ -206,7 +236,7 @@ public class OrderTests
                 order.AddOrderItem(Guid.NewGuid(), "ice cream", 1, 12);
             }
 
-            order.Checkout();
+            order.Create();
 
             // Act
             order.ConfirmPayment();

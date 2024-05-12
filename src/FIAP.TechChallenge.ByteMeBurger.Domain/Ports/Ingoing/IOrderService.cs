@@ -13,17 +13,24 @@ public interface IOrderService
     /// <param name="orderItems">Order items</param>
     /// <returns>Order entity</returns>
     Task<Order> CreateAsync(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems);
-    
+
     /// <summary>
     /// Get all active orders
     /// </summary>
     /// <returns>List of orders</returns>
     Task<ReadOnlyCollection<Order>> GetAllAsync();
-    
+
     /// <summary>
     /// Get order detail
     /// </summary>
     /// <param name="id">Order Id</param>
     /// <returns>Order entity</returns>
     Task<Order?> GetAsync(Guid id);
+
+    /// <summary>
+    /// Checkout order
+    /// After checkout, the order status will be updated to "Received"
+    /// </summary>
+    /// <param name="id">Order Id</param>
+    Task CheckoutAsync(Guid id);
 }

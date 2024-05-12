@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -28,13 +29,45 @@ public class Program
             builder.Services.AddSingleton<DomainEventsHandler>();
             builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
+
+            // Add CORS services to the DI container.
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Challenge API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Challenge Restaurant API", Version = "v1", Extensions =
+                {
+                    {
+                        "x-logo",
+                        new OpenApiObject
+                        {
+                            {
+                                "url",
+                                new OpenApiString(
+                                    "https://avatars.githubusercontent.com/u/165858718?s=384")
+                            },
+                            {
+                                "background",
+                                new OpenApiString(
+                                    "#FF0000")
+                            }
+
+                        }
+                    }
+                } });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -67,7 +100,7 @@ public class Program
             });
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowSpecificOrigins");
             app.UseAuthorization();
 
             app.MapControllers();

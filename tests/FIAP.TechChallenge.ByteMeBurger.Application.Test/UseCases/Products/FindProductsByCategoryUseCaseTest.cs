@@ -15,7 +15,7 @@ public class FindProductsByCategoryUseCaseTest: BaseProductsUseCaseTests
             .ReturnsAsync((ReadOnlyCollection<Product>)null!);
 
         // Act
-        var products = await _findProductsByCategoryUseCase.Execute(ProductCategory.Beverage);
+        var products = await _findProductsByCategoryUseCase.Execute(ProductCategory.Drink);
 
         // Assert
         using (new AssertionScope())

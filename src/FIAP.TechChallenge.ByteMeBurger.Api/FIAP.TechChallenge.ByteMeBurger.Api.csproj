@@ -36,7 +36,6 @@
     <ItemGroup>
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Application\FIAP.TechChallenge.ByteMeBurger.Application.csproj" />
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Domain\FIAP.TechChallenge.ByteMeBurger.Domain.csproj" />
-      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Facade\FIAP.TechChallenge.ByteMeBurger.Facade.csproj" />
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Infrastructure\FIAP.TechChallenge.ByteMeBurger.Infrastructure.csproj" />
     </ItemGroup>
 

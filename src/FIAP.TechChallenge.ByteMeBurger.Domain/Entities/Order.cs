@@ -59,7 +59,7 @@ public class Order : Entity<Guid>
         if (Status == OrderStatus.PaymentPending)
             _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
         else
-            throw new DomainException($"Cannot add items to an Order if it's {Status}");
+            throw new DomainException($"Cannot add items to an Order if its status is {Status}");
     }
 
     public void LoadItems(Guid productId, string productName, decimal unitPrice, int quantity)
@@ -67,53 +67,60 @@ public class Order : Entity<Guid>
         _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
     }
 
-    public void ValidateCheckout()
+    public void Create()
     {
         if (!_orderItems.Any())
         {
             throw new DomainException("An Order must have at least one item");
         }
-    }
 
-    public void Checkout()
-    {
-        ValidateCheckout();
         Created = DateTime.UtcNow;
+        Status = OrderStatus.PaymentPending;
     }
 
     public void ConfirmPayment()
     {
-        if (Created == default)
-            throw new DomainException("Cannot confirm");
+        if (Status != OrderStatus.PaymentPending)
+            throw new DomainException("Payment cannot be confirmed if order isn't pending.");
+
+        Status = OrderStatus.PaymentConfirmed;
+        TrackingCode = GenerateCode(Created);
+        Update();
+    }
+
+    public void ConfirmReceiving()
+    {
+        if (Status != OrderStatus.PaymentConfirmed)
+            throw new DomainException("Cannot confirm receiving if payment isn't confirmed.");
 
         Status = OrderStatus.Received;
-        TrackingCode = GenerateCode(Created);
+        Update();
     }
 
     public void InitiatePrepare()
     {
         if (Status != OrderStatus.Received)
-            throw new DomainException("Cannot start preparing if order isn't confirmed.");
+            throw new DomainException("Cannot start preparing if order isn't received.");
 
-        Status = OrderStatus.Preparing;
+        Status = OrderStatus.InPreparation;
         Update();
     }
 
     public void FinishPreparing()
     {
-        if (Status != OrderStatus.Preparing)
-            throw new DomainException("Cannot Finish order if it's not Preparing yet.");
+        if (Status != OrderStatus.InPreparation)
+            throw new DomainException("Cannot Finish order if it's not In Preparation yet.");
 
-        Status = OrderStatus.Done;
+        Status = OrderStatus.Ready;
         Update();
     }
 
     public void DeliverOrder()
     {
-        if (Status != OrderStatus.Done)
-            throw new DomainException("Cannot Deliver order if it's not Finished yet.");
+        if (Status != OrderStatus.Ready)
+            throw new DomainException("Cannot Deliver order if it's not Completed yet.");
 
-        Status = OrderStatus.Finished;
+        Status = OrderStatus.Completed;
         Update();
     }
 

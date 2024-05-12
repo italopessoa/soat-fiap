@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 {
@@ -24,7 +24,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <param name="newOrder">Create new order command</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Order</returns>
-        [Route("checkout")]
         [HttpPost]
         public async Task<ActionResult<OrderDto>> Create(
             CreateOrderCommandDto newOrder,
@@ -35,11 +34,11 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
             logger.LogInformation("Order created with ID: {OrderId}", order.Id);
-            return Created($"{order.Id}", new OrderDto(order));
+            return Accepted($"{order.Id}", new OrderDto(order));
         }
 
         /// <summary>
-        /// Get all orders that are not Finished
+        /// Get all orders that are not Completed
         /// </summary>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Active orders list</returns>
@@ -76,6 +75,21 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
 
             logger.LogInformation("Order with ID: {OrderId} found", id);
             return Ok(new OrderDto(order));
+        }
+
+        /// <summary>
+        /// Checkout order
+        /// </summary>
+        /// <param name="command">Checkout order command.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        [Route("checkout")]
+        [HttpPost]
+        public async Task<ActionResult<OrderDto>> Checkout([FromBody] CheckoutOrderCommandDto command,
+            CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Checkout order: {Id}", command.Id);
+            await orderService.CheckoutAsync(command.Id);
+            return Ok();
         }
     }
 }

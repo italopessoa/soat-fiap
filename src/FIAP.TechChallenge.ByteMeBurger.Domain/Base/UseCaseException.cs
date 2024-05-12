@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
+[ExcludeFromCodeCoverage]
 public class UseCaseException : DomainException
 {
     public UseCaseException()
