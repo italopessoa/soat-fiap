@@ -94,8 +94,8 @@ public class OrdersControllerTest
         // Assert
         using (new AssertionScope())
         {
-            response.Result.Should().BeOfType<AcceptedResult>();
-            var createdOrder = response.Result.As<AcceptedResult>().Value.As<OrderDto>();
+            response.Result.Should().BeOfType<AcceptedAtActionResult>();
+            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<OrderDto>();
 
             // TODO after 1h or so I gave up trying to make this sh*t to assert it all in on line, I'll check it later
             createdOrder.Id.Should().Be(expectedOrder.Id);
@@ -148,8 +148,8 @@ public class OrdersControllerTest
         // Assert
         using (new AssertionScope())
         {
-            response.Result.Should().BeOfType<AcceptedResult>();
-            var createdOrder = response.Result.As<AcceptedResult>().Value.As<OrderDto>();
+            response.Result.Should().BeOfType<AcceptedAtActionResult>();
+            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<OrderDto>();
 
             createdOrder.Id.Should().Be(expectedOrder.Id);
             createdOrder.Customer.Should().BeNull();

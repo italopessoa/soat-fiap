@@ -34,7 +34,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
             logger.LogInformation("Order created with ID: {OrderId}", order.Id);
-            return Accepted($"{order.Id}", new OrderDto(order));
+            return AcceptedAtAction(nameof(Get), new { id = order.Id }, new OrderDto(order));
         }
 
         /// <summary>

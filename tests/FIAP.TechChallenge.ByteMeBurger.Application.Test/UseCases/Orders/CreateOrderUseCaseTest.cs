@@ -69,7 +69,7 @@ public class CreateOrderUseCaseTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Checkout_CustomerNofFound_Error(
+    public async Task Checkout_CustomerNotFound_Error(
         List<(Guid productId, int quantity)> orderItems)
     {
         // Arrange

@@ -59,7 +59,7 @@ public class Order : Entity<Guid>
         if (Status == OrderStatus.PaymentPending)
             _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
         else
-            throw new DomainException($"Cannot add items to an Order if its status is {Status}");
+            throw new DomainException($"Cannot add items to an Order with status {Status}. Items can only be added when the status is PaymentPending.");
     }
 
     public void LoadItems(Guid productId, string productName, decimal unitPrice, int quantity)

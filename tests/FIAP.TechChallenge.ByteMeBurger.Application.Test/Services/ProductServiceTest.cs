@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using AutoFixture;
 using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
@@ -201,7 +200,7 @@ public class ProductServiceTest
         _mockUpdateProductUseCase.Setup(s => s.Execute(
                 It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ProductCategory>(),
                 It.IsAny<decimal>(), It.IsAny<IReadOnlyList<string>>()))
-            .ReturnsAsync(false)
+            .ReturnsAsync(true)
             .Verifiable();
 
         // Act
@@ -211,7 +210,7 @@ public class ProductServiceTest
         // Assert
         using (new AssertionScope())
         {
-            updated.Should().BeFalse();
+            updated.Should().BeTrue();
             _mockUpdateProductUseCase.VerifyAll();
         }
     }

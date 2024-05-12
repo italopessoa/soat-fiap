@@ -26,10 +26,10 @@ public class CreateOrderUseCase : ICreateOrderUseCase
         if (customerCpf is not null)
         {
             var customer = await _customerRepository.FindByCpfAsync(customerCpf);
-            if (customer is not null)
-                order = new Order(Guid.NewGuid(), customer);
-            else
+            if (customer == null)
                 throw new EntityNotFoundException("Customer not found.");
+
+            order = new Order(Guid.NewGuid(), customer);
         }
 
         foreach (var item in orderItems)
@@ -46,7 +46,7 @@ public class CreateOrderUseCase : ICreateOrderUseCase
     private async Task<Product?> GetProduct(Guid productId)
     {
         var product = await _productRepository.FindByIdAsync(productId);
-        if (product is null)
+        if (product == null)
             throw new EntityNotFoundException($"Product '{productId}' not found.");
 
         return product;
