@@ -29,7 +29,7 @@ public class ProductRepositoryDapperTest
     public async Task Create_Success()
     {
         // Arrange
-        var product = new Product("product", "description", ProductCategory.Beverage, 10,
+        var product = new Product("product", "description", ProductCategory.Drink, 10,
             new List<string> { "image1" });
         var parameters = (ProductDto)product;
         const string sql =
@@ -91,7 +91,7 @@ public class ProductRepositoryDapperTest
             Id = Guid.NewGuid(),
             Name = "COCA",
             Description = "COCA COLA",
-            Category = (int)ProductCategory.Beverage,
+            Category = (int)ProductCategory.Drink,
             Price = 10,
             Images = "image1|image 2",
             CreationDate = DateTime.UtcNow
@@ -127,7 +127,7 @@ public class ProductRepositoryDapperTest
             Id = Guid.NewGuid(),
             Name = "COCA",
             Description = "COCA COLA",
-            Category = (int)ProductCategory.Beverage,
+            Category = (int)ProductCategory.Drink,
             Price = 10,
             Images = "image1|image 2"
         };
@@ -136,7 +136,7 @@ public class ProductRepositoryDapperTest
             .ReturnsAsync([product]);
 
         // Act
-        var result = await _target.FindByCategory(ProductCategory.Beverage);
+        var result = await _target.FindByCategory(ProductCategory.Drink);
 
         // Assert
         using (new AssertionScope())
@@ -158,7 +158,7 @@ public class ProductRepositoryDapperTest
     public async Task Update_Success()
     {
         // Arrange
-        var product = new Product("product", "description", ProductCategory.Beverage, 10,
+        var product = new Product("product", "description", ProductCategory.Drink, 10,
             new List<string> { "image1" });
         const string sql =
             "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id";

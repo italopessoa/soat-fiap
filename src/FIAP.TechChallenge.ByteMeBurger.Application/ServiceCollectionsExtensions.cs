@@ -20,14 +20,14 @@ public static class ServiceCollectionsExtensions
         serviceCollection.AddScoped<IFindCustomerByCpfUseCase, FindCustomerByCpfUseCase>();
         serviceCollection.AddScoped<ICreateCustomerUseCase, CreateCustomerUseCase>();
     }
-    
+
     private static void AddOrderUseCases(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<ICheckoutOrderUseCase, CheckoutOrderUseCase>();
+        serviceCollection.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
         serviceCollection.AddScoped<IOrderGetAllUseCase, OrderGetAllUseCase>();
         serviceCollection.AddScoped<IGetOrderDetailsUseCase, GetOrderDetailsUseCase>();
     }
-    
+
     private static void AddProductUseCases(IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<ICreateProductUseCase, CreateProductUseCase>();
@@ -35,5 +35,6 @@ public static class ServiceCollectionsExtensions
         serviceCollection.AddScoped<IUpdateProductUseCase, UpdateProductUseCase>();
         serviceCollection.AddScoped<IGetAllProductsUseCase, GetAllProductsUseCase>();
         serviceCollection.AddScoped<IDeleteProductUseCase, DeleteProductUseCase>();
+        serviceCollection.AddScoped<ICheckoutOrderUseCase, FakeCheckoutOrderUseCase>();
     }
 }

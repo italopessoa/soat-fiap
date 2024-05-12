@@ -1,0 +1,160 @@
+###
+@API_URL=http://localhost:8080/api
+@dessertId=""
+@drinkId=""
+@mealId=""
+@sidesId=""
+@customerId=""
+@dessertToDeleteId=""
+@customerCpf="664.381.370-06"
+@orderId=""
+###
+# @name create dessert
+POST {{API_URL}}/Products
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphabetic(10)}}",
+  "description": "{{$random.alphabetic(100)}}",
+  "category": "Dessert",
+  "price": {{$random.float(1, 34)}},
+  "images": [
+    "{{$random.alphabetic(100)}}"
+  ]
+}
+> {%
+    client.global.set("dessertId", response.body.id);
+%}
+
+###
+
+# @name create drink
+POST {{API_URL}}/Products
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphabetic(10)}}",
+  "description": "{{$random.alphabetic(100)}}",
+  "category": "Drink",
+  "price": {{$random.float(1, 34)}},
+  "images": [
+    "{{$random.alphabetic(100)}}"
+  ]
+}
+> {%
+    client.global.set("drinkId", response.body.id);
+%}
+
+###
+
+# @name create sides
+POST {{API_URL}}/Products
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphabetic(10)}}",
+  "description": "{{$random.alphabetic(100)}}",
+  "category": "Sides",
+  "price": {{$random.float(1, 34)}},
+  "images": [
+    "{{$random.alphabetic(100)}}"
+  ]
+}
+> {%
+    client.global.set("sidesId", response.body.id);
+%}
+
+###
+
+# @name create meal
+POST {{API_URL}}/Products
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphabetic(10)}}",
+  "description": "{{$random.alphabetic(100)}}",
+  "category": "Meal",
+  "price": {{$random.float(1, 34)}},
+  "images": [
+    "{{$random.alphabetic(100)}}"
+  ]
+}
+> {%
+    client.global.set("mealId", response.body.id);
+%}
+
+###
+# @name create dessert to delete
+POST {{API_URL}}/Products
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphabetic(10)}}",
+  "description": "{{$random.alphabetic(100)}}",
+  "category": "Dessert",
+  "price": {{$random.float(1, 34)}}
+}
+> {%
+    client.global.set("dessertToDeleteId", response.body.id);
+%}
+
+###
+
+# @name delete prpoduct
+DELETE {{API_URL}}/Products/{{dessertToDeleteId}}
+Content-Type: application/json
+
+###
+
+###
+# @name Create customer
+POST {{API_URL}}/Customers
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphabetic(10)}}",
+  "email": "{{$random.email}}",
+  "cpf": {{customerCpf}}
+}
+> {%
+    client.global.set("customerId", response.body.id);
+%}
+
+###
+# @name Create order with customer
+POST {{API_URL}}/Orders
+Content-Type: application/json
+
+{
+  "cpf": {{customerCpf}},
+  "items": [
+    {
+      "productId": "{{dessertId}}",
+      "quantity": {{$random.integer(1, 2)}}
+    },
+    {
+      "productId": "{{drinkId}}",
+       "quantity": {{$random.integer(1, 2)}}
+    },
+    {
+      "productId": "{{mealId}}",
+       "quantity": {{$random.integer(1, 3)}}
+    },
+    {
+    "productId": "{{sidesId}}",
+      "quantity": {{$random.integer(1, 4)}}
+    }
+  ]
+}
+> {%
+    client.global.set("orderId", response.body.id);
+%}
+
+###
+# @name Checkout order
+POST {{API_URL}}/Orders/checkout
+Content-Type: application/json
+
+{
+  "id": "{{orderId}}"
+}

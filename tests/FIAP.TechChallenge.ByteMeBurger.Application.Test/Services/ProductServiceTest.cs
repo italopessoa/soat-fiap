@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using AutoFixture;
 using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
@@ -129,7 +128,7 @@ public class ProductServiceTest
             .ReturnsAsync(Array.Empty<Product>().AsReadOnly);
 
         // Act
-        var products = await _target.FindByCategory(ProductCategory.Beverage);
+        var products = await _target.FindByCategory(ProductCategory.Drink);
 
         // Assert
         using (new AssertionScope())
@@ -180,7 +179,7 @@ public class ProductServiceTest
 
         // Act
         var updated = await _target.UpdateAsync(product.Id, product.Name, product.Description,
-            ProductCategory.Beverage, product.Price, product.Images);
+            ProductCategory.Drink, product.Price, product.Images);
 
         // Assert
         using (new AssertionScope())
@@ -201,17 +200,17 @@ public class ProductServiceTest
         _mockUpdateProductUseCase.Setup(s => s.Execute(
                 It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ProductCategory>(),
                 It.IsAny<decimal>(), It.IsAny<IReadOnlyList<string>>()))
-            .ReturnsAsync(false)
+            .ReturnsAsync(true)
             .Verifiable();
 
         // Act
         var updated = await _target.UpdateAsync(product.Id, product.Name, product.Description,
-            ProductCategory.Beverage, product.Price, product.Images);
+            ProductCategory.Drink, product.Price, product.Images);
 
         // Assert
         using (new AssertionScope())
         {
-            updated.Should().BeFalse();
+            updated.Should().BeTrue();
             _mockUpdateProductUseCase.VerifyAll();
         }
     }

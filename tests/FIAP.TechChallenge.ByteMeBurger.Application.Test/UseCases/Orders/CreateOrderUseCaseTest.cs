@@ -4,21 +4,21 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders;
 
-[TestSubject(typeof(CheckoutOrderUseCase))]
-public class CheckoutOrderUseCaseTest
+[TestSubject(typeof(CreateOrderUseCase))]
+public class CreateOrderUseCaseTest
 {
     private readonly Mock<ICustomerRepository> _customerRepository;
     private readonly Mock<IOrderRepository> _orderRepository;
     private readonly Mock<IProductRepository> _productRepository;
-    private readonly ICheckoutOrderUseCase _useCase;
+    private readonly ICreateOrderUseCase _useCase;
     private readonly Cpf _validCpf = new("863.917.790-23");
 
-    public CheckoutOrderUseCaseTest()
+    public CreateOrderUseCaseTest()
     {
         _customerRepository = new Mock<ICustomerRepository>();
         _productRepository = new Mock<IProductRepository>();
         _orderRepository = new Mock<IOrderRepository>();
-        _useCase = new CheckoutOrderUseCase(_orderRepository.Object, _productRepository.Object,
+        _useCase = new CreateOrderUseCase(_orderRepository.Object, _productRepository.Object,
             _customerRepository.Object);
     }
 
@@ -27,13 +27,13 @@ public class CheckoutOrderUseCaseTest
     public async Task Checkout_Success(
         List<(Guid productId, int quantity)> orderItems)
     {
-        // Arrange 
-        var product = new Product("product", "description", ProductCategory.Beverage, 10, []);
+        // Arrange
+        var product = new Product("product", "description", ProductCategory.Drink, 10, []);
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
         orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, product.Name, product.Price, i.quantity); });
 
-        expectedOrder.Checkout();
+        expectedOrder.Create();
 
         _orderRepository.Setup(r => r.CreateAsync(
                 It.Is<Order>(o => o.Created != DateTime.MinValue
@@ -69,14 +69,14 @@ public class CheckoutOrderUseCaseTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Checkout_CustomerNofFound_Error(
+    public async Task Checkout_CustomerNotFound_Error(
         List<(Guid productId, int quantity)> orderItems)
     {
-        // Arrange 
+        // Arrange
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
         orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "productName", 1, i.quantity); });
-        expectedOrder.Checkout();
+        expectedOrder.Create();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
                 It.Is<string>(cpf => cpf == _validCpf.Value)))
@@ -88,7 +88,7 @@ public class CheckoutOrderUseCaseTest
         // Assert
         using (new AssertionScope())
         {
-            (await func.Should().ThrowExactlyAsync<UseCaseException>())
+            (await func.Should().ThrowExactlyAsync<EntityNotFoundException>())
                 .And
                 .Message
                 .Should()
@@ -110,11 +110,11 @@ public class CheckoutOrderUseCaseTest
     public async Task Checkout_ProductNotFound_Error(
         List<(Guid productId,int quantity)> orderItems)
     {
-        // Arrange 
+        // Arrange
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
         orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "productName", 2, i.quantity); });
-        expectedOrder.Checkout();
+        expectedOrder.Create();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
                 It.Is<string>(cpf => cpf == _validCpf.Value)))
@@ -130,7 +130,7 @@ public class CheckoutOrderUseCaseTest
         // Assert
         using (new AssertionScope())
         {
-            (await func.Should().ThrowExactlyAsync<UseCaseException>())
+            (await func.Should().ThrowExactlyAsync<EntityNotFoundException>())
                 .And
                 .Message
                 .Should()

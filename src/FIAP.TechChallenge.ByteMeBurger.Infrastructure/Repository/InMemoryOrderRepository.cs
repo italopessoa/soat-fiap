@@ -26,4 +26,9 @@ public class InMemoryOrderRepository : IOrderRepository
         var orderIndex = _orders.FindIndex(o => o.Id == orderId);
         return orderIndex >= 0 ? Task.FromResult(_orders[orderIndex]) : Task.FromResult<Order?>(null);
     }
+
+    public Task<bool> UpdateOrderStatusAsync(Order order)
+    {
+        throw new NotImplementedException();
+    }
 }

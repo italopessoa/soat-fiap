@@ -9,8 +9,8 @@ public class DeleteProductUseCase(IProductRepository repository) : IDeleteProduc
     {
         var deleted = await repository.DeleteAsync(productId);
         if (deleted)
-            DomainEventTrigger.RaiseProductDeleted(new ProductDeleted(productId));
-        
+            DomainEventTrigger.RaiseProductDeleted(productId);
+
         return deleted;
     }
 }

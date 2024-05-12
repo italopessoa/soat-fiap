@@ -21,7 +21,7 @@ public class UpdateProductUseCaseTest : BaseProductsUseCaseTests
 
         // Act
         var updated = await _updateProductUseCase.Execute(product.Id, product.Name, product.Description,
-            ProductCategory.Beverage, product.Price, product.Images);
+            ProductCategory.Drink, product.Price, product.Images);
 
         // Assert
         using (new AssertionScope())
@@ -50,7 +50,7 @@ public class UpdateProductUseCaseTest : BaseProductsUseCaseTests
 
         // Act
         var updated = await _updateProductUseCase.Execute(product.Id, product.Name, product.Description,
-            ProductCategory.Beverage, product.Price, product.Images);
+            ProductCategory.Drink, product.Price, product.Images);
 
         // Assert
         using (new AssertionScope())
@@ -78,7 +78,7 @@ public class UpdateProductUseCaseTest : BaseProductsUseCaseTests
 
         // Act
         var updated = await _updateProductUseCase.Execute(product.Id, product.Name, product.Description,
-            ProductCategory.Beverage, product.Price, product.Images);
+            ProductCategory.Drink, product.Price, product.Images);
 
         // Assert
         using (new AssertionScope())

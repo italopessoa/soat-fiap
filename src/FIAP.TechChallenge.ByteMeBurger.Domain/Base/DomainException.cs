@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
+[ExcludeFromCodeCoverage]
 public class DomainException : Exception
 {
     /// <summary>
@@ -7,7 +10,7 @@ public class DomainException : Exception
     /// </summary>
     public DomainException()
     {
-        
+
     }
 
     /// <summary>

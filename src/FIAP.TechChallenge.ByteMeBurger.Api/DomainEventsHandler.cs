@@ -29,13 +29,13 @@ public class DomainEventsHandler : IDisposable
 
     private void OnOrderStatusChanged(object? sender, OrderStatusChanged e)
     {
-        _logger.LogInformation("Order: {Id} status changed from {oldStatus} to '{newStatus}'", e.Payload.Item1.orderId,
-            e.Payload.Item1.oldStatus, e.Payload.Item1.newStatus);
+        _logger.LogInformation("Order: {Id} status changed from '{oldStatus}' to '{newStatus}'", e.Payload.orderId,
+            e.Payload.oldStatus, e.Payload.newStatus);
     }
 
     private void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
     {
-        throw new NotImplementedException();
+        _logger.LogInformation("Order: {Id} payment confirmed", e.Payload.Id);
     }
 
     private void OnOrderCreated(object? sender, OrderCreated e)

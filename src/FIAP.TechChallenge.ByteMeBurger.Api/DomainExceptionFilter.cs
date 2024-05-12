@@ -21,11 +21,23 @@ public class DomainExceptionFilter : IExceptionFilter
         if (context.Exception is not DomainException) return;
         _logger.LogError(context.Exception, "An unhandled domain exception has occurred.");
 
-        context.Result = new BadRequestObjectResult(new ProblemDetails
+        if (context.Exception is EntityNotFoundException)
         {
-            Status = StatusCodes.Status404NotFound,
-            Title = "The request could not be processed.",
-            Detail = context.Exception.Message,
-        });
+            context.Result = new NotFoundObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "The requested resource was not found.",
+                Detail = context.Exception.Message,
+            });
+        }
+        else
+        {
+            context.Result = new BadRequestObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "The request could not be processed.",
+                Detail = context.Exception.Message,
+            });
+        }
     }
 }

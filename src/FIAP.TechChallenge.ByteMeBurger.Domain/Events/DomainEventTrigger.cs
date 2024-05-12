@@ -1,3 +1,6 @@
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 
 public static class DomainEventTrigger
@@ -9,20 +12,20 @@ public static class DomainEventTrigger
     public static event EventHandler<OrderPaymentConfirmed>? OrderPaymentConfirmed;
     public static event EventHandler<OrderStatusChanged>? OrderStatusChanged;
     public static event EventHandler<CustomerRegistered>? CustomerRegistered;
-    
+
     internal static void RaiseProductCreated(ProductCreated e)
     {
         ProductCreated?.Invoke(null, e);
     }
 
-    internal static void RaiseOrderCreated(OrderCreated e)
+    internal static void RaiseOrderCreated(Order order)
     {
-        OrderCreated?.Invoke(null, e);
+        OrderCreated?.Invoke(null, new OrderCreated(order));
     }
 
-    internal static void RaiseProductDeleted(ProductDeleted e)
+    internal static void RaiseProductDeleted(Guid productId)
     {
-        ProductDeleted?.Invoke(null, e);
+        ProductDeleted?.Invoke(null, new ProductDeleted(productId));
     }
 
     internal static void RaiseProductUpdated(ProductUpdated e)
@@ -30,14 +33,14 @@ public static class DomainEventTrigger
         ProductUpdated?.Invoke(null, e);
     }
 
-    internal static void RaiseOrderStatusChanged(OrderStatusChanged e)
+    internal static void RaiseOrderStatusChanged(Guid orderId, OrderStatus oldStatus, OrderStatus newStatus)
     {
-        OrderStatusChanged?.Invoke(null, e);
+        OrderStatusChanged?.Invoke(null, new OrderStatusChanged((orderId, oldStatus, newStatus)));
     }
 
-    internal static void RaiseOrderPaymentConfirmed(OrderPaymentConfirmed e)
+    internal static void RaiseOrderPaymentConfirmed(Order order)
     {
-        OrderPaymentConfirmed?.Invoke(null, e);
+        OrderPaymentConfirmed?.Invoke(null, new OrderPaymentConfirmed(order));
     }
 
     internal static void RaiseCustomerRegistered(CustomerRegistered e)

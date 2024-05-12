@@ -14,7 +14,7 @@ public class ProductTest
     {
         // Arrange
         // Act
-        var product = () => new Product(string.Empty, "description", ProductCategory.Beverage, 10m, []);
+        var product = () => new Product(string.Empty, "description", ProductCategory.Drink, 10m, []);
 
         // Assert
         using (new AssertionScope())
@@ -28,7 +28,7 @@ public class ProductTest
     {
         // Arrange
         // Act
-        var product = () => new Product("name", string.Empty, ProductCategory.Beverage, 10m, []);
+        var product = () => new Product("name", string.Empty, ProductCategory.Drink, 10m, []);
 
         // Assert
         using (new AssertionScope())
@@ -42,7 +42,7 @@ public class ProductTest
     {
         // Arrange
         // Act
-        var product = () => new Product("name", "description", ProductCategory.Beverage, 0, []);
+        var product = () => new Product("name", "description", ProductCategory.Drink, 0, []);
 
         // Assert
         using (new AssertionScope())

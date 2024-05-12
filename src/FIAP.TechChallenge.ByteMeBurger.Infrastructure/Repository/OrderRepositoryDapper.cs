@@ -106,25 +106,32 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
     public async Task<Order?> GetAsync(Guid orderId)
     {
         logger.LogInformation("Getting order with ID: {OrderId}", orderId);
-        var ordersDictionary = new Dictionary<Guid, Order>();
 
-        await dbConnection.QueryAsync<Order, OrderItem, Order>(
-            "select * from Orders o inner join OrderItems oi on oi.OrderId = o.Id where o.Id = @OrderId",
-            (order, orderItem) =>
-            {
-                if (ordersDictionary.TryGetValue(order.Id, out var existingOrder))
-                    order = existingOrder;
-                else
-                    ordersDictionary.Add(order.Id, order);
+        var order = await dbConnection.QuerySingleOrDefaultAsync<Order>(
+            "select * from Orders where Id = @OrderId",
 
-                order.AddOrderItem(orderItem.ProductId, orderItem.ProductName, orderItem.UnitPrice, orderItem.Quantity);
-
-                return order;
-            },
-            splitOn: "CustomerId",
             param: new { OrderId = orderId });
 
         logger.LogInformation("Order with ID: {OrderId} retrieved", orderId);
-        return ordersDictionary.Select(x => x.Value).FirstOrDefault();
+        return order;
+    }
+
+    public async Task<bool> UpdateOrderStatusAsync(Order order)
+    {
+        logger.LogInformation("Updating order {orderId} status", order.Id);
+
+        var updated = await dbConnection.ExecuteAsync(
+            "UPDATE Orders SET Status=@Status, Updated=@LastUpdate WHERE Id = @Id",
+            new
+            {
+                order.Status,
+                order.LastUpdate,
+                order.Id
+            }) == 1;
+
+        logger.LogInformation(
+            updated ? "Order {orderId} status updated" : "Order {orderId} status not updated", order.Id);
+
+        return updated;
     }
 }

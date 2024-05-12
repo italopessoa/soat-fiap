@@ -86,12 +86,12 @@ public class ProductsControllerTest
     public async Task GetByCategory_Success()
     {
         // Arrange 
-        var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Beverage, 2, []);
+        var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Drink, 2, []);
         _serviceMock.Setup(s => s.FindByCategory(It.IsAny<ProductCategory>()))
             .ReturnsAsync([product]);
 
         // Act
-        var response = await _target.Get(ProductCategory.Beverage, CancellationToken.None);
+        var response = await _target.Get(ProductCategory.Drink, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -105,7 +105,7 @@ public class ProductsControllerTest
                 }.AsReadOnly());
 
             _serviceMock.Verify(s => s.GetAll(), Times.Never);
-            _serviceMock.Verify(s => s.FindByCategory(It.Is<ProductCategory>(c => c == ProductCategory.Beverage)),
+            _serviceMock.Verify(s => s.FindByCategory(It.Is<ProductCategory>(c => c == ProductCategory.Drink)),
                 Times.Once);
             _serviceMock.VerifyAll();
         }
@@ -115,12 +115,12 @@ public class ProductsControllerTest
     public async Task GetByCategory_Empty()
     {
         // Arrange 
-        var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Beverage, 2, []);
+        var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Drink, 2, []);
         _serviceMock.Setup(s => s.FindByCategory(It.IsAny<ProductCategory>()))
             .ReturnsAsync([]);
 
         // Act
-        var response = await _target.Get(ProductCategory.Beverage, CancellationToken.None);
+        var response = await _target.Get(ProductCategory.Drink, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -131,7 +131,7 @@ public class ProductsControllerTest
                 .Should().BeEmpty();
 
             _serviceMock.Verify(s => s.GetAll(), Times.Never);
-            _serviceMock.Verify(s => s.FindByCategory(It.Is<ProductCategory>(c => c == ProductCategory.Beverage)),
+            _serviceMock.Verify(s => s.FindByCategory(It.Is<ProductCategory>(c => c == ProductCategory.Drink)),
                 Times.Once);
             _serviceMock.VerifyAll();
         }

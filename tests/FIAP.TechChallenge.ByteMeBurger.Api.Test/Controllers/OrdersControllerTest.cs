@@ -31,7 +31,7 @@ public class OrdersControllerTest
     public async void GetAll_Success()
     {
         // Arrange
-        var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, []);
+        var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Drink, 10, []);
         var orderId = Guid.NewGuid();
         var customer = new Customer(Guid.NewGuid(), cpf);
         var expectedOrder = new Order(orderId, customer);
@@ -72,7 +72,7 @@ public class OrdersControllerTest
         var orderId = Guid.NewGuid();
         var products = new Product[]
         {
-            new(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, [])
+            new(Guid.NewGuid(), "productA", "product description", ProductCategory.Drink, 10, [])
         };
         var chosenProduct = products.First();
 
@@ -82,7 +82,7 @@ public class OrdersControllerTest
 
         var expectedOrder = new Order(orderId, customer);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
-        expectedOrder.Checkout();
+        expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
                 It.IsAny<List<(Guid productId, int quantity)>>()))
@@ -94,10 +94,10 @@ public class OrdersControllerTest
         // Assert
         using (new AssertionScope())
         {
-            response.Result.Should().BeOfType<CreatedResult>();
-            var createdOrder = response.Result.As<CreatedResult>().Value.As<OrderDto>();
+            response.Result.Should().BeOfType<AcceptedAtActionResult>();
+            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<OrderDto>();
 
-            // TODO after 1h or so I gave up trying to make this sh*t to assert it all in on line, I'll check it later 
+            // TODO after 1h or so I gave up trying to make this sh*t to assert it all in on line, I'll check it later
             createdOrder.Id.Should().Be(expectedOrder.Id);
 
             createdOrder.Customer.Should().NotBeNull();
@@ -126,7 +126,7 @@ public class OrdersControllerTest
         var orderId = Guid.NewGuid();
         var products = new Product[]
         {
-            new(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, [])
+            new(Guid.NewGuid(), "productA", "product description", ProductCategory.Drink, 10, [])
         };
         var chosenProduct = products.First();
 
@@ -136,7 +136,7 @@ public class OrdersControllerTest
 
         var expectedOrder = new Order(orderId, null);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
-        expectedOrder.Checkout();
+        expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
                 It.IsAny<List<(Guid productId, int quantity)>>()))
@@ -148,8 +148,8 @@ public class OrdersControllerTest
         // Assert
         using (new AssertionScope())
         {
-            response.Result.Should().BeOfType<CreatedResult>();
-            var createdOrder = response.Result.As<CreatedResult>().Value.As<OrderDto>();
+            response.Result.Should().BeOfType<AcceptedAtActionResult>();
+            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<OrderDto>();
 
             createdOrder.Id.Should().Be(expectedOrder.Id);
             createdOrder.Customer.Should().BeNull();
@@ -169,7 +169,7 @@ public class OrdersControllerTest
     public async void Get_Detail_Success()
     {
         // Arrange
-        var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Beverage, 10, []);
+        var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Drink, 10, []);
         var customerId = Guid.NewGuid();
         var expectedOrder = new Order(customerId, null);
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
@@ -226,6 +226,25 @@ public class OrdersControllerTest
             response.Result.Should().BeOfType<BadRequestObjectResult>();
 
             _serviceMock.Verify(o => o.GetAsync(It.IsAny<Guid>()), Times.Never);
+            _serviceMock.VerifyAll();
+        }
+    }
+
+    [Fact]
+    public async void CheckoutOrder_Success()
+    {
+        // Arrange
+        var checkoutCommand = new CheckoutOrderCommandDto(Guid.NewGuid());
+
+        // Act
+        var response = await _target.Checkout(checkoutCommand, CancellationToken.None);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Result.Should().BeOfType<OkResult>();
+
+            _serviceMock.Verify(o => o.CheckoutAsync(It.IsAny<Guid>()), Times.Once);
             _serviceMock.VerifyAll();
         }
     }

@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 		.env = .env
 		.env.template = .env.template
+		FIAP_TechChallenge_ByteMeBurger-endpoints.http = FIAP_TechChallenge_ByteMeBurger-endpoints.http
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{35A721E2-4C27-436D-A461-1BDB9D58DCC8}"
@@ -35,8 +36,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test\FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test.csproj", "{68F424FA-F00C-4179-A9D5-5026D5C4930C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Facade", "src\FIAP.TechChallenge.ByteMeBurger.Facade\FIAP.TechChallenge.ByteMeBurger.Facade.csproj", "{E6A8BE5B-F2DC-4827-9A75-FD217840DDA8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,7 +54,6 @@ Global
 		{54CBE5FB-DD7F-4E56-B913-D830DAB751BE} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 		{09D890C7-7AA0-40E2-8AA6-6DD47462548D} = {A33B3721-3873-4E78-A3AE-666951CE87ED}
 		{68F424FA-F00C-4179-A9D5-5026D5C4930C} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
-		{E6A8BE5B-F2DC-4827-9A75-FD217840DDA8} = {F485B6E2-C278-41B2-AD87-DE4113B30D6C}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B8F244B5-F703-441C-8A8A-C720F605709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -90,9 +88,5 @@ Global
 		{68F424FA-F00C-4179-A9D5-5026D5C4930C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68F424FA-F00C-4179-A9D5-5026D5C4930C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68F424FA-F00C-4179-A9D5-5026D5C4930C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6A8BE5B-F2DC-4827-9A75-FD217840DDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6A8BE5B-F2DC-4827-9A75-FD217840DDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6A8BE5B-F2DC-4827-9A75-FD217840DDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6A8BE5B-F2DC-4827-9A75-FD217840DDA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
