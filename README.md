@@ -24,7 +24,7 @@ You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat
 
 2. Configure environment variables
    - Configure [.env](https://www.codementor.io/@parthibakumarmurugesan/what-is-env-how-to-set-up-and-run-a-env-file-in-node-1pnyxw9yxj) file. You can use the [.env.sample](.env.template)
-   - Remember to create a .env file
+   - Remember to create the `.env` file
 
 3. Start the services using Docker:
 
