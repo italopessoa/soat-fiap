@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-api
+  labels:
+    app: api
+data:
+  MySqlSettings__Server: "svc-mysql"
+  MySqlSettings__Database: "restaurante"
+  MySqlSettings__Port: "3306"
+  MySqlSettings__UserId: "techchallenge"
+  MySqlSettings__Password: "tech@123"
+  ASPNETCORE_ENVIRONMENT: "Development"
+
+

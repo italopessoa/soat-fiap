@@ -4,7 +4,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-public class Customer : Entity<Guid>
+public class Customer : Entity<Guid>, IAggregateRoot
 {
     public Cpf Cpf { get; private set; }
 

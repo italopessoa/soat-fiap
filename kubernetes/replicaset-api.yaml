@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-api
+  labels:
+    app: replicaset-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      name: pod-api
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: container-pod-api
+          image: techchallenge/api
+          ports:
+            - containerPort: 80
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: configmap-api

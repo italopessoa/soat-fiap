@@ -3,7 +3,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-public class Product : Entity<Guid>
+public class Product : Entity<Guid>, IAggregateRoot
 {
     public string Name { get; private set; } = string.Empty;
 
