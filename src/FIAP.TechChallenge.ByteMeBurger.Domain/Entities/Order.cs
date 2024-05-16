@@ -3,7 +3,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-public class Order : Entity<Guid>
+public class Order : Entity<Guid>, IAggregateRoot
 {
     private List<OrderItem> _orderItems = Array.Empty<OrderItem>().ToList();
 

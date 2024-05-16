@@ -36,6 +36,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test\FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test.csproj", "{68F424FA-F00C-4179-A9D5-5026D5C4930C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kubernetes", "kubernetes", "{5858E02C-014F-4A1C-8A4A-2DFAF0D33BAB}"
+	ProjectSection(SolutionItems) = preProject
+		kubernetes\pod-api.yaml = kubernetes\pod-api.yaml
+		kubernetes\pod-mysql.yaml = kubernetes\pod-mysql.yaml
+		kubernetes\svc-mysql.yaml = kubernetes\svc-mysql.yaml
+		kubernetes\svc-api.yaml = kubernetes\svc-api.yaml
+		kubernetes\svc-api-lb.yaml = kubernetes\svc-api-lb.yaml
+		kubernetes\replicaset-api.yaml = kubernetes\replicaset-api.yaml
+		kubernetes\deployment-api.yaml = kubernetes\deployment-api.yaml
+		kubernetes\configmap-api.yaml = kubernetes\configmap-api.yaml
+		kubernetes\configmap-db.yaml = kubernetes\configmap-db.yaml
+		kubernetes\pv-db.yaml = kubernetes\pv-db.yaml
+		kubernetes\pvc-db.yaml = kubernetes\pvc-db.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +69,7 @@ Global
 		{54CBE5FB-DD7F-4E56-B913-D830DAB751BE} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 		{09D890C7-7AA0-40E2-8AA6-6DD47462548D} = {A33B3721-3873-4E78-A3AE-666951CE87ED}
 		{68F424FA-F00C-4179-A9D5-5026D5C4930C} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
+		{5858E02C-014F-4A1C-8A4A-2DFAF0D33BAB} = {2F192BA8-59FC-4B0C-B59D-511EFA89F428}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B8F244B5-F703-441C-8A8A-C720F605709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-pod
+  labels:
+    app: mysql-pod
+spec:
+  containers:
+    - name: mysql-pod
+      image: techchallenge/db
+      volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-persistent-storage
+      ports:
+        - containerPort: 80
+      imagePullPolicy: IfNotPresent
+      envFrom:
+        - configMapRef:
+            name: configmap-db
+  volumes:
+    - name: mysql-persistent-storage
+      persistentVolumeClaim:
+        claimName: pvc-db

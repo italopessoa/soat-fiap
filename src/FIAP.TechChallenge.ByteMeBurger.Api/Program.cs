@@ -18,12 +18,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-            .CreateLogger();
-
         try
         {
+            builder.Host.UseSerilog((context, configuration) =>
+                configuration.ReadFrom.Configuration(context.Configuration));
+
             // Add services to the container.
             builder.Services.AddAuthorization();
             builder.Services.AddSingleton<DomainEventsHandler>();
@@ -48,26 +47,28 @@ public class Program
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Challenge Restaurant API", Version = "v1", Extensions =
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
+                    Title = "Tech Challenge Restaurant API", Version = "v1", Extensions =
                     {
-                        "x-logo",
-                        new OpenApiObject
                         {
+                            "x-logo",
+                            new OpenApiObject
                             {
-                                "url",
-                                new OpenApiString(
-                                    "https://avatars.githubusercontent.com/u/165858718?s=384")
-                            },
-                            {
-                                "background",
-                                new OpenApiString(
-                                    "#FF0000")
+                                {
+                                    "url",
+                                    new OpenApiString(
+                                        "https://avatars.githubusercontent.com/u/165858718?s=384")
+                                },
+                                {
+                                    "background",
+                                    new OpenApiString(
+                                        "#FF0000")
+                                }
                             }
-
                         }
                     }
-                } });
+                });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -93,6 +94,7 @@ public class Program
                 app.UseSwaggerUI();
             }
 
+            app.UseSerilogRequestLogging();
             app.UseHealthChecks("/health", new HealthCheckOptions
             {
                 Predicate = _ => true,
