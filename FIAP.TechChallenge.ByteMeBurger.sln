@@ -49,6 +49,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kubernetes", "kubernetes", 
 		kubernetes\configmap-db.yaml = kubernetes\configmap-db.yaml
 		kubernetes\pv-db.yaml = kubernetes\pv-db.yaml
 		kubernetes\pvc-db.yaml = kubernetes\pvc-db.yaml
+		kubernetes\sc-slow.yaml = kubernetes\sc-slow.yaml
+		kubernetes\pvc-slow.yaml = kubernetes\pvc-slow.yaml
+		kubernetes\pod-db-sc.yaml = kubernetes\pod-db-sc.yaml
+		kubernetes\api-hpa.yaml = kubernetes\api-hpa.yaml
+		kubernetes\stress.sh = kubernetes\stress.sh
 	EndProjectSection
 EndProject
 Global
