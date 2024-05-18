@@ -9,14 +9,14 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        description: "Testing"
-        default: "Testing"
-  push:
-    branches: [ "main" ]
+        description: "Publish docker image"
+        default: "Publish docker image"
+  #push:
+  #  branches: [ "main" ]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ "main" ]
+   # tags: [ 'v*.*.*' ]
+  #pull_request:
+   # branches: [ "main" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -82,7 +82,7 @@ jobs:
         with:
           context: .
           file: ./src/FIAP.TechChallenge.ByteMeBurger.Api/Dockerfile
-          push: ${{ github.event_name == 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -94,7 +94,7 @@ jobs:
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name != 'pull_request' }}
         env:
           # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: ${{ steps.meta.outputs.tags }}
