@@ -26,7 +26,7 @@
       - MySqlSettings__UserId=${MYSQL_USERID}
       - MySqlSettings__Password=${MYSQL_PASSWORD}
       - ASPNETCORE_ENVIRONMENT=Development
-      - Serilog__Write__To__2__Args__serverUrl=http://seq:5341
+      - Serilog__WriteTo__2__Args__serverUrl=http://seq:5341
   database:
     container_name: restaurant_db
     build:
