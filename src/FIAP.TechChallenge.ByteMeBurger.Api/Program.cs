@@ -40,7 +40,7 @@ public class Program
                             .AllowAnyMethod();
                     });
             });
-
+            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
             builder.Services.AddEndpointsApiExplorer();
@@ -95,7 +95,7 @@ public class Program
             }
 
             app.UseSerilogRequestLogging();
-            app.UseHealthChecks("/health", new HealthCheckOptions
+            app.UseHealthChecks("/healthz", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse

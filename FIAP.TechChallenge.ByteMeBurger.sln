@@ -56,6 +56,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kubernetes", "kubernetes", 
 		kubernetes\stress.sh = kubernetes\stress.sh
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{23D2EC49-62CF-46E2-A975-1951BB0493C6}"
+	ProjectSection(SolutionItems) = preProject
+		database\Dockerfile = database\Dockerfile
+		database\init.sql = database\init.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +81,7 @@ Global
 		{09D890C7-7AA0-40E2-8AA6-6DD47462548D} = {A33B3721-3873-4E78-A3AE-666951CE87ED}
 		{68F424FA-F00C-4179-A9D5-5026D5C4930C} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 		{5858E02C-014F-4A1C-8A4A-2DFAF0D33BAB} = {2F192BA8-59FC-4B0C-B59D-511EFA89F428}
+		{23D2EC49-62CF-46E2-A975-1951BB0493C6} = {2F192BA8-59FC-4B0C-B59D-511EFA89F428}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B8F244B5-F703-441C-8A8A-C720F605709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

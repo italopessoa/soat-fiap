@@ -31,14 +31,16 @@ You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat
    ```bash
     docker-compose up -d
    ```
-   
-4. Testing
+
+
+4. Service health (check if the service is healthy before testing)
+   > [http://localhost:8080/healthz](http://localhost:8080/healthz)
+
+
+5. Testing
   To verify the existing endpoints go to
 
    > [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
-
-5. Service health
-   > [http://localhost:8080/health](http://localhost:8080/health)
 
 6. If you want to quickly seed the database with fake data and test some of the endpoints use the [FIAP_TechChallenge_ByteMeBurger-endpoints.http](FIAP_TechChallenge_ByteMeBurger-endpoints.http) file
 
