@@ -54,6 +54,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kubernetes", "kubernetes", 
 		kubernetes\pod-db-sc.yaml = kubernetes\pod-db-sc.yaml
 		kubernetes\api-hpa.yaml = kubernetes\api-hpa.yaml
 		kubernetes\stress.sh = kubernetes\stress.sh
+		kubernetes\deploy.ps1 = kubernetes\deploy.ps1
+		kubernetes\rollback.ps1 = kubernetes\rollback.ps1
+		kubernetes\svc-seq.yaml = kubernetes\svc-seq.yaml
+		kubernetes\pod-seq.yaml = kubernetes\pod-seq.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{23D2EC49-62CF-46E2-A975-1951BB0493C6}"

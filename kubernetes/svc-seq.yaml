@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-api
+  name: svc-seq
 spec:
   type: NodePort
   ports:
-    - port: 8080
-      nodePort: 30000
+    - port: 80
+      nodePort: 30008
   selector:
-    app: api
+    app: seq

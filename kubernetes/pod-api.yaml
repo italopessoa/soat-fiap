@@ -13,4 +13,4 @@ spec:
       imagePullPolicy: IfNotPresent
       envFrom:
         - configMapRef:
-            name: configmap
+            name: configmap-api

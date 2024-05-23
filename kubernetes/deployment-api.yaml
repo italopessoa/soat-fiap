@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: container-pod-api
-          image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:latest
+          image: techchallenge/api #ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:latest
           ports:
             - name: liveness-port
               containerPort: 8080
@@ -26,14 +26,14 @@ spec:
           livenessProbe:
             httpGet:
               port: liveness-port
-              path: /health
+              path: /healthz
             periodSeconds: 10
             failureThreshold: 3
             initialDelaySeconds: 20
           readinessProbe:
             httpGet:
               port: liveness-port
-              path: /health
+              path: /healthz
             periodSeconds: 10
             failureThreshold: 3
             initialDelaySeconds: 10
