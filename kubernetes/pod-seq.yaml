@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-seq
+  labels:
+    app: seq
+spec:
+  containers:
+    - name: seq-pod
+      image: datalust/seq:latest
+      ports:
+        - containerPort: 80
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: ACCEPT_EULA
+          value: "Y"
