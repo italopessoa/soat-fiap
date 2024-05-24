@@ -8,5 +8,5 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /home/docker/volumes/db
+    path: /data/db
   storageClassName: standard

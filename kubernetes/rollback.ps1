@@ -5,8 +5,10 @@ kubectl delete -f svc-api.yaml
 kubectl delete -f pod-mysql.yaml
 kubectl delete -f svc-mysql.yaml
 kubectl delete -f pvc-db.yaml
+kubectl delete -f pvc-db-slow.yaml
 kubectl delete -f pv-db.yaml
 kubectl delete -f configmap-db.yaml
 kubectl delete -f configmap-api.yaml
+kubectl delete -f secret.yaml
 kubectl delete -f svc-seq.yaml
 kubectl delete -f pod-seq.yaml

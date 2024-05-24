@@ -1,4 +1,5 @@
 ﻿# Set-Location -Path "C:\path\to\your\yaml\files"
+kubectl apply -f secret-db.yaml
 kubectl apply -f configmap-api.yaml
 kubectl apply -f configmap-db.yaml
 kubectl apply -f pv-db.yaml
