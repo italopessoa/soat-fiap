@@ -14,6 +14,17 @@ spec:
       ports:
         - containerPort: 80
       imagePullPolicy: IfNotPresent
+      env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-db
+              key: MYSQL_PASSWORD
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: secret-db
+              key: MYSQL_USER
       envFrom:
         - configMapRef:
             name: configmap-db

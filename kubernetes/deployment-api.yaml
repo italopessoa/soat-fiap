@@ -39,7 +39,18 @@ spec:
             initialDelaySeconds: 10
           resources:
             requests:
-              cpu: 10m
+              cpu: 50m
+          env:
+            - name: MySqlSettings__Password
+              valueFrom:
+                secretKeyRef:
+                  name: secret-db
+                  key: MYSQL_PASSWORD
+            - name: MySqlSettings__UserId
+              valueFrom:
+                secretKeyRef:
+                  name: secret-db
+                  key: MYSQL_USER
           envFrom:
             - configMapRef:
                 name: configmap-api

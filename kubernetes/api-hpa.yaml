@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: deployment-api
   minReplicas: 1
-  maxReplicas: 6
+  maxReplicas: 5
   metrics:
     - type: ContainerResource
       containerResource:
