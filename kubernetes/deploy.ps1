@@ -13,3 +13,5 @@ kubectl apply -f api-hpa.yaml
 
 kubectl apply -f svc-seq.yaml
 kubectl apply -f pod-seq.yaml
+
+minikube tunnel
