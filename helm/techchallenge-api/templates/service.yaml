@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "techchallenge-api.fullname" . }}
+  labels:
+    {{- include "techchallenge-api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 80
+      targetPort: {{ .Values.service.port }}
+      nodePort: 30000
+      name: load-balancer
+
+  selector:
+    {{- include "techchallenge-api.selectorLabels" . | nindent 4 }}
