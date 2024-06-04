@@ -1,3 +1,9 @@
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
 using System.Collections.ObjectModel;
 using AutoFixture;
 using AutoFixture.Kernel;
@@ -31,7 +37,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task GetAll_Success()
     {
-        // Arrange 
+        // Arrange
         var fixture = new Fixture();
         fixture.Customizations.Add(new ProductGenerator());
         var product = fixture.Create<Product>();
@@ -61,7 +67,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task GetAll_Empty()
     {
-        // Arrange 
+        // Arrange
         _serviceMock.Setup(s => s.GetAll())
             .ReturnsAsync([]);
 
@@ -85,7 +91,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task GetByCategory_Success()
     {
-        // Arrange 
+        // Arrange
         var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Drink, 2, []);
         _serviceMock.Setup(s => s.FindByCategory(It.IsAny<ProductCategory>()))
             .ReturnsAsync([product]);
@@ -114,7 +120,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task GetByCategory_Empty()
     {
-        // Arrange 
+        // Arrange
         var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Drink, 2, []);
         _serviceMock.Setup(s => s.FindByCategory(It.IsAny<ProductCategory>()))
             .ReturnsAsync([]);
@@ -140,7 +146,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task Delete_Success()
     {
-        // Arrange 
+        // Arrange
         _serviceMock.Setup(s => s.DeleteAsync(It.IsAny<Guid>()))
             .ReturnsAsync(true);
 
@@ -160,7 +166,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task Delete_NoContent()
     {
-        // Arrange 
+        // Arrange
         _serviceMock.Setup(s => s.DeleteAsync(It.IsAny<Guid>()))
             .ReturnsAsync(false);
 
@@ -180,7 +186,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task Delete_EmptyGuid()
     {
-        // Arrange 
+        // Arrange
         // Act
         var response = await _target.Delete(Guid.Empty, CancellationToken.None);
 
@@ -199,7 +205,7 @@ public class ProductsControllerTest
     [InlineData(-1)]
     public async Task Create_InvalidPrice_BadRequest(decimal price)
     {
-        // Arrange 
+        // Arrange
         // Act
         var response = await _target.Create(new CreateProductCommandDto
         {
@@ -224,7 +230,7 @@ public class ProductsControllerTest
     [InlineAutoData]
     public async Task Create_Success(CreateProductCommandDto newProductCommand)
     {
-        // Arrange 
+        // Arrange
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<ProductCategory>(), It.IsAny<decimal>(), It.IsAny<string[]>()))
             .ReturnsAsync(newProductCommand.ToProduct());
@@ -248,7 +254,7 @@ public class ProductsControllerTest
     [InlineAutoData]
     public async Task Create_Error(CreateProductCommandDto newProductCommand)
     {
-        // Arrange 
+        // Arrange
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<ProductCategory>(), It.IsAny<decimal>(), It.IsAny<string[]>()))
             .ThrowsAsync(new Exception());
@@ -273,7 +279,7 @@ public class ProductsControllerTest
     [InlineAutoData]
     public async Task Update_Error(UpdateProductCommandDto updateProductCommandDto)
     {
-        // Arrange 
+        // Arrange
         _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<ProductCategory>(), It.IsAny<decimal>(), It.IsAny<string[]>()))
             .ReturnsAsync(false);
@@ -298,7 +304,7 @@ public class ProductsControllerTest
     [Fact]
     public async Task Update_InvalidId()
     {
-        // Arrange 
+        // Arrange
         // Act
         var response =
             await _target.Update(Guid.Empty, new UpdateProductCommandDto(), CancellationToken.None);
@@ -320,7 +326,7 @@ public class ProductsControllerTest
     [InlineAutoData]
     public async Task Update_Success(UpdateProductCommandDto updateProductCommandDto)
     {
-        // Arrange 
+        // Arrange
         _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<ProductCategory>(), It.IsAny<decimal>(), It.IsAny<string[]>()))
             .ReturnsAsync(true);

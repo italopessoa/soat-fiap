@@ -1,3 +1,9 @@
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
 using System.Collections.ObjectModel;
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
@@ -19,7 +25,7 @@ public class OrderGetAllUseCaseTest
     [Fact]
     public async Task GetAll_Success()
     {
-        // Arrange 
+        // Arrange
         var expectedOrders = new Fixture().CreateMany<Order>().ToList();
         _orderRepository.Setup(r => r.GetAllAsync())
             .ReturnsAsync(expectedOrders.AsReadOnly);
@@ -40,7 +46,7 @@ public class OrderGetAllUseCaseTest
     [Fact]
     public async Task GetAll_Empty()
     {
-        // Arrange 
+        // Arrange
         _orderRepository.Setup(r => r.GetAllAsync())
             .ReturnsAsync((ReadOnlyCollection<Order>)default!);
 

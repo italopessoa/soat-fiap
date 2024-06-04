@@ -1,3 +1,9 @@
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
@@ -14,7 +20,7 @@ public class OrderItem : Entity<Guid>
         ArgumentException.ThrowIfNullOrWhiteSpace(productName);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(unitPrice);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(quantity);
-        
+
         if (Guid.Empty == orderId)
             throw new ArgumentException("Invalid OrderId", nameof(orderId));
         if (Guid.Empty == productId)
