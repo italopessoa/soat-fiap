@@ -86,7 +86,24 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=
+      
+      - name: Slim docker image
+        id: slim
+        uses: kitabisa/docker-slim-action@v1
+        env:
+          DSLIM_HTTP_PROBE: false
+        with:
+          target: ${{ env.IMAGE_NAME }}:latest
+          tag: "slim"
+          
+      # Push to the registry
+      - run: docker image push "${{ env.IMAGE_NAME }}:slim"
+
+      # Dump the report
+      - run: echo "${REPORT}"
+        env:
+          REPORT: ${{ steps.slim.outputs.report }}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
