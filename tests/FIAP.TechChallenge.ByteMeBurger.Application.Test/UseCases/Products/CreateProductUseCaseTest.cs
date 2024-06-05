@@ -1,3 +1,9 @@
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 
@@ -18,7 +24,7 @@ public class CreateProductUseCaseTest : BaseProductsUseCaseTests
 
         _productRepository.Setup(s => s.CreateAsync(It.IsAny<Product>()))
             .ReturnsAsync(expectedProduct);
-        
+
         // Act
         var product = await _createProductUseCase.Execute(name, description, category, price, images);
 

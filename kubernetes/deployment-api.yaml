@@ -1,3 +1,9 @@
+# Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree.
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +23,7 @@ spec:
     spec:
       containers:
         - name: container-pod-api
-          image: techchallenge/api #ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:latest
+          image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:latest
           ports:
             - name: liveness-port
               containerPort: 8080

@@ -1,3 +1,9 @@
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
@@ -67,7 +73,7 @@ public class UpdateProductUseCaseTest : BaseProductsUseCaseTests
         var fixture = new Fixture();
         fixture.Customizations.Add(new ProductGenerator());
         var product = fixture.Create<Product>();
-        
+
         _productRepository.Setup(s => s.FindByIdAsync(
                 It.IsAny<Guid>()))
             .ReturnsAsync(product);

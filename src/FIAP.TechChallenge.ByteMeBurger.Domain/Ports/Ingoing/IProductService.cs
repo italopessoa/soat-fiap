@@ -1,3 +1,9 @@
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -16,10 +22,10 @@ public interface IProductService
     /// <returns>Product entity.</returns>
     Task<Product> CreateAsync(string name, string description, ProductCategory category, decimal price,
         IReadOnlyList<string> images);
-    
+
     // TODO add new method use issue https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/issues/32
     // Task<Product?> GetAsync(Guid id);
-    
+
     /// <summary>
     /// Delete product
     /// </summary>
@@ -32,7 +38,7 @@ public interface IProductService
     /// </summary>
     /// <returns>List of products</returns>
     Task<IReadOnlyCollection<Product>> GetAll();
-    
+
     /// <summary>
     /// Find products by category
     /// </summary>
