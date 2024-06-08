@@ -91,7 +91,7 @@ public class OrdersControllerTest
         expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
-                It.IsAny<List<(Guid productId, int quantity)>>()))
+                It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder);
 
         // Act
@@ -117,7 +117,7 @@ public class OrdersControllerTest
 
             _serviceMock.Verify(
                 s => s.CreateAsync(It.IsAny<Cpf?>(),
-                    It.IsAny<List<(Guid productId, int quantity)>>()),
+                    It.IsAny<List<SelectedProduct>>()),
                 Times.Once);
 
             _serviceMock.VerifyAll();
@@ -145,7 +145,7 @@ public class OrdersControllerTest
         expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
-                It.IsAny<List<(Guid productId, int quantity)>>()))
+                It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder);
 
         // Act
@@ -164,7 +164,7 @@ public class OrdersControllerTest
 
             _serviceMock.Verify(
                 s => s.CreateAsync(It.IsAny<Cpf?>(),
-                    It.IsAny<List<(Guid productId, int quantity)>>()),
+                    It.IsAny<List<SelectedProduct>>()),
                 Times.Once);
 
             _serviceMock.VerifyAll();
