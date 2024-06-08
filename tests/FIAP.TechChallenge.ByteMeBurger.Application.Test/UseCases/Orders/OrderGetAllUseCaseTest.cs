@@ -6,6 +6,7 @@
 
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders;
 

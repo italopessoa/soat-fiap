@@ -6,7 +6,7 @@
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
+namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 public interface ICustomerService
 {

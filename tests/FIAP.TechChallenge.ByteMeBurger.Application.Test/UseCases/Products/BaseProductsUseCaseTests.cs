@@ -5,6 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Products;
 

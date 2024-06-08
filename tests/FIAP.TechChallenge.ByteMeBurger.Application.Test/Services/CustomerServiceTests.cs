@@ -1,6 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
 

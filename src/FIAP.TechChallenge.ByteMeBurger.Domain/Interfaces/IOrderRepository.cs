@@ -7,7 +7,7 @@
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
+namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 public interface IOrderRepository
 {

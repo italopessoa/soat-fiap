@@ -6,7 +6,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers

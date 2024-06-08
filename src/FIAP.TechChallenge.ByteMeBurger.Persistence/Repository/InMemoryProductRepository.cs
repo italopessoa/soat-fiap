@@ -7,10 +7,10 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
+namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
 [ExcludeFromCodeCoverage]
 public class InMemoryProductRepository(IReadOnlyList<Product> products) : IProductRepository

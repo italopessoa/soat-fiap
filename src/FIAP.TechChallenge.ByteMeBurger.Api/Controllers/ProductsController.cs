@@ -6,7 +6,7 @@
 
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 

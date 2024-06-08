@@ -7,7 +7,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
+namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 
 internal class ProductDto
 {
