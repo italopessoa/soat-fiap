@@ -8,8 +8,8 @@ using System.Data;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
-using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
+using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
+using FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Dapper;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test.Repository;
+namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Test.Repository;
 
 [TestSubject(typeof(ProductRepositoryDapper))]
 public class ProductRepositoryDapperTest

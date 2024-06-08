@@ -6,9 +6,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
+namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
 [ExcludeFromCodeCoverage]
 public class InMemoryCustomerRepository(IReadOnlyCollection<Customer> customersSeed) : ICustomerRepository

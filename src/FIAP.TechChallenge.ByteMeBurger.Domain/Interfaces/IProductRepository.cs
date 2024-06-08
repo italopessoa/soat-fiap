@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
+namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 public interface IProductRepository
 {

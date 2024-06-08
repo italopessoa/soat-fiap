@@ -7,11 +7,11 @@
 using System.Data;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Outgoing;
-using FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 using Microsoft.Extensions.Logging;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Repository;
+namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
 public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<CustomerRepositoryDapper> logger)
     : ICustomerRepository

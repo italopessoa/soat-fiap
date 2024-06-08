@@ -8,7 +8,6 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Any;
@@ -33,7 +32,6 @@ public class Program
             builder.Services.AddAuthorization();
             builder.Services.AddSingleton<DomainEventsHandler>();
             builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
-
 
             // Add CORS services to the DI container.
             builder.Services.AddCors(options =>
@@ -80,15 +78,14 @@ public class Program
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
             builder.Services.AddControllers(options => { options.Filters.Add<DomainExceptionFilter>(); })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-            builder.Services.Configure<MySqlSettings>(builder.Configuration.GetSection(nameof(MySqlSettings)));
-            builder.ConfigServicesDependencies();
-            builder.Services.RegisterFacade();
 
+            builder.Services.DependencyInversion(builder.Configuration);
             AddHealthChecks(builder);
 
             var app = builder.Build();

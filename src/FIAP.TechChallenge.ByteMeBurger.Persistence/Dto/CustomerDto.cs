@@ -6,7 +6,7 @@
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Infrastructure.Dto;
+namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 
 public class CustomerDto
 {
