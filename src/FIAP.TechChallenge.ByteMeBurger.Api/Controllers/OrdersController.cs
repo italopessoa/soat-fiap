@@ -7,6 +7,7 @@
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Ports.Ingoing;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
@@ -35,7 +36,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             CancellationToken cancellationToken)
         {
             logger.LogInformation("Creating order for customer with CPF: {Cpf}", newOrder.Cpf);
-            var orderItems = newOrder.Items.Select(i => (i.ProductId, i.Quantity));
+            var orderItems = newOrder.Items.Select(i => new SelectedProduct(i.ProductId, i.Quantity));
             var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
             logger.LogInformation("Order created with ID: {OrderId}", order.Id);

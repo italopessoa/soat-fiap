@@ -69,27 +69,27 @@ public class OrderServiceTest
     [Theory]
     [InlineAutoData]
     public async Task Create_Success(
-        List<(Guid productId, int quantity)> orderItems)
+        List<SelectedProduct> selectedProducts)
     {
         // Arrange
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "product name", 1, i.quantity); });
+        selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "product name", 1, i.Quantity); });
 
         expectedOrder.Create();
         _mockCreateOrderUseCase.Setup(s => s.Execute(It.IsAny<Cpf?>(),
-                It.IsAny<List<(Guid productId, int quantity)>>()))
+                It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder);
 
         // Act
-        var result = await _target.CreateAsync(_validCpf, orderItems);
+        var result = await _target.CreateAsync(_validCpf, selectedProducts);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
             _mockCreateOrderUseCase.Verify(s => s.Execute(It.IsAny<Cpf?>(),
-                It.IsAny<List<(Guid productId, int quantity)>>()), Times.Once);
+                It.IsAny<List<SelectedProduct>>()), Times.Once);
         }
     }
 

@@ -16,9 +16,9 @@ public interface IOrderService
     /// Create new order
     /// </summary>
     /// <param name="customerCpf">Customer cpf.</param>
-    /// <param name="orderItems">Order items</param>
+    /// <param name="selectedProducts">Order items</param>
     /// <returns>Order entity</returns>
-    Task<Order> CreateAsync(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems);
+    Task<Order> CreateAsync(Cpf? customerCpf, List<SelectedProduct> selectedProducts);
 
     /// <summary>
     /// Get all active orders

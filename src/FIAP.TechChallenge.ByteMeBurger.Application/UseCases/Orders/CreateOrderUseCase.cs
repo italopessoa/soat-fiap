@@ -20,25 +20,27 @@ public class CreateOrderUseCase : ICreateOrderUseCase
         _customerRepository = customerRepository;
     }
 
-    public async Task<Order> Execute(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems)
+    public async Task<Order> Execute(Cpf? customerCpf, List<SelectedProduct> selectedProducts)
     {
-        var order = new Order();
+        var customer = default(Customer);
         if (customerCpf is not null)
         {
-            var customer = await _customerRepository.FindByCpfAsync(customerCpf);
+            customer = await _customerRepository.FindByCpfAsync(customerCpf);
             if (customer == null)
                 throw new EntityNotFoundException("Customer not found.");
-
-            order = new Order(Guid.NewGuid(), customer);
         }
 
-        foreach (var item in orderItems)
+        var products = new Dictionary<Product, int>();
+        foreach (var item in selectedProducts)
         {
-            var product = await GetProduct(item.productId);
-            order.AddOrderItem(product.Id, product.Name, product.Price, item.quantity);
+            var product = await GetProduct(item.ProductId);
+            if (product is null)
+                throw new EntityNotFoundException($"Product '{item.ProductId}' not found.");
+
+            products.Add(product, item.Quantity);
         }
 
-        order.Create();
+        var order = new Order(customer,"code", products);
         DomainEventTrigger.RaiseOrderCreated(order);
         return await _repository.CreateAsync(order);
     }

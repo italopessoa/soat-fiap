@@ -80,9 +80,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                    c.email as Email
             from Orders o
                      inner join OrderItems oi on oi.OrderId = o.Id
-                     left join Customers c on c.Id = o.CustomerId
-            where o.Status in (2, 3, 4)
-            order by o.Status desc, o.Created;",
+                     left join Customers c on c.Id = o.CustomerId;",
             (orderListDto, customerDto) =>
             {
                 if (ordersDictionary.TryGetValue(orderListDto.Id, out var order))

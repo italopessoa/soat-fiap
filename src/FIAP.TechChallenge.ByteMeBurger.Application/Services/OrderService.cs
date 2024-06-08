@@ -13,9 +13,9 @@ public class OrderService(
     ICheckoutOrderUseCase checkoutOrderUseCase)
     : IOrderService
 {
-    public async Task<Order> CreateAsync(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems)
+    public async Task<Order> CreateAsync(Cpf? customerCpf, List<SelectedProduct> selectedProducts)
     {
-        return await createOrderUseCase.Execute(customerCpf, orderItems);
+        return await createOrderUseCase.Execute(customerCpf, selectedProducts);
     }
 
     public async Task<ReadOnlyCollection<Order>> GetAllAsync()

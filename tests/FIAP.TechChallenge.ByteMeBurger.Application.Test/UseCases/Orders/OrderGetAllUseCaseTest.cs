@@ -5,7 +5,6 @@
 // LICENSE file in the root directory of this source tree.
 
 using System.Collections.ObjectModel;
-using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders;
@@ -26,9 +25,25 @@ public class OrderGetAllUseCaseTest
     public async Task GetAll_Success()
     {
         // Arrange
-        var expectedOrders = new Fixture().CreateMany<Order>().ToList();
+        var response = new List<Order>()
+        {
+            new (Guid.NewGuid(),null, OrderStatus.InPreparation, null, DateTime.Now, null),
+            new (Guid.NewGuid(),null, OrderStatus.Ready, null, DateTime.Now, null),
+            new (Guid.NewGuid(),null, OrderStatus.Received, null, DateTime.Now, null),
+            new (Guid.NewGuid(),null, OrderStatus.PaymentPending, null, DateTime.Now, null),
+            new (Guid.NewGuid(),null, OrderStatus.PaymentConfirmed, null, DateTime.Now, null),
+            new (Guid.NewGuid(),null, OrderStatus.Completed, null, DateTime.Now, null),
+        }.AsReadOnly();
+
+        var expectedOrders = new List<Order>()
+        {
+            response[1],
+            response[0],
+            response[2],
+        }.AsReadOnly();
+
         _orderRepository.Setup(r => r.GetAllAsync())
-            .ReturnsAsync(expectedOrders.AsReadOnly);
+            .ReturnsAsync(response.AsReadOnly);
 
         // Act
         var result = await _useCase.Execute();
@@ -38,7 +53,7 @@ public class OrderGetAllUseCaseTest
         {
             result.Should().NotBeNull();
             result.Should().NotBeEmpty();
-            result.Should().BeEquivalentTo(expectedOrders);
+            result.Should().BeEquivalentTo(expectedOrders, options => options.WithStrictOrdering());
             _orderRepository.Verify(m => m.GetAllAsync(), Times.Once);
         }
     }

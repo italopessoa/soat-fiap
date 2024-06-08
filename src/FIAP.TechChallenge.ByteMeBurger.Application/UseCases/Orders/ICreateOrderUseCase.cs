@@ -5,5 +5,5 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 public interface ICreateOrderUseCase
 {
-    Task<Order> Execute(Cpf? customerCpf, List<(Guid productId, int quantity)> orderItems);
+    Task<Order> Execute(Cpf? customerCpf, List<SelectedProduct> selectedProducts);
 }

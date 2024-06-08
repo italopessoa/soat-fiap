@@ -50,7 +50,8 @@ public class Order : Entity<Guid>, IAggregateRoot
         Customer = customer;
     }
 
-    public Order(Guid id, Customer customer, OrderStatus status, string? trackingCode, DateTime created, DateTime? updated)
+    public Order(Guid id, Customer? customer, OrderStatus status, string? trackingCode, DateTime created,
+        DateTime? updated)
         : base(id)
     {
         Customer = customer;
@@ -60,12 +61,32 @@ public class Order : Entity<Guid>, IAggregateRoot
         LastUpdate = updated;
     }
 
+    public Order(Customer? customer, string trackingCode, Dictionary<Product, int> selectedProducts)
+        : base(Guid.NewGuid())
+    {
+        Customer = customer;
+        TrackingCode = trackingCode;
+        Created = DateTime.UtcNow;
+        Status = OrderStatus.PaymentPending;
+
+        if (!selectedProducts.Any())
+        {
+            throw new DomainException("An Order must have at least one item");
+        }
+
+        foreach (var (product, quantity) in selectedProducts)
+        {
+            AddOrderItem(product.Id, product.Name, product.Price, quantity);
+        }
+    }
+
     public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)
     {
         if (Status == OrderStatus.PaymentPending)
             _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
         else
-            throw new DomainException($"Cannot add items to an Order with status {Status}. Items can only be added when the status is PaymentPending.");
+            throw new DomainException(
+                $"Cannot add items to an Order with status {Status}. Items can only be added when the status is PaymentPending.");
     }
 
     public void LoadItems(Guid productId, string productName, decimal unitPrice, int quantity)

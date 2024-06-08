@@ -29,15 +29,14 @@ public class CreateOrderUseCaseTest
     }
 
     [Theory]
-    [InlineAutoData]
-    public async Task Checkout_Success(
-        List<(Guid productId, int quantity)> orderItems)
+    [AutoData]
+    public async Task Checkout_Success(SelectedProduct selectedProduct)
     {
         // Arrange
-        var product = new Product("product", "description", ProductCategory.Drink, 10, []);
+        var product = new Product(selectedProduct.ProductId, "product", "description", ProductCategory.Drink, 10, []);
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, product.Name, product.Price, i.quantity); });
+        expectedOrder.AddOrderItem(selectedProduct.ProductId, product.Name, product.Price, selectedProduct.Quantity);
 
         expectedOrder.Create();
 
@@ -55,7 +54,7 @@ public class CreateOrderUseCaseTest
             .ReturnsAsync(product);
 
         // Act
-        var result = await _useCase.Execute(_validCpf, orderItems);
+        var result = await _useCase.Execute(_validCpf, [selectedProduct]);
 
         // Assert
         using (new AssertionScope())
@@ -75,13 +74,12 @@ public class CreateOrderUseCaseTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Checkout_CustomerNotFound_Error(
-        List<(Guid productId, int quantity)> orderItems)
+    public async Task Checkout_CustomerNotFound_Error(List<SelectedProduct> selectedProducts)
     {
         // Arrange
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "productName", 1, i.quantity); });
+        selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "productName", 1, i.Quantity); });
         expectedOrder.Create();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
@@ -89,7 +87,7 @@ public class CreateOrderUseCaseTest
             .ReturnsAsync(default(Customer));
 
         // Act
-        var func = async () => await _useCase.Execute(_validCpf, orderItems);
+        var func = async () => await _useCase.Execute(_validCpf, selectedProducts);
 
         // Assert
         using (new AssertionScope())
@@ -113,13 +111,12 @@ public class CreateOrderUseCaseTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Checkout_ProductNotFound_Error(
-        List<(Guid productId,int quantity)> orderItems)
+    public async Task Checkout_ProductNotFound_Error(List<SelectedProduct> selectedProducts)
     {
         // Arrange
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
-        orderItems.ForEach(i => { expectedOrder.AddOrderItem(i.productId, "productName", 2, i.quantity); });
+        selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "productName", 2, i.Quantity); });
         expectedOrder.Create();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
@@ -131,7 +128,7 @@ public class CreateOrderUseCaseTest
             .ReturnsAsync(default(Product));
 
         // Act
-        var func = async () => await _useCase.Execute(_validCpf, orderItems);
+        var func = async () => await _useCase.Execute(_validCpf, selectedProducts);
 
         // Assert
         using (new AssertionScope())
@@ -140,7 +137,7 @@ public class CreateOrderUseCaseTest
                 .And
                 .Message
                 .Should()
-                .Be($"Product '{orderItems.First().productId}' not found.");
+                .Be($"Product '{selectedProducts.First().ProductId}' not found.");
 
             _orderRepository.Verify(m => m.CreateAsync(
                 It.IsAny<Order>()), Times.Never);
