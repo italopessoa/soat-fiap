@@ -29,6 +29,7 @@ services:
       - ConnectionStrings__MySql=Server=database;Database=${MYSQL_DATABASE};Uid=${MYSQL_USERID};Pwd=${MYSQL_PASSWORD};Port=${MYSQL_PORT}
       - ASPNETCORE_ENVIRONMENT=Development
       - Serilog__WriteTo__2__Args__serverUrl=http://seq:5341
+      - MercadoPago__WebhookSecret=${MercadoPago_WebhookSecret}
   database:
     container_name: restaurant_db
     build:
