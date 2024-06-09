@@ -8,6 +8,7 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Any;
@@ -85,7 +86,8 @@ public class Program
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-            builder.Services.DependencyInversion(builder.Configuration);
+            builder.ConfigureApiDependencyInversion();
+
             AddHealthChecks(builder);
 
             var app = builder.Build();

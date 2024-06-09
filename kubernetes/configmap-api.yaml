@@ -17,5 +17,6 @@ data:
   ASPNETCORE_ENVIRONMENT: "Development"
   Serilog__WriteTo__2__Args__serverUrl: "http://svc-seq:80"
   Serilog__WriteTo__2__Args__formatter: "Serilog.Formatting.Json.JsonFormatter, Serilog"
+  MercadoPago__WebhookSecret: ""
 
 
