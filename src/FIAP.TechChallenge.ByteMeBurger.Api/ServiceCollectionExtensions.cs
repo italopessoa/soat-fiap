@@ -21,6 +21,8 @@ internal static class ServiceCollectionExtensions
     {
         services.ConfigurePersistenceApp(configuration);
         services.ConfigureApplicationApp();
-        services.Configure<MercadoPagoOptions>(configuration.GetSection("MercadoPago"));
+        services.AddOptionsWithValidateOnStart<MercadoPagoOptions>()
+            .Bind(configuration.GetSection(MercadoPagoOptions.MercadoPago))
+            .ValidateDataAnnotations();
     }
 }

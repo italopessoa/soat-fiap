@@ -39,8 +39,4 @@
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Persistence\FIAP.TechChallenge.ByteMeBurger.Persistence.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Auth\" />
-    </ItemGroup>
-
 </Project>
