@@ -16,7 +16,6 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ILogger = Castle.Core.Logging.ILogger;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
@@ -41,6 +40,7 @@ public class OrdersControllerTest
         var orderId = Guid.NewGuid();
         var customer = new Customer(Guid.NewGuid(), cpf);
         var expectedOrder = new Order(orderId, customer);
+        expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
 
         var orders = new[]
@@ -88,6 +88,7 @@ public class OrdersControllerTest
 
         var expectedOrder = new Order(orderId, customer);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
+        expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
         expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
@@ -142,6 +143,7 @@ public class OrdersControllerTest
 
         var expectedOrder = new Order(orderId, null);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
+        expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
         expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
@@ -178,6 +180,7 @@ public class OrdersControllerTest
         var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Drink, 10, []);
         var customerId = Guid.NewGuid();
         var expectedOrder = new Order(customerId, null);
+        expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
 
         var expectedOrderDto = new OrderDto(expectedOrder);
