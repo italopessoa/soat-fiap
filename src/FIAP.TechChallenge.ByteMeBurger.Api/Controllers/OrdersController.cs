@@ -46,13 +46,15 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <summary>
         /// Get all orders that are not Completed
         /// </summary>
+        /// <param name="listAll">If true it will return all orders. If false it returns only orders
+        /// with status (Received, In Preparation or Ready).</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>Active orders list</returns>
+        /// <returns>Orders list</returns>
         [HttpGet]
-        public async Task<ActionResult<ReadOnlyCollection<OrderDto>>> Get(CancellationToken cancellationToken)
+        public async Task<ActionResult<ReadOnlyCollection<OrderDto>>> Get(bool listAll, CancellationToken cancellationToken)
         {
             logger.LogInformation("Getting all orders");
-            var orders = await orderService.GetAllAsync();
+            var orders = await orderService.GetAllAsync(listAll);
             var ordersDto = orders.Select(o => new OrderDto(o));
 
             logger.LogInformation("Retrieved {Count} orders", ordersDto.Count());

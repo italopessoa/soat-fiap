@@ -52,11 +52,11 @@ public class OrdersControllerTest
             new(expectedOrder)
         };
 
-        _serviceMock.Setup(s => s.GetAllAsync())
+        _serviceMock.Setup(s => s.GetAllAsync(false))
             .ReturnsAsync(orders.ToList().AsReadOnly);
 
         // Act
-        var response = await _target.Get(CancellationToken.None);
+        var response = await _target.Get(false, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -64,7 +64,7 @@ public class OrdersControllerTest
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedOrdersDto);
 
-            _serviceMock.Verify(o => o.GetAllAsync(), Times.Once);
+            _serviceMock.Verify(o => o.GetAllAsync(false), Times.Once);
             _serviceMock.VerifyAll();
         }
     }

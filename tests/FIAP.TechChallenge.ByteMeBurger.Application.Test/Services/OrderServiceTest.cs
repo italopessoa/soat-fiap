@@ -42,11 +42,11 @@ public class OrderServiceTest
     {
         // Arrange
         var expectedOrders = new Fixture().CreateMany<Order>().ToList();
-        _mockOrderGetAllUseCase.Setup(r => r.Execute())
+        _mockOrderGetAllUseCase.Setup(r => r.Execute(true))
             .ReturnsAsync(expectedOrders.AsReadOnly);
 
         // Act
-        var result = await _target.GetAllAsync();
+        var result = await _target.GetAllAsync(true);
 
         // Assert
         using (new AssertionScope())
@@ -54,7 +54,7 @@ public class OrderServiceTest
             result.Should().NotBeNull();
             result.Should().NotBeEmpty();
             result.Should().BeEquivalentTo(expectedOrders);
-            _mockOrderGetAllUseCase.Verify(m => m.Execute(), Times.Once);
+            _mockOrderGetAllUseCase.Verify(m => m.Execute(true), Times.Once);
         }
     }
 
@@ -62,18 +62,18 @@ public class OrderServiceTest
     public async Task GetAll_Empty()
     {
         // Arrange
-        _mockOrderGetAllUseCase.Setup(r => r.Execute())
+        _mockOrderGetAllUseCase.Setup(r => r.Execute(true))
             .ReturnsAsync(Array.Empty<Order>().AsReadOnly);
 
         // Act
-        var result = await _target.GetAllAsync();
+        var result = await _target.GetAllAsync(true);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
             result.Should().BeEmpty();
-            _mockOrderGetAllUseCase.Verify(m => m.Execute(), Times.Once);
+            _mockOrderGetAllUseCase.Verify(m => m.Execute(true), Times.Once);
         }
     }
 

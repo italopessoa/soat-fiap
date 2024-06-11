@@ -30,9 +30,9 @@ public class OrderService(
         return order;
     }
 
-    public async Task<ReadOnlyCollection<Order>> GetAllAsync()
+    public async Task<ReadOnlyCollection<Order>> GetAllAsync(bool listAll)
     {
-        return await orderGetAllUseCase.Execute();
+        return await orderGetAllUseCase.Execute(listAll);
     }
 
     public async Task<Order?> GetAsync(Guid id)

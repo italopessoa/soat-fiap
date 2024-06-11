@@ -13,16 +13,15 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 public class OrderGetAllUseCase(IOrderRepository repository) : IOrderGetAllUseCase
 {
-    public async Task<ReadOnlyCollection<Order>> Execute()
+    public async Task<ReadOnlyCollection<Order>> Execute(bool listAll)
     {
-        var orders = await repository.GetAllAsync();
-        return orders is null
-            ? Array.Empty<Order>().AsReadOnly()
-            : orders
-                .Where(o => o.Status == OrderStatus.Received || o.Status == OrderStatus.InPreparation ||
-                            o.Status == OrderStatus.Ready)
-                .OrderByDescending(o => o.Status)
-                .ToList()
-                .AsReadOnly();
+        var orders = (await repository.GetAllAsync() ?? Enumerable.Empty<Order>());
+        return (listAll
+                ? orders
+                : orders.Where(o => o.Status is OrderStatus.Received or OrderStatus.InPreparation or OrderStatus.Ready)
+            ).OrderByDescending(o => o.Status)
+            .ThenBy(o => o.Created)
+            .ToList()
+            .AsReadOnly();
     }
 }
