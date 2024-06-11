@@ -24,7 +24,7 @@ public class OrdersControllerTest
 {
     private readonly Mock<IOrderService> _serviceMock;
     private readonly OrdersController _target;
-    private readonly string cpf = "863.917.790-23";
+    private const string FakeCpf = "863.917.790-23";
 
     public OrdersControllerTest()
     {
@@ -38,7 +38,7 @@ public class OrdersControllerTest
         // Arrange
         var product = new Product(Guid.NewGuid(), "productA", "product description", ProductCategory.Drink, 10, []);
         var orderId = Guid.NewGuid();
-        var customer = new Customer(Guid.NewGuid(), cpf);
+        var customer = new Customer(Guid.NewGuid(), FakeCpf);
         var expectedOrder = new Order(orderId, customer);
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
@@ -73,7 +73,7 @@ public class OrdersControllerTest
     public async void Create_WithCustomer_Success()
     {
         // Arrange
-        var customer = new Customer(cpf, "name", "email@emil.com");
+        var customer = new Customer(FakeCpf, "name", "email@emil.com");
         var fixture = new Fixture();
         var orderId = Guid.NewGuid();
         var products = new Product[]
@@ -83,7 +83,7 @@ public class OrdersControllerTest
         var chosenProduct = products.First();
 
         var createOrderCommand = fixture.Build<CreateOrderCommandDto>()
-            .With(c => c.Cpf, cpf)
+            .With(c => c.Cpf, FakeCpf)
             .Create();
 
         var expectedOrder = new Order(orderId, customer);
@@ -104,11 +104,9 @@ public class OrdersControllerTest
             response.Result.Should().BeOfType<CreatedAtActionResult>();
             var createdOrder = response.Result.As<CreatedAtActionResult>().Value.As<NewOrderDto>();
 
-            // TODO after 1h or so I gave up trying to make this sh*t to assert it all in on line, I'll check it later
-            createdOrder.Id.Should().Be(expectedOrder.Id);
-
-            createdOrder.Id.Should().NotBeEmpty();
-            createdOrder.TrackingCode.Should().Be("code");
+            createdOrder.Should()
+                .BeEquivalentTo(new { expectedOrder.Id, TrackingCode = "code" },
+                    options => options.ExcludingMissingMembers());
 
             _serviceMock.Verify(
                 s => s.CreateAsync(It.IsAny<string?>(),
@@ -132,7 +130,7 @@ public class OrdersControllerTest
         var chosenProduct = products.First();
 
         var createOrderCommand = fixture.Build<CreateOrderCommandDto>()
-            .With(c => c.Cpf, cpf)
+            .With(c => c.Cpf, FakeCpf)
             .Create();
 
         var expectedOrder = new Order(orderId, null);
@@ -153,8 +151,9 @@ public class OrdersControllerTest
             response.Result.Should().BeOfType<CreatedAtActionResult>();
             var createdOrder = response.Result.As<CreatedAtActionResult>().Value.As<NewOrderDto>();
 
-            createdOrder.Id.Should().Be(expectedOrder.Id);
-            createdOrder.TrackingCode.Should().Be("code");
+            createdOrder.Should()
+                .BeEquivalentTo(new { expectedOrder.Id, TrackingCode = "code" },
+                    options => options.ExcludingMissingMembers());
 
             _serviceMock.Verify(
                 s => s.CreateAsync(It.IsAny<string?>(),
