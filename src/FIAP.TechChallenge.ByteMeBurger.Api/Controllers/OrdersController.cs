@@ -31,7 +31,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Order</returns>
         [HttpPost]
-        public async Task<ActionResult<OrderDto>> Create(
+        public async Task<ActionResult<NewOrderDto>> Create(
             CreateOrderCommandDto newOrder,
             CancellationToken cancellationToken)
         {
@@ -40,7 +40,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
             logger.LogInformation("Order created with ID: {OrderId}", order.Id);
-            return AcceptedAtAction(nameof(Get), new { id = order.Id }, new OrderDto(order));
+            return AcceptedAtAction(nameof(Get), new { id = order.Id }, new NewOrderDto(order.Id, order.TrackingCode.Value));
         }
 
         /// <summary>

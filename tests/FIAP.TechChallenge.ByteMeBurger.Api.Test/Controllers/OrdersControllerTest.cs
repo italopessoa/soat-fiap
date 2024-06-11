@@ -102,19 +102,13 @@ public class OrdersControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<AcceptedAtActionResult>();
-            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<OrderDto>();
+            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<NewOrderDto>();
 
             // TODO after 1h or so I gave up trying to make this sh*t to assert it all in on line, I'll check it later
             createdOrder.Id.Should().Be(expectedOrder.Id);
 
-            createdOrder.Customer.Should().NotBeNull();
-            createdOrder.Customer.Should()
-                .BeEquivalentTo(customer, o => o.ComparingByMembers<Customer>()
-                    .Excluding(c => c.Cpf));
-            createdOrder.Customer.Cpf.Should().BeEquivalentTo(customer.Cpf);
-
-            createdOrder.OrderItems.Should().BeEquivalentTo(expectedOrder.OrderItems,
-                options => options.ComparingByMembers<OrderItem>());
+            createdOrder.Id.Should().NotBeEmpty();
+            createdOrder.TrackingCode.Should().Be("code");
 
             _serviceMock.Verify(
                 s => s.CreateAsync(It.IsAny<string?>(),
@@ -157,12 +151,10 @@ public class OrdersControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<AcceptedAtActionResult>();
-            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<OrderDto>();
+            var createdOrder = response.Result.As<AcceptedAtActionResult>().Value.As<NewOrderDto>();
 
             createdOrder.Id.Should().Be(expectedOrder.Id);
-            createdOrder.Customer.Should().BeNull();
-            createdOrder.OrderItems.Should().BeEquivalentTo(expectedOrder.OrderItems,
-                options => options.ComparingByMembers<OrderItem>());
+            createdOrder.TrackingCode.Should().Be("code");
 
             _serviceMock.Verify(
                 s => s.CreateAsync(It.IsAny<string?>(),
