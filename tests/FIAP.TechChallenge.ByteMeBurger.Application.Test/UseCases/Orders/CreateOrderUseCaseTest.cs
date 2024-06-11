@@ -15,7 +15,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders;
 public class CreateOrderUseCaseTest
 {
     private readonly Mock<ICustomerRepository> _customerRepository;
-    private readonly Mock<IOrderRepository> _orderRepository;
     private readonly Mock<IProductRepository> _productRepository;
     private readonly ICreateOrderUseCase _useCase;
     private readonly Cpf _validCpf = new("863.917.790-23");
@@ -24,8 +23,7 @@ public class CreateOrderUseCaseTest
     {
         _customerRepository = new Mock<ICustomerRepository>();
         _productRepository = new Mock<IProductRepository>();
-        _orderRepository = new Mock<IOrderRepository>();
-        _useCase = new CreateOrderUseCase(_orderRepository.Object, _productRepository.Object,
+        _useCase = new CreateOrderUseCase(_productRepository.Object,
             _customerRepository.Object);
     }
 
@@ -41,11 +39,6 @@ public class CreateOrderUseCaseTest
 
         expectedOrder.Create();
 
-        _orderRepository.Setup(r => r.CreateAsync(
-                It.Is<Order>(o => o.Created != DateTime.MinValue
-                                  && o.Status == OrderStatus.PaymentPending)))
-            .ReturnsAsync(expectedOrder);
-
         _customerRepository.Setup(r => r.FindByCpfAsync(
                 It.Is<string>(cpf => cpf == _validCpf.Value)))
             .ReturnsAsync(expectedCustomer);
@@ -60,11 +53,6 @@ public class CreateOrderUseCaseTest
         // Assert
         using (new AssertionScope())
         {
-            result.Should().NotBeNull();
-            _orderRepository.Verify(m => m.CreateAsync(
-                It.Is<Order>(o => o.Created != DateTime.MinValue
-                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
-
             _customerRepository.Verify(m => m.FindByCpfAsync(
                 It.IsAny<string>()), Times.Once);
 
@@ -99,8 +87,8 @@ public class CreateOrderUseCaseTest
                 .Should()
                 .Be("Customer not found.");
 
-            _orderRepository.Verify(m => m.CreateAsync(
-                It.IsAny<Order>()), Times.Never);
+            // _orderRepository.Verify(m => m.CreateAsync(
+            //     It.IsAny<Order>()), Times.Never);
 
             _customerRepository.Verify(m => m.FindByCpfAsync(
                 It.IsAny<string>()), Times.Once);
@@ -140,8 +128,8 @@ public class CreateOrderUseCaseTest
                 .Should()
                 .Be($"Product '{selectedProducts.First().ProductId}' not found.");
 
-            _orderRepository.Verify(m => m.CreateAsync(
-                It.IsAny<Order>()), Times.Never);
+            // _orderRepository.Verify(m => m.CreateAsync(
+            //     It.IsAny<Order>()), Times.Never);
 
             _customerRepository.Verify(m => m.FindByCpfAsync(
                 It.IsAny<string>()), Times.Once);

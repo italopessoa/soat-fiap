@@ -21,7 +21,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 {
     public async Task<Order> CreateAsync(Order order)
     {
-        logger.LogInformation("Creating order with ID: {OrderId}", order.Id);
+        logger.LogInformation("Persisting order with ID: {OrderId}", order.Id);
         dbConnection.Open();
         var transaction = dbConnection.BeginTransaction();
         {
@@ -32,7 +32,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                     new
                     {
                         Id = order.Id,
-                        CustomerId = order.Customer.Id,
+                        CustomerId = order.Customer?.Id,
                         Status = (int)order.Status,
                         Created = order.Created
                     });
@@ -42,12 +42,12 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                     order.OrderItems);
 
                 transaction.Commit();
-                logger.LogInformation("Order with ID: {OrderId} created", order.Id);
+                logger.LogInformation("Order with ID: {OrderId} persisted", order.Id);
                 return order;
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Error creating order with ID: {OrderId}", order.Id);
+                logger.LogError(e, "Error persisting order with ID: {OrderId}", order.Id);
                 transaction.Rollback();
                 throw;
             }

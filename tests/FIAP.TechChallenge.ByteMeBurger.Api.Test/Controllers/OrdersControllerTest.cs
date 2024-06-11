@@ -90,7 +90,7 @@ public class OrdersControllerTest
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.Create();
 
-        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder);
 
@@ -116,7 +116,7 @@ public class OrdersControllerTest
                 options => options.ComparingByMembers<OrderItem>());
 
             _serviceMock.Verify(
-                s => s.CreateAsync(It.IsAny<Cpf?>(),
+                s => s.CreateAsync(It.IsAny<string?>(),
                     It.IsAny<List<SelectedProduct>>()),
                 Times.Once);
 
@@ -144,7 +144,7 @@ public class OrdersControllerTest
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.Create();
 
-        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<Cpf?>(),
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder);
 
@@ -163,7 +163,7 @@ public class OrdersControllerTest
                 options => options.ComparingByMembers<OrderItem>());
 
             _serviceMock.Verify(
-                s => s.CreateAsync(It.IsAny<Cpf?>(),
+                s => s.CreateAsync(It.IsAny<string?>(),
                     It.IsAny<List<SelectedProduct>>()),
                 Times.Once);
 

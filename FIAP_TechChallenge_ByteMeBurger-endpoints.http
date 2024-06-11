@@ -155,7 +155,34 @@ Content-Type: application/json
 > {%
     client.global.set("orderId", response.body.id);
 %}
+###
+# @name Create order without customer
+POST {{API_URL}}/Orders
+Content-Type: application/json
 
+{
+  "items": [
+    {
+      "productId": "{{dessertId}}",
+      "quantity": {{$random.integer(1, 2)}}
+    },
+    {
+      "productId": "{{drinkId}}",
+       "quantity": {{$random.integer(1, 2)}}
+    },
+    {
+      "productId": "{{mealId}}",
+       "quantity": {{$random.integer(1, 3)}}
+    },
+    {
+    "productId": "{{sidesId}}",
+      "quantity": {{$random.integer(1, 4)}}
+    }
+  ]
+}
+> {%
+    client.global.set("orderId", response.body.id);
+%}
 ###
 # @name Checkout order
 POST {{API_URL}}/Orders/checkout

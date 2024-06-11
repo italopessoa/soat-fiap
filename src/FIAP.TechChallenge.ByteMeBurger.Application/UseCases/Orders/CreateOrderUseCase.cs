@@ -14,14 +14,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 public class CreateOrderUseCase : ICreateOrderUseCase
 {
-    private readonly IOrderRepository _repository;
     private readonly IProductRepository _productRepository;
     private readonly ICustomerRepository _customerRepository;
 
-    public CreateOrderUseCase(IOrderRepository repository, IProductRepository productRepository,
+    public CreateOrderUseCase(IProductRepository productRepository,
         ICustomerRepository customerRepository)
     {
-        _repository = repository;
         _productRepository = productRepository;
         _customerRepository = customerRepository;
     }
@@ -48,7 +46,7 @@ public class CreateOrderUseCase : ICreateOrderUseCase
 
         var order = new Order(customer,"code", products);
         DomainEventTrigger.RaiseOrderCreated(order);
-        return await _repository.CreateAsync(order);
+        return order;
     }
 
     private async Task<Product?> GetProduct(Guid productId)
