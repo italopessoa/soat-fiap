@@ -23,8 +23,10 @@ public interface IOrderService
     /// <summary>
     /// Get all active orders
     /// </summary>
+    /// <param name="listAll">If true it will return all orders. If false it returns only orders
+    /// with status (Received, In Preparation or Ready).</param>
     /// <returns>List of orders</returns>
-    Task<ReadOnlyCollection<Order>> GetAllAsync();
+    Task<ReadOnlyCollection<Order>> GetAllAsync(bool listAll);
 
     /// <summary>
     /// Get order detail
