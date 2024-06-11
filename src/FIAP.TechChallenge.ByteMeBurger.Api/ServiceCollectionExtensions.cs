@@ -5,6 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Application;
+using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using FIAP.TechChallenge.ByteMeBurger.Persistence;
 
@@ -21,6 +22,7 @@ internal static class ServiceCollectionExtensions
     {
         services.ConfigurePersistenceApp(configuration);
         services.ConfigureApplicationApp();
+        services.ConfigureMercadoPagoGatewayApp(configuration);
         services.AddOptionsWithValidateOnStart<MercadoPagoOptions>()
             .Bind(configuration.GetSection(MercadoPagoOptions.MercadoPago))
             .ValidateDataAnnotations();

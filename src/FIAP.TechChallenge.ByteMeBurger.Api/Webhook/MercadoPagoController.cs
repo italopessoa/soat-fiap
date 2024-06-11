@@ -4,7 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Auth;
+using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Model;
 using Microsoft.AspNetCore.Mvc;
 
