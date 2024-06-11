@@ -21,20 +21,21 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 {
     public async Task<Order> CreateAsync(Order order)
     {
-        logger.LogInformation("Creating order with ID: {OrderId}", order.Id);
+        logger.LogInformation("Persisting order with ID: {OrderId}", order.Id);
         dbConnection.Open();
         var transaction = dbConnection.BeginTransaction();
         {
             try
             {
                 await dbConnection.ExecuteAsync(
-                    "insert into Orders (Id, CustomerId, Status, Created) values (@Id, @CustomerId, @Status, @Created);",
+                    "insert into Orders (Id, CustomerId, Status, Created, Code) values (@Id, @CustomerId, @Status, @Created, @Code);",
                     new
                     {
                         Id = order.Id,
-                        CustomerId = order.Customer.Id,
+                        CustomerId = order.Customer?.Id,
                         Status = (int)order.Status,
-                        Created = order.Created
+                        Created = order.Created,
+                        Code = order.TrackingCode.Value
                     });
                 await dbConnection.ExecuteAsync(
                     "insert into OrderItems (OrderId, ProductId, ProductName, UnitPrice, Quantity) " +
@@ -42,12 +43,12 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                     order.OrderItems);
 
                 transaction.Commit();
-                logger.LogInformation("Order with ID: {OrderId} created", order.Id);
+                logger.LogInformation("Order with ID: {OrderId} persisted", order.Id);
                 return order;
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Error creating order with ID: {OrderId}", order.Id);
+                logger.LogError(e, "Error persisting order with ID: {OrderId}", order.Id);
                 transaction.Rollback();
                 throw;
             }
@@ -91,7 +92,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 else
                 {
                     order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
-                        orderListDto.Code, orderListDto.Created, orderListDto.Updated);
+                        new OrderTrackingCode(orderListDto.Code), orderListDto.Created, orderListDto.Updated);
 
                     order.LoadItems(orderListDto.ProductId, orderListDto.ProductName, orderListDto.UnitPrice,
                         orderListDto.Quantity);
@@ -115,7 +116,6 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 
         var order = await dbConnection.QuerySingleOrDefaultAsync<Order>(
             "select * from Orders where Id = @OrderId",
-
             param: new { OrderId = orderId });
 
         logger.LogInformation("Order with ID: {OrderId} retrieved", orderId);

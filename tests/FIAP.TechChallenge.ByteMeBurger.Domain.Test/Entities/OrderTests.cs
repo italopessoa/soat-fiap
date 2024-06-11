@@ -154,6 +154,7 @@ public class OrderTests
         var order = new Order();
         order.AddOrderItem(Guid.NewGuid(), "bread", 2.5m, 4);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
+        order.SetTrackingCode(new OrderTrackingCode("trackingCode"));
         order.Create();
         order.ConfirmPayment();
         order.ConfirmReceiving();
@@ -163,9 +164,12 @@ public class OrderTests
         var func = () => order.DeliverOrder();
 
         // Assert
-        func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Cannot Deliver order if it's not Completed yet.");
-        order.TrackingCode.Should().NotBeEmpty();
+        using (new AssertionScope())
+        {
+            func.Should().ThrowExactly<DomainException>().And.Message.Should()
+                .Be("Cannot Deliver order if it's not Completed yet.");
+            order.TrackingCode.Should().NotBeNull();
+        }
     }
 
     [Fact]
@@ -176,6 +180,7 @@ public class OrderTests
         var customerId = Guid.NewGuid();
 
         var order = new Order(customerId);
+        order.SetTrackingCode(new OrderTrackingCode("trackingCode"));
         order.AddOrderItem(Guid.NewGuid(), "bread", 10, 1);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 6, 2);
 
@@ -201,56 +206,7 @@ public class OrderTests
             finishedDate.Should().BeAfter(doneDate.Value);
             order.Status.Should().Be(OrderStatus.Completed);
             order.Total.Should().Be(22);
-            order.TrackingCode.Should().NotBeEmpty();
+            order.TrackingCode.Should().NotBeNull();
         }
-    }
-
-    [Fact]
-    public void Order_SimpleOrderCode()
-    {
-        // Arrange
-        var order = new Order();
-        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
-        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
-        order.AddOrderItem(Guid.NewGuid(), "soda", 2, 6);
-
-        // Act
-        order.Create();
-        order.ConfirmPayment();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            order.Customer.Should().BeNull();
-            order.TrackingCode.Should().NotBeNull().And.NotContain("#");
-        }
-    }
-
-    [Fact]
-    public void MultipleOrders()
-    {
-        // Arrange
-        var codes = new List<string>();
-        for (var i = 0; i < 50; i++)
-        {
-            var order = new Order();
-            order.AddOrderItem(Guid.NewGuid(), "bread", 10, 1);
-            if (i % 2 == 0)
-            {
-                order.AddOrderItem(Guid.NewGuid(), "milk shake", 12, 1);
-                order.AddOrderItem(Guid.NewGuid(), "soda", 12, 1);
-                order.AddOrderItem(Guid.NewGuid(), "ice cream", 1, 12);
-            }
-
-            order.Create();
-
-            // Act
-            order.ConfirmPayment();
-            codes.Add(order.TrackingCode!);
-            Thread.Sleep(20);
-        }
-
-        // Assert
-        codes.Count.Should().Be(codes.Distinct().Count());
     }
 }

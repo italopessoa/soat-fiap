@@ -16,12 +16,18 @@ public class OrderService(
     ICreateOrderUseCase createOrderUseCase,
     IGetOrderDetailsUseCase getOrderDetailsUseCase,
     IOrderGetAllUseCase orderGetAllUseCase,
-    ICheckoutOrderUseCase checkoutOrderUseCase)
+    ICheckoutOrderUseCase checkoutOrderUseCase,
+    IOrderRepository orderRepository)
     : IOrderService
 {
-    public async Task<Order> CreateAsync(Cpf? customerCpf, List<SelectedProduct> selectedProducts)
+    public async Task<Order> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts)
     {
-        return await createOrderUseCase.Execute(customerCpf, selectedProducts);
+        var cpf = customerCpf is not null ? new Cpf(customerCpf) : null;
+        var order = await createOrderUseCase.Execute(cpf, selectedProducts);
+
+        await orderRepository.CreateAsync(order);
+
+        return order;
     }
 
     public async Task<ReadOnlyCollection<Order>> GetAllAsync()

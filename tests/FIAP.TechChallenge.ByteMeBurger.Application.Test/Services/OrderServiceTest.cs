@@ -1,7 +1,14 @@
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
 using AutoFixture;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
 
@@ -12,6 +19,8 @@ public class OrderServiceTest
     private readonly Mock<IGetOrderDetailsUseCase> _mockGetOrderDetailsUseCase;
     private readonly Mock<IOrderGetAllUseCase> _mockOrderGetAllUseCase;
     private readonly Mock<ICheckoutOrderUseCase> _mockCheckoutOrderUseCase;
+    private readonly Mock<IOrderRepository> _mockOrderRepository;
+
 
     private readonly OrderService _target;
     private readonly Cpf _validCpf = new("863.917.790-23");
@@ -22,8 +31,10 @@ public class OrderServiceTest
         _mockGetOrderDetailsUseCase = new Mock<IGetOrderDetailsUseCase>();
         _mockOrderGetAllUseCase = new Mock<IOrderGetAllUseCase>();
         _mockCheckoutOrderUseCase = new Mock<ICheckoutOrderUseCase>();
+        _mockOrderRepository = new Mock<IOrderRepository>();
+
         _target = new OrderService(_mockCreateOrderUseCase.Object, _mockGetOrderDetailsUseCase.Object,
-            _mockOrderGetAllUseCase.Object, _mockCheckoutOrderUseCase.Object);
+            _mockOrderGetAllUseCase.Object, _mockCheckoutOrderUseCase.Object, _mockOrderRepository.Object);
     }
 
     [Fact]
@@ -68,8 +79,7 @@ public class OrderServiceTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Create_Success(
-        List<SelectedProduct> selectedProducts)
+    public async Task Create_Success(List<SelectedProduct> selectedProducts)
     {
         // Arrange
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
@@ -90,6 +100,12 @@ public class OrderServiceTest
             result.Should().NotBeNull();
             _mockCreateOrderUseCase.Verify(s => s.Execute(It.IsAny<Cpf?>(),
                 It.IsAny<List<SelectedProduct>>()), Times.Once);
+
+            result.Should().NotBeNull();
+            _mockOrderRepository.Verify(m => m.CreateAsync(
+                It.Is<Order>(o => o.Created != DateTime.MinValue
+                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
+
         }
     }
 

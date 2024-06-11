@@ -25,11 +25,9 @@ public class Cpf : ValueObject
         yield return Value;
     }
 
-    public static implicit operator Cpf(string cpf) => new Cpf(SanityseCpf(cpf));
-
+    public static implicit operator Cpf(string cpf) => new Cpf(Validate(cpf));
 
     public static implicit operator string(Cpf cpf) => cpf.ToString();
-
 
     public override string ToString()
     {

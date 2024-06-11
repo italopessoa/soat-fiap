@@ -18,7 +18,7 @@ public class OrderDto
     public OrderDto(Order order)
     {
         Id = order.Id;
-        TrackingCode = order.TrackingCode;
+        TrackingCode = order.TrackingCode.Value;
         Total = order.Total;
         Status = order.Status;
         CreationDate = order.Created;

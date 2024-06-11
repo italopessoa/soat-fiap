@@ -15,7 +15,7 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public Customer? Customer { get; private set; }
 
-    public string? TrackingCode { get; private set; }
+    public OrderTrackingCode TrackingCode { get; private set; }
 
     public OrderStatus Status { get; private set; }
 
@@ -26,7 +26,6 @@ public class Order : Entity<Guid>, IAggregateRoot
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     public decimal Total => _orderItems.Sum(o => o.UnitPrice * o.Quantity);
-
 
     public Order()
         : base(Guid.NewGuid())
@@ -50,7 +49,7 @@ public class Order : Entity<Guid>, IAggregateRoot
         Customer = customer;
     }
 
-    public Order(Guid id, Customer? customer, OrderStatus status, string? trackingCode, DateTime created,
+    public Order(Guid id, Customer? customer, OrderStatus status, OrderTrackingCode trackingCode, DateTime created,
         DateTime? updated)
         : base(id)
     {
@@ -61,7 +60,7 @@ public class Order : Entity<Guid>, IAggregateRoot
         LastUpdate = updated;
     }
 
-    public Order(Customer? customer, string trackingCode, Dictionary<Product, int> selectedProducts)
+    public Order(Customer? customer, OrderTrackingCode trackingCode, Dictionary<Product, int> selectedProducts)
         : base(Guid.NewGuid())
     {
         Customer = customer;
@@ -111,7 +110,6 @@ public class Order : Entity<Guid>, IAggregateRoot
             throw new DomainException("Payment cannot be confirmed if order isn't pending.");
 
         Status = OrderStatus.PaymentConfirmed;
-        TrackingCode = GenerateCode(Created);
         Update();
     }
 
@@ -151,34 +149,13 @@ public class Order : Entity<Guid>, IAggregateRoot
         Update();
     }
 
+    public void SetTrackingCode(OrderTrackingCode code)
+    {
+        if (Status != OrderStatus.PaymentPending)
+            throw new DomainException("Cannot set status code for a existing Order.");
+
+        TrackingCode = code;
+    }
+
     private void Update() => LastUpdate = DateTime.UtcNow;
-
-    private static string GetLetter(int number, string alphabet)
-    {
-        var adjustedNumber = number % alphabet.Length;
-        var letterIndex = adjustedNumber > 0 ? adjustedNumber - 1 : adjustedNumber;
-
-        return alphabet.Substring(letterIndex, 1);
-    }
-
-    private string GenerateCode(DateTime confirmationDate)
-    {
-        const string lettersOnly = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
-        const string reversedCharacters = "87654321ZYXVUTSRQPMLKJIHFEDCB";
-
-        var hour = confirmationDate.Hour;
-        var minute = confirmationDate.Minute;
-        var second = confirmationDate.Second;
-        var millisecond = confirmationDate.Millisecond;
-
-        var partA = GetLetter(hour, lettersOnly);
-        var partB = millisecond % 2 == 0 ? string.Empty : GetLetter(minute, reversedCharacters);
-        var partC = GetLetter(second, reversedCharacters);
-
-        var key = Guid.NewGuid().ToString()
-            .Split("-")[2]
-            .Substring(1, 3);
-
-        return $"{partA}{partB}{partC}-{key}".ToUpper();
-    }
 };

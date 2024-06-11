@@ -7,6 +7,7 @@
 using System.Data;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 using FluentAssertions;
@@ -67,13 +68,14 @@ public class OrderRepositoryDapperTest
         // Arrange
         var order = new Order(Guid.NewGuid());
         order.AddOrderItem(Guid.NewGuid(), "banana", 10, 1);
+        order.SetTrackingCode(new OrderTrackingCode("code"));
         order.Create();
 
         _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
 
         _mockConnection.SetupDapperAsync(c =>
                 c.ExecuteAsync(
-                    "insert into Orders (Id, CustomerId, Status, Created) values (@Id, @CustomerId, @Status, @Created);",
+                    "insert into Orders (Id, CustomerId, Status, Created, Code) values (@Id, @CustomerId, @Status, @Created, @Code);",
                     null, null, null, null))
             .ReturnsAsync(1);
         _mockConnection.SetupDapperAsync(c =>

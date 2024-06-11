@@ -14,16 +14,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 public class CreateOrderUseCase : ICreateOrderUseCase
 {
-    private readonly IOrderRepository _repository;
     private readonly IProductRepository _productRepository;
     private readonly ICustomerRepository _customerRepository;
+    private readonly IOrderTrackingCodeService _orderTrackingCodeService;
 
-    public CreateOrderUseCase(IOrderRepository repository, IProductRepository productRepository,
-        ICustomerRepository customerRepository)
+    public CreateOrderUseCase(IProductRepository productRepository,
+        ICustomerRepository customerRepository,
+        IOrderTrackingCodeService orderTrackingCodeService)
     {
-        _repository = repository;
         _productRepository = productRepository;
         _customerRepository = customerRepository;
+        _orderTrackingCodeService = orderTrackingCodeService;
     }
 
     public async Task<Order> Execute(Cpf? customerCpf, List<SelectedProduct> selectedProducts)
@@ -46,9 +47,10 @@ public class CreateOrderUseCase : ICreateOrderUseCase
             products.Add(product, item.Quantity);
         }
 
-        var order = new Order(customer,"code", products);
+        var trackingCode = await _orderTrackingCodeService.GetNextAsync();
+        var order = new Order(customer, trackingCode, products);
         DomainEventTrigger.RaiseOrderCreated(order);
-        return await _repository.CreateAsync(order);
+        return order;
     }
 
     private async Task<Product?> GetProduct(Guid productId)

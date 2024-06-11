@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Application.DomainServices;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
@@ -19,32 +20,33 @@ public static class ServiceCollectionsExtensions
 
     private static void AddCustomerUseCases(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<IFindCustomerByCpfUseCase, FindCustomerByCpfUseCase>();
-        serviceCollection.AddScoped<ICreateCustomerUseCase, CreateCustomerUseCase>();
+        serviceCollection.AddScoped<IFindCustomerByCpfUseCase, FindCustomerByCpfUseCase>()
+            .AddScoped<ICreateCustomerUseCase, CreateCustomerUseCase>();
     }
 
     private static void AddOrderUseCases(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
-        serviceCollection.AddScoped<IOrderGetAllUseCase, OrderGetAllUseCase>();
-        serviceCollection.AddScoped<IGetOrderDetailsUseCase, GetOrderDetailsUseCase>();
-        serviceCollection.AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>();
+        serviceCollection.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>()
+            .AddScoped<IOrderGetAllUseCase, OrderGetAllUseCase>()
+            .AddScoped<IGetOrderDetailsUseCase, GetOrderDetailsUseCase>()
+            .AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>();
     }
 
     private static void AddProductUseCases(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<ICreateProductUseCase, CreateProductUseCase>();
-        serviceCollection.AddScoped<IFindProductsByCategoryUseCase, FindProductsByCategoryUseCase>();
-        serviceCollection.AddScoped<IUpdateProductUseCase, UpdateProductUseCase>();
-        serviceCollection.AddScoped<IGetAllProductsUseCase, GetAllProductsUseCase>();
-        serviceCollection.AddScoped<IDeleteProductUseCase, DeleteProductUseCase>();
-        serviceCollection.AddScoped<ICheckoutOrderUseCase, FakeCheckoutOrderUseCase>();
+        serviceCollection.AddScoped<ICreateProductUseCase, CreateProductUseCase>()
+            .AddScoped<IFindProductsByCategoryUseCase, FindProductsByCategoryUseCase>()
+            .AddScoped<IUpdateProductUseCase, UpdateProductUseCase>()
+            .AddScoped<IGetAllProductsUseCase, GetAllProductsUseCase>()
+            .AddScoped<IDeleteProductUseCase, DeleteProductUseCase>()
+            .AddScoped<ICheckoutOrderUseCase, FakeCheckoutOrderUseCase>();
     }
 
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICustomerService, CustomerService>()
             .AddScoped<IProductService, ProductService>()
-            .AddScoped<IOrderService, OrderService>();
+            .AddScoped<IOrderService, OrderService>()
+            .AddScoped<IOrderTrackingCodeService, OrderTrackingCodeService>();
     }
 }
