@@ -25,13 +25,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         : ControllerBase
     {
         /// <summary>
-        /// Create a new order with selected items
+        /// Create a new order with selected items (Checkout)
         /// </summary>
         /// <param name="newOrder">Create new order command</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Order</returns>
         [HttpPost]
-        public async Task<ActionResult<OrderDto>> Create(
+        public async Task<ActionResult<NewOrderDto>> Create(
             CreateOrderCommandDto newOrder,
             CancellationToken cancellationToken)
         {
@@ -40,7 +40,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
             logger.LogInformation("Order created with ID: {OrderId}", order.Id);
-            return AcceptedAtAction(nameof(Get), new { id = order.Id }, new OrderDto(order));
+            return CreatedAtAction(nameof(Get), new { id = order.Id }, new NewOrderDto(order.Id, order.TrackingCode.Value));
         }
 
         /// <summary>
@@ -88,6 +88,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// </summary>
         /// <param name="command">Checkout order command.</param>
         /// <param name="cancellationToken">Cancellation token</param>
+        [Obsolete("This endpoint will be removed in the future.")]
         [Route("checkout")]
         [HttpPost]
         public async Task<ActionResult<OrderDto>> Checkout([FromBody] CheckoutOrderCommandDto command,

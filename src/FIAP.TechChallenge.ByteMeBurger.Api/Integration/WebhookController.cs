@@ -13,18 +13,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Webhook;
 /// <summary>
 /// MercadoPago webhook controller
 /// </summary>
-[Route("api/[controller]")]
 [ApiController]
-[TypeFilter(typeof(MercadoPagoMessageAuthorizationFilter))]
 [Consumes("application/json")]
-public class MercadoPagoController : ControllerBase
+public class WebhookController : ControllerBase
 {
     /// <summary>
-    /// Mercado Pago Webhook endpoint
+    /// Mercado Pago Integration endpoint
     /// </summary>
     /// <param name="json"></param>
     /// <returns></returns>
-    [HttpPost("webhook")]
+    [TypeFilter(typeof(MercadoPagoMessageAuthorizationFilter))]
+    [HttpPost("mercadopago")]
     public async Task<IActionResult> Post([FromBody] MercadoPagoWebhookEvent payload)
     {
         if (payload.Action == "payment.updated")

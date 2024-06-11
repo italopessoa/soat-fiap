@@ -15,7 +15,7 @@ create table IF NOT EXISTS Products
     Name        varchar(100)  not null,
     Description varchar(200)  not null,
     Category    int           not null,
-    Price       decimal       not null,
+    Price       decimal(10,2)       not null,
     Images      varchar(1000) null
 );
 
@@ -27,7 +27,7 @@ create table IF NOT EXISTS Orders
     Status     int        not null,
     Created    datetime   null,
     Updated    datetime   null,
-    Code       varchar(4) null
+    Code       varchar(7) null
     --  constraint Order_Customer_Id_fk
     --      foreign key (CustomerId) references Customer (Id) null
 );
