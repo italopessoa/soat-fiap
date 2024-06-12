@@ -40,7 +40,8 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
             logger.LogInformation("Order created with ID: {OrderId}", order.Id);
-            return CreatedAtAction(nameof(Get), new { id = order.Id }, new NewOrderDto(order.Id, order.TrackingCode.Value));
+            return CreatedAtAction(nameof(Get), new { id = order.Id },
+                new NewOrderDto(order.Id, order.TrackingCode.Value));
         }
 
         /// <summary>
@@ -51,7 +52,8 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Orders list</returns>
         [HttpGet]
-        public async Task<ActionResult<ReadOnlyCollection<OrderDto>>> Get(bool listAll, CancellationToken cancellationToken)
+        public async Task<ActionResult<ReadOnlyCollection<OrderDto>>> Get(bool listAll,
+            CancellationToken cancellationToken)
         {
             logger.LogInformation("Getting all orders");
             var orders = await orderService.GetAllAsync(listAll);
@@ -99,6 +101,28 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
             logger.LogInformation("Checkout order: {Id}", command.Id);
             await orderService.CheckoutAsync(command.Id);
             return Ok();
+        }
+
+        /// <summary>
+        /// Checkout order
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="command">Checkout order command.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        [Route("{id:guid}/status")]
+        [HttpPut]
+        public async Task<ActionResult<OrderDto>> UpdateStatus(Guid id,
+            [FromBody] UpdateOrderStatusCommandDto command,
+            CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Updating order status: {Id}", id);
+            if (await orderService.UpdateStatusAsync(id, (OrderStatus)command.Status))
+            {
+                logger.LogInformation("Order status updated.");
+                return NoContent();
+            }
+
+            return BadRequest("Status not updated.");
         }
     }
 }

@@ -167,7 +167,7 @@ public class OrderTests
         using (new AssertionScope())
         {
             func.Should().ThrowExactly<DomainException>().And.Message.Should()
-                .Be("Cannot Deliver order if it's not Completed yet.");
+                .Be("Cannot Deliver order if it's not Ready yet.");
             order.TrackingCode.Should().NotBeNull();
         }
     }

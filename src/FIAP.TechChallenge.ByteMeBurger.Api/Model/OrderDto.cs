@@ -20,7 +20,7 @@ public class OrderDto
         Id = order.Id;
         TrackingCode = order.TrackingCode.Value;
         Total = order.Total;
-        Status = order.Status;
+        Status = (OrderStatusDto)order.Status;
         CreationDate = order.Created;
         LastUpdate = order.LastUpdate;
         OrderItems = order.OrderItems.Select(o => new OrderItemDto(o)).ToList();
@@ -37,7 +37,7 @@ public class OrderDto
 
     public decimal Total { get; set; }
 
-    public OrderStatus Status { get; set; }
+    public OrderStatusDto Status { get; set; }
 
     public DateTime CreationDate { get; set; }
 

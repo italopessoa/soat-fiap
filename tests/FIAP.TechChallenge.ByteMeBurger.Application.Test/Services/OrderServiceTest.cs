@@ -19,6 +19,7 @@ public class OrderServiceTest
     private readonly Mock<IGetOrderDetailsUseCase> _mockGetOrderDetailsUseCase;
     private readonly Mock<IOrderGetAllUseCase> _mockOrderGetAllUseCase;
     private readonly Mock<ICheckoutOrderUseCase> _mockCheckoutOrderUseCase;
+    private readonly Mock<IUpdateOrderStatusUseCase> _mockUpdateOrderStatusUseCase;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
 
 
@@ -31,10 +32,11 @@ public class OrderServiceTest
         _mockGetOrderDetailsUseCase = new Mock<IGetOrderDetailsUseCase>();
         _mockOrderGetAllUseCase = new Mock<IOrderGetAllUseCase>();
         _mockCheckoutOrderUseCase = new Mock<ICheckoutOrderUseCase>();
+        _mockUpdateOrderStatusUseCase = new Mock<IUpdateOrderStatusUseCase>();
         _mockOrderRepository = new Mock<IOrderRepository>();
 
         _target = new OrderService(_mockCreateOrderUseCase.Object, _mockGetOrderDetailsUseCase.Object,
-            _mockOrderGetAllUseCase.Object, _mockCheckoutOrderUseCase.Object, _mockOrderRepository.Object);
+            _mockOrderGetAllUseCase.Object, _mockCheckoutOrderUseCase.Object, _mockOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object);
     }
 
     [Fact]
@@ -105,7 +107,6 @@ public class OrderServiceTest
             _mockOrderRepository.Verify(m => m.CreateAsync(
                 It.Is<Order>(o => o.Created != DateTime.MinValue
                                   && o.Status == OrderStatus.PaymentPending)), Times.Once);
-
         }
     }
 
@@ -163,6 +164,29 @@ public class OrderServiceTest
         using (new AssertionScope())
         {
             _mockCheckoutOrderUseCase.VerifyAll();
+        }
+    }
+
+    [Fact]
+    public async Task UpdateStatusAsync_Success()
+    {
+        // Arrange
+        var order = new Fixture().Create<Order>();
+        _mockUpdateOrderStatusUseCase.Setup(r => r.Execute(It.IsAny<Guid>(), It.IsAny<OrderStatus>()))
+            .ReturnsAsync(order)
+            .Verifiable();
+
+        _mockOrderRepository.Setup(r => r.UpdateOrderStatusAsync(It.Is<Order>(o => o.Equals(order))))
+            .ReturnsAsync(true)
+            .Verifiable();
+
+        // Act
+        var updated = await _target.UpdateStatusAsync(Guid.NewGuid(), OrderStatus.Ready);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            updated.Should().BeTrue();
         }
     }
 }

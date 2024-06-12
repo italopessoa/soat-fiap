@@ -19,4 +19,6 @@ public record OrderTrackingCode
 
         Value = value;
     }
+
+    public static implicit operator OrderTrackingCode(string code) => new (code);
 }

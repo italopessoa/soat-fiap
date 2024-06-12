@@ -14,7 +14,7 @@ public class OrderListDto
     public int Status { get; set; }
     public DateTime Created { get; set; }
     public DateTime? Updated { get; set; }
-    public string? Code { get; set; }
+    public string TrackingCode { get; set; }
     public Customer? Customer { get; set; }
     public Guid ProductId { get; set; }
     public string ProductName { get; set; }

@@ -143,7 +143,7 @@ public class Order : Entity<Guid>, IAggregateRoot
     public void DeliverOrder()
     {
         if (Status != OrderStatus.Ready)
-            throw new DomainException("Cannot Deliver order if it's not Completed yet.");
+            throw new DomainException("Cannot Deliver order if it's not Ready yet.");
 
         Status = OrderStatus.Completed;
         Update();
