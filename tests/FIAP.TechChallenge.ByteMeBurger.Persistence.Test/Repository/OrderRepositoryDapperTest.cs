@@ -75,7 +75,7 @@ public class OrderRepositoryDapperTest
 
         _mockConnection.SetupDapperAsync(c =>
                 c.ExecuteAsync(
-                    "insert into Orders (Id, CustomerId, Status, Created, Code) values (@Id, @CustomerId, @Status, @Created, @Code);",
+                    "insert into Orders (Id, CustomerId, Status, Created, TrackingCode) values (@Id, @CustomerId, @Status, @Created, @TrackingCode);",
                     null, null, null, null))
             .ReturnsAsync(1);
         _mockConnection.SetupDapperAsync(c =>

@@ -28,14 +28,14 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
             try
             {
                 await dbConnection.ExecuteAsync(
-                    "insert into Orders (Id, CustomerId, Status, Created, Code) values (@Id, @CustomerId, @Status, @Created, @Code);",
+                    "insert into Orders (Id, CustomerId, Status, Created, TrackingCode) values (@Id, @CustomerId, @Status, @Created, @TrackingCode);",
                     new
                     {
                         Id = order.Id,
                         CustomerId = order.Customer?.Id,
                         Status = (int)order.Status,
                         Created = order.Created,
-                        Code = order.TrackingCode.Value
+                        TrackingCode = order.TrackingCode.Value
                     });
                 await dbConnection.ExecuteAsync(
                     "insert into OrderItems (OrderId, ProductId, ProductName, UnitPrice, Quantity) " +
@@ -69,7 +69,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                    o.Status,
                    o.Created,
                    o.Updated,
-                   o.Code,
+                   o.TrackingCode,
                    oi.OrderId,
                    oi.ProductId,
                    oi.ProductName,
@@ -92,7 +92,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 else
                 {
                     order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
-                        new OrderTrackingCode(orderListDto.Code), orderListDto.Created, orderListDto.Updated);
+                        new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created, orderListDto.Updated);
 
                     order.LoadItems(orderListDto.ProductId, orderListDto.ProductName, orderListDto.UnitPrice,
                         orderListDto.Quantity);

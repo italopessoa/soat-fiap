@@ -248,4 +248,28 @@ public class OrdersControllerTest
             _serviceMock.VerifyAll();
         }
     }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async void UpdateOrderStatusAsync(bool success)
+    {
+        // Arrange
+        _serviceMock.Setup(s => s.UpdateStatusAsync(It.IsAny<Guid>(), It.IsAny<OrderStatus>()))
+            .ReturnsAsync(success)
+            .Verifiable();
+
+        // Act
+        var response = await _target.UpdateStatus(Guid.NewGuid(),
+            new UpdateOrderStatusCommandDto() { Status = OrderStatusDto.Ready }, CancellationToken.None);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            if (success)
+                response.Result.Should().BeOfType<NoContentResult>();
+            else
+                response.Result.Should().BeOfType<BadRequestObjectResult>();
+        }
+    }
 }

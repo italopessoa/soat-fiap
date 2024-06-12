@@ -27,7 +27,7 @@ create table IF NOT EXISTS Orders
     Status     int        not null,
     Created    datetime   null,
     Updated    datetime   null,
-    Code       varchar(7) null
+    TrackingCode       varchar(7) null
     --  constraint Order_Customer_Id_fk
     --      foreign key (CustomerId) references Customer (Id) null
 );

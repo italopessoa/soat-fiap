@@ -42,4 +42,12 @@ public interface IOrderService
     /// <param name="id">Order Id</param>
     [Obsolete("This method will be removed in the future.")]
     Task CheckoutAsync(Guid id);
+
+    /// <summary>
+    /// Update Order status
+    /// </summary>
+    /// <param name="orderId">Order Id.</param>
+    /// <param name="newStatus">New Status</param>
+    /// <returns></returns>
+    Task<bool> UpdateStatusAsync(Guid orderId, OrderStatus newStatus);
 }
