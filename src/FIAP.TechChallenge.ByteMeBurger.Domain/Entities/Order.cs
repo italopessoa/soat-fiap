@@ -27,6 +27,8 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public decimal Total => _orderItems.Sum(o => o.UnitPrice * o.Quantity);
 
+    public PaymentId? PaymentId { get; set; }
+
     public Order()
         : base(Guid.NewGuid())
     {
