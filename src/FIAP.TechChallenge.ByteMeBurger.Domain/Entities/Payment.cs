@@ -4,14 +4,13 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-public class Payment
+public class Payment : Entity<PaymentId>, IAggregateRoot
 {
-    public PaymentId Id { get; set; }
-
     public Guid OrderId { get; set; }
 
     public string Status { get; set; }
@@ -23,6 +22,7 @@ public class Payment
     }
 
     public Payment(PaymentId id, Guid orderId)
+        : base(id)
     {
         Id = id;
         OrderId = orderId;

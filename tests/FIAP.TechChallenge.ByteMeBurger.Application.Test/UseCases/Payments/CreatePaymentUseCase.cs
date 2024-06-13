@@ -12,12 +12,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Payments;
 
 public class CreatePaymentUseCase : ICreatePaymentUseCase
 {
-    private readonly IPaymentService _paymentService;
+    private readonly IPaymentGateway _paymentGateway;
     private readonly IOrderRepository _orderRepository;
 
-    public CreatePaymentUseCase(IPaymentService paymentService, IOrderRepository orderRepository)
+    public CreatePaymentUseCase(IPaymentGateway paymentGateway, IOrderRepository orderRepository)
     {
-        _paymentService = paymentService;
+        _paymentGateway = paymentGateway;
         _orderRepository = orderRepository;
     }
 
@@ -31,6 +31,6 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
         if (order.PaymentId is not null)
             throw new DomainException("There's already a Payment for the order.");
 
-        return await _paymentService.CreatePaymentAsync(order);
+        return await _paymentGateway.CreatePaymentAsync(order);
     }
 }

@@ -8,7 +8,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
-public interface IPaymentService
+public interface IPaymentGateway
 {
-    Task<Payment> CreateOrderPaymentAsync(Guid order);
+    Task<Payment> CreatePaymentAsync(Order order);
 }

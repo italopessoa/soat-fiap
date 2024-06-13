@@ -20,15 +20,15 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.UseCases.Payments;
 [TestSubject(typeof(CreatePaymentUseCase))]
 public class CreatePaymentUseCaseTest
 {
-    private readonly Mock<IPaymentService> _paymentServiceMock;
+    private readonly Mock<IPaymentGateway> _paymentGatewayMock;
     private readonly CreatePaymentUseCase _createPaymentUseCase;
     private readonly Mock<IOrderRepository> _orderRepository;
 
     public CreatePaymentUseCaseTest()
     {
         _orderRepository = new Mock<IOrderRepository>();
-        _paymentServiceMock = new Mock<IPaymentService>();
-        _createPaymentUseCase = new CreatePaymentUseCase(_paymentServiceMock.Object, _orderRepository.Object);
+        _paymentGatewayMock = new Mock<IPaymentGateway>();
+        _createPaymentUseCase = new CreatePaymentUseCase(_paymentGatewayMock.Object, _orderRepository.Object);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class CreatePaymentUseCaseTest
 
         _orderRepository.Setup(o => o.GetAsync(It.IsAny<Guid>()))
             .ReturnsAsync(order);
-        _paymentServiceMock.Setup(ps => ps.CreatePaymentAsync(It.IsAny<Order>()))
+        _paymentGatewayMock.Setup(ps => ps.CreatePaymentAsync(It.IsAny<Order>()))
             .ReturnsAsync(expectedPayment);
 
         // Act
@@ -57,7 +57,7 @@ public class CreatePaymentUseCaseTest
         using var scope = new AssertionScope();
         payment.Should().NotBeNull();
         payment.Status.Should().Be("pending");
-        _paymentServiceMock.Verify(ps => ps.CreatePaymentAsync(It.IsAny<Order>()), Times.Once);
+        _paymentGatewayMock.Verify(ps => ps.CreatePaymentAsync(It.IsAny<Order>()), Times.Once);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class CreatePaymentUseCaseTest
         await func.Should()
             .ThrowExactlyAsync<EntityNotFoundException>()
             .WithMessage("Order not found.");
-        _paymentServiceMock.Verify(ps => ps.CreatePaymentAsync(It.IsAny<Order>()), Times.Never);
+        _paymentGatewayMock.Verify(ps => ps.CreatePaymentAsync(It.IsAny<Order>()), Times.Never);
     }
 
     [Fact]
