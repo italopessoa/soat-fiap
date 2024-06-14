@@ -5,17 +5,11 @@
 // LICENSE file in the root directory of this source tree.
 
 using AutoFixture;
-using FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Payments;
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using JetBrains.Annotations;
-using Moq;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.UseCases.Payments;
+namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Payments;
 
 [TestSubject(typeof(CreatePaymentUseCase))]
 public class CreatePaymentUseCaseTest

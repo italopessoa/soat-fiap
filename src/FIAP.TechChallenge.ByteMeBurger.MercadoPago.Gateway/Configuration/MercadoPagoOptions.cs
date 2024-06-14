@@ -15,5 +15,12 @@ public class MercadoPagoOptions
     [Required]
     [MinLength(1)]
     public string WebhookSecret { get; set; }
+
+    [Required]
+    [MinLength(1)]
     public string AccessToken { get; set; }
+
+    [Required]
+    [MinLength(1)]
+    public string NotificationUrl { get; set; }
 }

@@ -4,6 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Security;
 using Microsoft.Extensions.Configuration;
@@ -22,5 +23,6 @@ public static class ServiceCollectionsExtensions
         //     .ValidateDataAnnotations();
 
         services.AddSingleton<IMercadoPagoHmacSignatureValidator, MercadoPagoHmacSignatureValidator>();
+        services.AddSingleton<IPaymentGateway, MercadoPagoService>();
     }
 }

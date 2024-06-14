@@ -4,11 +4,10 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Payments;
+namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 
 public class CreatePaymentUseCase : ICreatePaymentUseCase
 {
@@ -21,7 +20,7 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
         _orderRepository = orderRepository;
     }
 
-    public async Task<Payment> Execute(Guid orderId)
+    public async Task<Domain.Entities.Payment> Execute(Guid orderId)
     {
         var order = await _orderRepository.GetAsync(orderId);
 

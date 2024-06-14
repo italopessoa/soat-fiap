@@ -30,6 +30,7 @@ public static class ServiceExtensions
 
         services.AddScoped<IOrderRepository, OrderRepositoryDapper>()
             .AddScoped<ICustomerRepository, CustomerRepositoryDapper>()
-            .AddScoped<IProductRepository, ProductRepositoryDapper>();
+            .AddScoped<IProductRepository, ProductRepositoryDapper>()
+            .AddScoped<IPaymentRepository, PaymentRepositoryDapper>();
     }
 }
