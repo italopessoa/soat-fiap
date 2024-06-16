@@ -11,32 +11,36 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Payment : Entity<PaymentId>, IAggregateRoot
 {
-    public Guid OrderId { get; set; }
-
     public PaymentStatus Status { get; set; }
 
-    public string SystemId { get; set; }
+    public string Type { get; set; }
+
+    /// <summary>
+    /// Local=0, MercadoPago=1
+    /// </summary>
+    public int PaymentType { get; set; }
 
     public string QrCode { get; set; }
+
+    public decimal Amount { get; set; }
 
     public Payment()
     {
     }
 
-    public Payment(PaymentId id, Guid orderId)
+    public Payment(PaymentId id)
         : base(id)
     {
         Id = id;
-        OrderId = orderId;
         Status = PaymentStatus.Pending;
     }
 
-    public Payment(PaymentId id, Guid orderId, string qrCode)
+    public Payment(PaymentId id, string qrCode, decimal amount)
         : base(id)
     {
         Id = id;
-        OrderId = orderId;
         Status = PaymentStatus.Pending;
         QrCode = qrCode;
+        Amount = amount;
     }
 }

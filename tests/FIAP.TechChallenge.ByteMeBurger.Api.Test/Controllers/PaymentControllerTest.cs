@@ -33,8 +33,8 @@ public class PaymentControllerTest
     public async void Create_Success()
     {
         // Arrange
-        var paymentId = new PaymentId("123", 1);
-        var payment = new Payment(paymentId, Guid.NewGuid(), "qrcode");
+        var paymentId = new PaymentId("123", Guid.NewGuid());
+        var payment = new Payment(paymentId, "qrcode", 10);
         _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<Guid>()))
             .ReturnsAsync(payment);
 
@@ -47,8 +47,8 @@ public class PaymentControllerTest
             response.Result.Should().BeOfType<OkObjectResult>();
             var paymentViewModel = response.Result.As<OkObjectResult>().Value.As<PaymentViewModel>();
 
-            paymentViewModel.PaymentId.Should().Be(payment.Id.ExternalReference);
-            paymentViewModel.VendorId.Should().Be(payment.Id.SystemId.ToString());
+            paymentViewModel.PaymentId.Should().Be(payment.Id.Code);
+            paymentViewModel.PaymentType.Should().Be(payment.PaymentType);
             paymentViewModel.QrCode.Should().Be(payment.QrCode);
         }
     }

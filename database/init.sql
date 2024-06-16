@@ -41,3 +41,15 @@ create table IF NOT EXISTS OrderItems
     UnitPrice   decimal      not null,
     Quantity    int          null
 );
+
+create table IF NOT EXISTS Payments
+(
+    Id         char(36)   not null,
+    OrderId    char(36)   not null,
+    Status     int        not null,
+    Created    datetime   null,
+    Updated    datetime   null,
+    PaymentType int       not null,
+    Amount     decimal(10,2) not null,
+    PRIMARY KEY (Id, OrderId)
+    );
