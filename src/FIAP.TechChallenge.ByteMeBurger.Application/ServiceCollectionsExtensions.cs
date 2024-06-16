@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Application.DomainServices;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
     public static void ConfigureApplicationApp(this IServiceCollection serviceCollection)

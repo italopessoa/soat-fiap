@@ -13,9 +13,11 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
 {
     public Guid OrderId { get; set; }
 
-    public string Status { get; set; }
+    public PaymentStatus Status { get; set; }
 
     public string SystemId { get; set; }
+
+    public string QrCode { get; set; }
 
     public Payment()
     {
@@ -26,6 +28,15 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
     {
         Id = id;
         OrderId = orderId;
-        Status = "pending";
+        Status = PaymentStatus.Pending;
+    }
+
+    public Payment(PaymentId id, Guid orderId, string qrCode)
+        : base(id)
+    {
+        Id = id;
+        OrderId = orderId;
+        Status = PaymentStatus.Pending;
+        QrCode = qrCode;
     }
 }

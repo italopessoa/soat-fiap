@@ -36,7 +36,7 @@ public class CreatePaymentUseCaseTest
 
         var expectedPayment = fixture.Build<Payment>()
             .With(p => p.Id, new PaymentId("paymentId", 0))
-            .With(p => p.Status, "pending")
+            .With(p => p.Status, PaymentStatus.Pending)
             .Create();
 
         _orderRepository.Setup(o => o.GetAsync(It.IsAny<Guid>()))
@@ -50,7 +50,7 @@ public class CreatePaymentUseCaseTest
         // Assert
         using var scope = new AssertionScope();
         payment.Should().NotBeNull();
-        payment.Status.Should().Be("pending");
+        payment.Status.Should().Be(PaymentStatus.Pending);
         _paymentGatewayMock.Verify(ps => ps.CreatePaymentAsync(It.IsAny<Order>()), Times.Once);
     }
 

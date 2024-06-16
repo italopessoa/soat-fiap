@@ -4,6 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Security;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
     public static void ConfigureMercadoPagoGatewayApp(this IServiceCollection services, IConfiguration configuration)

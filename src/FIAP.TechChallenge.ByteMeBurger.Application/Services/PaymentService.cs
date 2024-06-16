@@ -12,19 +12,19 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
 
 public class PaymentService : IPaymentService
 {
-    private readonly ICreatePaymentUseCase _createOrderUseCase;
+    private readonly ICreatePaymentUseCase _createOrderPaymentUseCase;
     private readonly IPaymentRepository _paymentRepository;
 
-    public PaymentService(ICreatePaymentUseCase createOrderUseCase,
+    public PaymentService(ICreatePaymentUseCase createOrderPaymentUseCase,
         IPaymentRepository paymentRepository)
     {
-        _createOrderUseCase = createOrderUseCase;
+        _createOrderPaymentUseCase = createOrderPaymentUseCase;
         _paymentRepository = paymentRepository;
     }
 
     public async Task<Payment> CreateOrderPaymentAsync(Guid orderId)
     {
-        var payment = await _createOrderUseCase.Execute(orderId);
+        var payment = await _createOrderPaymentUseCase.Execute(orderId);
 
         await _paymentRepository.SaveAsync(payment);
         return payment;
