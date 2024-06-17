@@ -40,40 +40,53 @@ public class MercadoPagoService : IPaymentGateway
             }
         };
 
-        PaymentCreateRequest MapPaymentCreateRequest(PaymentPayerRequest paymentPayerRequest2,
-            PaymentAdditionalInfoRequest paymentAdditionalInfoRequest)
+        var paymentPayerRequest = order.Customer is null
+            ? new PaymentPayerRequest
+            {
+                Email = "guest@mercadofiado.com",
+            }
+            : MapPaymentPayerRequest(order);
+
+        var items = MapPaymentItemRequests(order);
+        var additionalInfo = new PaymentAdditionalInfoRequest
         {
-            return new PaymentCreateRequest
-            {
-                Description = $"Payment for Order {order.TrackingCode.Value}",
-                ExternalReference = order.TrackingCode.Value,
-                Installments = 1,
-                NotificationUrl = _mercadoPagoOptions.NotificationUrl,
-                Payer = paymentPayerRequest2,
-                PaymentMethodId = "pix",
-                StatementDescriptor = "tech challenge restaurant",
-                TransactionAmount = (decimal?)0.01,
-                AdditionalInfo = paymentAdditionalInfoRequest,
-                DateOfExpiration = DateTime.UtcNow.AddMinutes(5)
-            };
-        }
+            Items = items.ToList(),
+        };
 
-        PaymentPayerRequest MapPaymentPayerRequest()
-            => new()
-            {
-                Type = "individual",
-                EntityType = "customer",
-                Email = order.Customer.Email,
-                FirstName = order.Customer.Name,
-                LastName = "User",
-                Identification = new IdentificationRequest
-                {
-                    Type = "CPF",
-                    Number = order.Customer.Cpf
-                },
-            };
+        var paymentCreateRequest = MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo);
+        var client = new PaymentClient();
+        var mercadoPagoPayment = await client.CreateAsync(paymentCreateRequest, requestOptions);
 
-        IEnumerable<PaymentItemRequest> MapPaymentItemRequests() => order.OrderItems.Select(item =>
+        var status = Enum.TryParse(typeof(PaymentStatus), mercadoPagoPayment.Status, true, out var paymentStatus)
+            ? (PaymentStatus)paymentStatus
+            : PaymentStatus.Pending;
+
+        return new DomainPayment
+        {
+            Status = status,
+            Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
+            PaymentType = 1,
+            QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode
+        };
+    }
+
+    private static PaymentPayerRequest MapPaymentPayerRequest(Order order)
+        => new()
+        {
+            Type = "individual",
+            EntityType = "customer",
+            Email = order.Customer.Email,
+            FirstName = order.Customer.Name,
+            LastName = "User",
+            Identification = new IdentificationRequest
+            {
+                Type = "CPF",
+                Number = order.Customer.Cpf
+            },
+        };
+
+    private static IEnumerable<PaymentItemRequest> MapPaymentItemRequests(Order order)
+        => order.OrderItems.Select(item =>
             new PaymentItemRequest
             {
                 Id = item.Id.ToString(),
@@ -91,38 +104,19 @@ public class MercadoPagoService : IPaymentGateway
             }
         );
 
-
-        var paymentPayerRequest = new PaymentPayerRequest()
+    private PaymentCreateRequest MapPaymentCreateRequest(Order order, PaymentPayerRequest paymentPayerRequest2,
+        PaymentAdditionalInfoRequest paymentAdditionalInfoRequest)
+        => new()
         {
-            Email = "guest@mercadofiado.com",
+            Description = $"Payment for Order {order.TrackingCode.Value}",
+            ExternalReference = order.TrackingCode.Value,
+            Installments = 1,
+            NotificationUrl = _mercadoPagoOptions.NotificationUrl,
+            Payer = paymentPayerRequest2,
+            PaymentMethodId = "pix",
+            StatementDescriptor = "tech challenge restaurant order",
+            TransactionAmount = (decimal?)0.01,
+            AdditionalInfo = paymentAdditionalInfoRequest,
+            DateOfExpiration = DateTime.UtcNow.AddMinutes(5)
         };
-        if (order.Customer is not null)
-        {
-            paymentPayerRequest = MapPaymentPayerRequest();
-        }
-
-        var items = MapPaymentItemRequests();
-
-        var additionalInfo = new PaymentAdditionalInfoRequest
-        {
-            Items = items.ToList(),
-        };
-
-        var request = MapPaymentCreateRequest(paymentPayerRequest, additionalInfo);
-        var client = new PaymentClient();
-
-
-        var mercadoPagoPayment = await client.CreateAsync(request, requestOptions);
-
-        var status = Enum.TryParse(typeof(PaymentStatus), mercadoPagoPayment.Status, true, out var paymentStatus)
-            ? (PaymentStatus)paymentStatus
-            : PaymentStatus.Pending;
-        return new DomainPayment
-        {
-            Status = status,
-            Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
-            PaymentType = 1,
-            QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode
-        };
-    }
 }
