@@ -67,7 +67,7 @@ public class PaymentRepositoryDapperTest
             .Create();
 
         _mockConnection.SetupDapperAsync(c =>
-                c.QuerySingleOrDefaultAsync<PaymentDAO>(Constants.InsertPaymentQuery, null, null, null, null))
+                c.QuerySingleOrDefaultAsync<PaymentDAO>(Constants.GetPaymentQuery, null, null, null, null))
             .ReturnsAsync(expectedPaymentDao);
 
         // Act
