@@ -11,5 +11,6 @@ public enum PaymentStatus
     Pending = 0,
     InProgress,
     Approved,
-    Rejected
+    Rejected,
+    Cancelled
 }

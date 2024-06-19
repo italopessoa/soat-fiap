@@ -80,17 +80,21 @@ public class Program
                 c.IncludeXmlComments(xmlPath);
             });
 
-            builder.Services.AddControllers(options => { options.Filters.Add<DomainExceptionFilter>(); })
+            builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
             builder.ConfigureApiDependencyInversion();
+            builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
 
             AddHealthChecks(builder);
 
             var app = builder.Build();
+            app.UseExceptionHandler();
             app.Services.GetRequiredService<DomainEventsHandler>();
 
             if (app.Environment.IsDevelopment())

@@ -24,6 +24,8 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
 
     public decimal Amount { get; set; }
 
+    public DateTime Created { get; set; }
+
     public Payment()
     {
     }
@@ -33,6 +35,7 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
     {
         Id = id;
         Status = PaymentStatus.Pending;
+        Created = DateTime.UtcNow;
     }
 
     public Payment(PaymentId id, string qrCode, decimal amount)
@@ -42,5 +45,6 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
         Status = PaymentStatus.Pending;
         QrCode = qrCode;
         Amount = amount;
+        Created = DateTime.UtcNow;
     }
 }
