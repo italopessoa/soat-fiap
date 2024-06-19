@@ -22,12 +22,13 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
         logger.LogInformation("Persisting Payment with Id: {Id} for Order {OrderId}", payment.Id.Code,
             payment.Id.OrderId);
         dbConnection.Open();
+
         var transaction = dbConnection.BeginTransaction();
         {
             try
             {
                 var paymentDao = new PaymentDAO(payment.Id.Code, payment.Id.OrderId, (int)payment.Status,
-                    payment.PaymentType, payment.Amount, payment.Created, null);
+                    (int)payment.PaymentType, payment.Amount, payment.Created, null);
                 await dbConnection.ExecuteAsync(Constants.InsertPaymentQuery, paymentDao);
 
                 transaction.Commit();
@@ -49,8 +50,29 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
         }
     }
 
-    public Task<PaymentStatus> GetPaymentStatusAsync(string paymentId)
+    public async Task<Payment?> GetPaymentAsync(string paymentId)
     {
-        throw new NotImplementedException();
+        logger.LogInformation("Getting Payment with ID: {PaymentId}", paymentId);
+
+        var paymentDao = await dbConnection.QuerySingleOrDefaultAsync<PaymentDAO>(
+            Constants.GetPaymentQuery,
+            param: new { Id = paymentId }
+        );
+
+        if (paymentDao is null)
+        {
+            return null;
+        }
+
+        logger.LogInformation("Payment with ID: {PaymentId} retrieved", paymentId);
+        return new Payment()
+        {
+            Id = new PaymentId(paymentDao.Id, paymentDao.OrderId),
+            PaymentType = (PaymentType)paymentDao.PaymentType,
+            // TODO QrCode = paymentDao.QrCode
+            Amount = paymentDao.Amount,
+            Created = paymentDao.Created,
+            Status = (PaymentStatus)paymentDao.Status
+        };
     }
 }

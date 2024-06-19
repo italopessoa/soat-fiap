@@ -13,5 +13,5 @@ public interface IPaymentRepository
 {
     Task<Payment> SaveAsync(Payment payment);
 
-    Task<PaymentStatus> GetPaymentStatusAsync(string paymentId);
+    Task<Payment?> GetPaymentAsync(string paymentId);
 }

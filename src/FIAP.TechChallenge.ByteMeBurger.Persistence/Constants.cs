@@ -6,7 +6,7 @@
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence;
 
-public static class Constants
+internal static class Constants
 {
     internal const string GetOrderByIdQuery = @"select o.Id,
                    o.Status,
@@ -59,7 +59,9 @@ public static class Constants
         "insert into OrderItems (OrderId, ProductId, ProductName, UnitPrice, Quantity) " +
         "values (@OrderId, @ProductId, @ProductName, @UnitPrice, @Quantity);";
 
-    public const string InsertPaymentQuery =
+    internal const string InsertPaymentQuery =
         "insert into Payments (Id, OrderId, Status, Created, PaymentType, Amount) " +
         "values (@Id, @OrderId, @Status, @Created, @PaymentType, @Amount);";
+
+    internal const string GetPaymentQuery = "select * from Payments  where Id = @Id;";
 }

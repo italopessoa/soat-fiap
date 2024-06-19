@@ -32,4 +32,8 @@
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Application.Test\FIAP.TechChallenge.ByteMeBurger.Application.Test.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Repository\" />
+    </ItemGroup>
+
 </Project>

@@ -21,6 +21,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 public class MercadoPagoService : IPaymentGateway
 {
     private readonly MercadoPagoOptions _mercadoPagoOptions;
+    private const decimal IntegrationPrice = 0.01M;
 
     public MercadoPagoService(IOptions<MercadoPagoOptions> mercadoPagoOptions)
     {
@@ -47,13 +48,15 @@ public class MercadoPagoService : IPaymentGateway
             }
             : MapPaymentPayerRequest(order);
 
-        var items = MapPaymentItemRequests(order);
+        var items = MapPaymentItemRequests(order).ToList();
+
+        var totalAmount = items.Sum(i => i.Quantity * i.UnitPrice);
         var additionalInfo = new PaymentAdditionalInfoRequest
         {
             Items = items.ToList(),
         };
 
-        var paymentCreateRequest = MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo);
+        var paymentCreateRequest = MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo, totalAmount!.Value);
         var client = new PaymentClient();
         var mercadoPagoPayment = await client.CreateAsync(paymentCreateRequest, requestOptions);
 
@@ -65,7 +68,7 @@ public class MercadoPagoService : IPaymentGateway
         {
             Status = status,
             Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
-            PaymentType = 1,
+            PaymentType = PaymentType.MercadoPago,
             QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode
         };
     }
@@ -73,8 +76,6 @@ public class MercadoPagoService : IPaymentGateway
     private static PaymentPayerRequest MapPaymentPayerRequest(Order order)
         => new()
         {
-            Type = "individual",
-            EntityType = "customer",
             Email = order.Customer.Email,
             FirstName = order.Customer.Name,
             LastName = "User",
@@ -94,7 +95,7 @@ public class MercadoPagoService : IPaymentGateway
                 Description = item.ProductName,
                 CategoryId = "food",
                 Quantity = item.Quantity,
-                UnitPrice = item.UnitPrice,
+                UnitPrice = IntegrationPrice,
                 Warranty = false,
                 CategoryDescriptor = new PaymentCategoryDescriptorRequest
                 {
@@ -104,18 +105,18 @@ public class MercadoPagoService : IPaymentGateway
             }
         );
 
-    private PaymentCreateRequest MapPaymentCreateRequest(Order order, PaymentPayerRequest paymentPayerRequest2,
-        PaymentAdditionalInfoRequest paymentAdditionalInfoRequest)
+    private PaymentCreateRequest MapPaymentCreateRequest(Order order, PaymentPayerRequest payer,
+        PaymentAdditionalInfoRequest paymentAdditionalInfoRequest, decimal amount)
         => new()
         {
             Description = $"Payment for Order {order.TrackingCode.Value}",
             ExternalReference = order.TrackingCode.Value,
             Installments = 1,
             NotificationUrl = _mercadoPagoOptions.NotificationUrl,
-            Payer = paymentPayerRequest2,
+            Payer = payer,
             PaymentMethodId = "pix",
             StatementDescriptor = "tech challenge restaurant order",
-            TransactionAmount = (decimal?)0.01,
+            TransactionAmount = amount,
             AdditionalInfo = paymentAdditionalInfoRequest,
             DateOfExpiration = DateTime.UtcNow.AddMinutes(5)
         };

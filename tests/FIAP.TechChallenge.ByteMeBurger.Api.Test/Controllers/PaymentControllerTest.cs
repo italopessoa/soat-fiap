@@ -48,8 +48,32 @@ public class PaymentControllerTest
             var paymentViewModel = response.Result.As<OkObjectResult>().Value.As<PaymentViewModel>();
 
             paymentViewModel.PaymentId.Should().Be(payment.Id.Code);
-            paymentViewModel.PaymentType.Should().Be(payment.PaymentType);
             paymentViewModel.QrCode.Should().Be(payment.QrCode);
+        }
+    }
+
+    [Fact]
+    public async void GetStatus_Success()
+    {
+        // Arrange
+        var paymentId = new PaymentId("123", Guid.NewGuid());
+        var payment = new Payment(paymentId, "qrcode", 10, PaymentType.MercadoPago)
+        {
+            Status = PaymentStatus.Paid
+        };
+        _serviceMock.Setup(p => p.GetPaymentAsync(It.IsAny<string>()))
+            .ReturnsAsync(payment);
+
+        // Act
+        var response = await _target.GetStatus(paymentId.Code, CancellationToken.None);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Result.Should().BeOfType<OkObjectResult>();
+            var status = response.Result.As<OkObjectResult>().Value.As<PaymentStatusViewModel>();
+
+            status.Should().Be(PaymentStatusViewModel.Paid);
         }
     }
 }

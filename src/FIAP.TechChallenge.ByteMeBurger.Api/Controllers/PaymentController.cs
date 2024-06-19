@@ -26,6 +26,24 @@ public class PaymentController : ControllerBase
         [FromQuery] Guid orderId, CancellationToken cancellationToken)
     {
         var payment = await _paymentService.CreateOrderPaymentAsync(orderId);
-        return Ok(new PaymentViewModel(payment.Id.Code, payment.PaymentType, payment.QrCode));
+        return Ok(new PaymentViewModel(payment.Id.Code, payment.QrCode));
+    }
+
+    /// <summary>
+    /// Get the payment status
+    /// </summary>
+    /// <param name="id">Payment Id.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Payment status</returns>
+    [HttpGet("{id}/status")]
+    public async Task<ActionResult<PaymentStatusViewModel>> GetStatus(
+        string id, CancellationToken cancellationToken)
+    {
+        var payment = await _paymentService.GetPaymentAsync(id);
+
+        if (payment is null)
+            return NotFound();
+
+        return Ok((PaymentStatusViewModel)(int)payment.Status);
     }
 }
