@@ -65,7 +65,7 @@ public class MercadoPagoService : IPaymentGateway
         {
             Status = status,
             Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
-            PaymentType = 1,
+            PaymentType = PaymentType.MercadoPago,
             QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode
         };
     }
@@ -73,8 +73,6 @@ public class MercadoPagoService : IPaymentGateway
     private static PaymentPayerRequest MapPaymentPayerRequest(Order order)
         => new()
         {
-            Type = "individual",
-            EntityType = "customer",
             Email = order.Customer.Email,
             FirstName = order.Customer.Name,
             LastName = "User",
@@ -104,7 +102,7 @@ public class MercadoPagoService : IPaymentGateway
             }
         );
 
-    private PaymentCreateRequest MapPaymentCreateRequest(Order order, PaymentPayerRequest paymentPayerRequest2,
+    private PaymentCreateRequest MapPaymentCreateRequest(Order order, PaymentPayerRequest payer,
         PaymentAdditionalInfoRequest paymentAdditionalInfoRequest)
         => new()
         {
@@ -112,7 +110,7 @@ public class MercadoPagoService : IPaymentGateway
             ExternalReference = order.TrackingCode.Value,
             Installments = 1,
             NotificationUrl = _mercadoPagoOptions.NotificationUrl,
-            Payer = paymentPayerRequest2,
+            Payer = payer,
             PaymentMethodId = "pix",
             StatementDescriptor = "tech challenge restaurant order",
             TransactionAmount = (decimal?)0.01,

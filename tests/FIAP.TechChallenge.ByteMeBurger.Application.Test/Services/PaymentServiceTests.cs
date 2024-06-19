@@ -42,4 +42,25 @@ public class PaymentServiceTests
             _mockPaymentRepository.Verify(r => r.SaveAsync(It.IsAny<Payment>()), Times.Once);
         }
     }
+
+    [Fact]
+    public async Task GetPaymentAsync_Success()
+    {
+        // Arrange
+        var expectedPayment = new Fixture().Create<Payment>();
+        _mockPaymentRepository.Setup(p => p.GetPaymentAsync(It.IsAny<string>()))
+            .ReturnsAsync(expectedPayment)
+            .Verifiable();
+
+        // Act
+        var result = await _target.GetPaymentAsync("paymentId");
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            result.Should().Be(expectedPayment);
+            _mockPaymentRepository.Verify();
+        }
+    }
 }

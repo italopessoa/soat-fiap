@@ -29,4 +29,9 @@ public class PaymentService : IPaymentService
         await _paymentRepository.SaveAsync(payment);
         return payment;
     }
+
+    public async Task<Payment?> GetPaymentAsync(string paymentId)
+    {
+        return await _paymentRepository.GetPaymentAsync(paymentId);
+    }
 }

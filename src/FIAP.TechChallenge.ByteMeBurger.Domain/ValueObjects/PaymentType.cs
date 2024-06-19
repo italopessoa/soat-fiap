@@ -6,12 +6,8 @@
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-public enum PaymentStatus
+public enum PaymentType
 {
-    Pending = 0,
-    InProgress = 1,
-    Approved = 2,
-    Rejected = 3,
-    Paid = 4,
-    Cancelled = 5
+    Test = 0,
+    MercadoPago = 1
 }

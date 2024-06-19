@@ -11,14 +11,9 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Payment : Entity<PaymentId>, IAggregateRoot
 {
-    public PaymentStatus Status { get; set; }
-
     public string Type { get; set; }
 
-    /// <summary>
-    /// Local=0, MercadoPago=1
-    /// </summary>
-    public int PaymentType { get; set; }
+    public PaymentType PaymentType { get; set; }
 
     public string QrCode { get; set; }
 
@@ -26,19 +21,13 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
 
     public DateTime Created { get; set; }
 
+    public PaymentStatus Status { get; set; }
+
     public Payment()
     {
     }
 
-    public Payment(PaymentId id)
-        : base(id)
-    {
-        Id = id;
-        Status = PaymentStatus.Pending;
-        Created = DateTime.UtcNow;
-    }
-
-    public Payment(PaymentId id, string qrCode, decimal amount)
+    public Payment(PaymentId id, string qrCode, decimal amount, PaymentType paymentType = PaymentType.Test)
         : base(id)
     {
         Id = id;
@@ -46,5 +35,6 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
         QrCode = qrCode;
         Amount = amount;
         Created = DateTime.UtcNow;
+        PaymentType = paymentType;
     }
 }
