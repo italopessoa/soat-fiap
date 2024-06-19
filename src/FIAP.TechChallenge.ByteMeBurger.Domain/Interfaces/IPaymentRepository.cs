@@ -5,14 +5,13 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
+namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
-public class OrderListDto
+public interface IPaymentRepository
 {
-    public Guid Id { get; set; }
-    public int Status { get; set; }
-    public DateTime Created { get; set; }
-    public DateTime? Updated { get; set; }
-    public string TrackingCode { get; set; }
+    Task<Payment> SaveAsync(Payment payment);
+
+    Task<PaymentStatus> GetPaymentStatusAsync(string paymentId);
 }

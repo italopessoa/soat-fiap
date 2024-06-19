@@ -104,13 +104,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         }
 
         /// <summary>
-        /// Checkout order
+        /// Update order status
         /// </summary>
         /// <param name="id"></param>
         /// <param name="command">Checkout order command.</param>
         /// <param name="cancellationToken">Cancellation token</param>
         [Route("{id:guid}/status")]
-        [HttpPut]
+        [HttpPatch]
         public async Task<ActionResult<OrderDto>> UpdateStatus(Guid id,
             [FromBody] UpdateOrderStatusCommandDto command,
             CancellationToken cancellationToken)

@@ -5,9 +5,11 @@
 // LICENSE file in the root directory of this source tree.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 
+[ExcludeFromCodeCoverage]
 public class MercadoPagoOptions
 {
     public const string MercadoPago = "MercadoPago";
@@ -15,5 +17,12 @@ public class MercadoPagoOptions
     [Required]
     [MinLength(1)]
     public string WebhookSecret { get; set; }
+
+    [Required]
+    [MinLength(1)]
     public string AccessToken { get; set; }
+
+    [Required]
+    [MinLength(1)]
+    public string NotificationUrl { get; set; }
 }

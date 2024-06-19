@@ -4,15 +4,15 @@ public abstract class Entity<TId>
 {
     protected Entity()
     {
-        
+
     }
 
     protected Entity(TId id)
     {
         Id = id;
     }
-    
-    public TId Id { get; protected set; }
+
+    public TId Id { get; set; }
 
     public override bool Equals(object? obj)
     {

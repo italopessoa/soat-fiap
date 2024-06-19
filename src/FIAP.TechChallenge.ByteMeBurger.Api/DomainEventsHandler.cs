@@ -4,6 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
@@ -11,6 +12,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api;
 /// <summary>
 /// Simple class to handle domain events
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class DomainEventsHandler : IDisposable
 {
     private readonly ILogger<DomainEventsHandler> _logger;

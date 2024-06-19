@@ -6,6 +6,7 @@
 
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using MySql.Data.MySqlClient;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceExtensions
 {
     public static void ConfigurePersistenceApp(this IServiceCollection services, IConfiguration configuration)
@@ -30,6 +32,7 @@ public static class ServiceExtensions
 
         services.AddScoped<IOrderRepository, OrderRepositoryDapper>()
             .AddScoped<ICustomerRepository, CustomerRepositoryDapper>()
-            .AddScoped<IProductRepository, ProductRepositoryDapper>();
+            .AddScoped<IProductRepository, ProductRepositoryDapper>()
+            .AddScoped<IPaymentRepository, PaymentRepositoryDapper>();
     }
 }

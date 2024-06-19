@@ -5,9 +5,12 @@
 // LICENSE file in the root directory of this source tree.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Configuration;
 
+[ExcludeFromCodeCoverage]
+[Obsolete("To be removed. Use the ConnectionStrings section in appsettings.json instead.")]
 public class MySqlSettings
 {
     [Required]

@@ -1,13 +1,16 @@
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Application.DomainServices;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
     public static void ConfigureApplicationApp(this IServiceCollection serviceCollection)
@@ -15,6 +18,7 @@ public static class ServiceCollectionsExtensions
         AddCustomerUseCases(serviceCollection);
         AddProductUseCases(serviceCollection);
         AddOrderUseCases(serviceCollection);
+        AddPaymentUseCases(serviceCollection);
         RegisterServices(serviceCollection);
     }
 
@@ -42,11 +46,17 @@ public static class ServiceCollectionsExtensions
             .AddScoped<ICheckoutOrderUseCase, FakeCheckoutOrderUseCase>();
     }
 
+    private static void AddPaymentUseCases(IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddScoped<ICreatePaymentUseCase, CreatePaymentUseCase>();
+    }
+
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<ICustomerService, CustomerService>()
             .AddScoped<IProductService, ProductService>()
             .AddScoped<IOrderService, OrderService>()
-            .AddScoped<IOrderTrackingCodeService, OrderTrackingCodeService>();
+            .AddScoped<IOrderTrackingCodeService, OrderTrackingCodeService>()
+            .AddScoped<IPaymentService, PaymentService>();
     }
 }

@@ -28,7 +28,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
             try
             {
                 await dbConnection.ExecuteAsync(
-                    "insert into Orders (Id, CustomerId, Status, Created, TrackingCode) values (@Id, @CustomerId, @Status, @Created, @TrackingCode);",
+                    Constants.InsertOrderQuery,
                     new
                     {
                         Id = order.Id,
@@ -37,10 +37,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                         Created = order.Created,
                         TrackingCode = order.TrackingCode.Value
                     });
-                await dbConnection.ExecuteAsync(
-                    "insert into OrderItems (OrderId, ProductId, ProductName, UnitPrice, Quantity) " +
-                    "values (@OrderId, @ProductId, @ProductName, @UnitPrice, @Quantity);",
-                    order.OrderItems);
+                await dbConnection.ExecuteAsync(Constants.InsertOrderItemsQuery, order.OrderItems);
 
                 transaction.Commit();
                 logger.LogInformation("Order with ID: {OrderId} persisted", order.Id);
@@ -64,44 +61,31 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         logger.LogInformation("Getting all orders");
         var ordersDictionary = new Dictionary<Guid, Order>();
 
-        await dbConnection.QueryAsync<OrderListDto, CustomerDto, Order>(
-            @"select o.Id,
-                   o.Status,
-                   o.Created,
-                   o.Updated,
-                   o.TrackingCode,
-                   oi.OrderId,
-                   oi.ProductId,
-                   oi.ProductName,
-                   oi.Quantity,
-                   oi.UnitPrice,
-                   c.id    as Id,
-                   c.cpf   as Cpf,
-                   c.name  as Name,
-                   c.email as Email
-            from Orders o
-                     inner join OrderItems oi on oi.OrderId = o.Id
-                     left join Customers c on c.Id = o.CustomerId;",
-            (orderListDto, customerDto) =>
+        await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
+            Constants.GetAllOrdersQuery,
+            (orderListDto, customerDto, paymentDao, orderItemDto) =>
             {
                 if (ordersDictionary.TryGetValue(orderListDto.Id, out var order))
                 {
-                    order.LoadItems(orderListDto.ProductId, orderListDto.ProductName, orderListDto.UnitPrice,
-                        orderListDto.Quantity);
+                    order.LoadItems(orderItemDto.ProductId, orderItemDto.ProductName, orderItemDto.UnitPrice,
+                        orderItemDto.Quantity);
                 }
                 else
                 {
                     order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
                         new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created, orderListDto.Updated);
 
-                    order.LoadItems(orderListDto.ProductId, orderListDto.ProductName, orderListDto.UnitPrice,
-                        orderListDto.Quantity);
+                    if (paymentDao is not null)
+                        order.PaymentId = new PaymentId(paymentDao.Id, paymentDao.OrderId);
+
+                    order.LoadItems(orderItemDto.ProductId, orderItemDto.ProductName, orderItemDto.UnitPrice,
+                        orderItemDto.Quantity);
                     ordersDictionary.Add(order.Id, order);
                 }
 
                 return order;
             },
-            splitOn: "Id"
+            splitOn: "Id, ProductId"
         );
 
         logger.LogInformation("Retrieved {Count} orders", ordersDictionary.Count);
@@ -113,13 +97,39 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
     public async Task<Order?> GetAsync(Guid orderId)
     {
         logger.LogInformation("Getting order with ID: {OrderId}", orderId);
+        var ordersDictionary = new Dictionary<Guid, Order>();
 
-        var order = await dbConnection.QuerySingleOrDefaultAsync<Order>(
-            "select * from Orders where Id = @OrderId",
-            param: new { OrderId = orderId });
+        var orderDetail = await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
+            Constants.GetOrderByIdQuery,
+            (orderListDto, customerDto, paymentDao, orderItemDto) =>
+            {
+                if (ordersDictionary.TryGetValue(orderListDto.Id, out var order))
+                {
+                    order.LoadItems(orderItemDto.ProductId, orderItemDto.ProductName, orderItemDto.UnitPrice,
+                        orderItemDto.Quantity);
+                }
+                else
+                {
+                    order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
+                        new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created, orderListDto.Updated);
+
+                    if (paymentDao is not null)
+                        order.PaymentId = new PaymentId(paymentDao.Id, paymentDao.OrderId);
+
+                    order.LoadItems(orderItemDto.ProductId, orderItemDto.ProductName, orderItemDto.UnitPrice,
+                        orderItemDto.Quantity);
+                    ordersDictionary.Add(order.Id, order);
+                }
+
+                return order;
+            },
+            param: new { OrderId = orderId },
+            splitOn: "Id, ProductId"
+        );
+
 
         logger.LogInformation("Order with ID: {OrderId} retrieved", orderId);
-        return order;
+        return ordersDictionary.Any() ? ordersDictionary.First().Value : null;
     }
 
     public async Task<bool> UpdateOrderStatusAsync(Order order)
@@ -127,7 +137,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         logger.LogInformation("Updating order {orderId} status", order.Id);
 
         var updated = await dbConnection.ExecuteAsync(
-            "UPDATE Orders SET Status=@Status, Updated=@LastUpdate WHERE Id = @Id",
+            Constants.UpdateOrderStatusQuery,
             new
             {
                 order.Status,

@@ -91,7 +91,8 @@ public class MercadoPagoHmacSignatureValidator : IMercadoPagoHmacSignatureValida
         xRequestIdHeader = default;
         reasonToFail = string.Empty;
 
-        if (!context.HttpContext.Request.Query.TryGetValue("data_id", out dataId)
+        if (!context.HttpContext.Request.Query.TryGetValue("data.id", out dataId) &&
+            !context.HttpContext.Request.Query.TryGetValue("data_id", out dataId)
             || string.IsNullOrWhiteSpace(dataId))
         {
             reasonToFail = "Webhook message not authorized. Missing DataId";

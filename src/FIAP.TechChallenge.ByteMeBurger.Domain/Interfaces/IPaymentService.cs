@@ -6,13 +6,9 @@
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
+namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
-public class OrderListDto
+public interface IPaymentService
 {
-    public Guid Id { get; set; }
-    public int Status { get; set; }
-    public DateTime Created { get; set; }
-    public DateTime? Updated { get; set; }
-    public string TrackingCode { get; set; }
+    Task<Payment> CreateOrderPaymentAsync(Guid orderId);
 }

@@ -16,6 +16,7 @@
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="Moq.Dapper" Version="1.0.7" />
         <PackageReference Include="xunit" Version="2.5.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
     </ItemGroup>
@@ -28,6 +29,7 @@
       <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Api\FIAP.TechChallenge.ByteMeBurger.Api.csproj" />
       <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
       <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Persistence\FIAP.TechChallenge.ByteMeBurger.Persistence.csproj" />
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Application.Test\FIAP.TechChallenge.ByteMeBurger.Application.Test.csproj" />
     </ItemGroup>
 
 </Project>
