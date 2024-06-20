@@ -16,13 +16,19 @@ public class PaymentServiceTests
 {
     private readonly Mock<ICreatePaymentUseCase> _mockCreatePaymentUseCase;
     private readonly Mock<IPaymentRepository> _mockPaymentRepository;
+    private readonly Mock<IUpdatePaymentStatusUseCase> _mockUpdatePaymentStatusUseCase;
+    private readonly Mock<IPaymentGateway> _mockPaymentGateway;
+
     private readonly PaymentService _target;
 
     public PaymentServiceTests()
     {
         _mockCreatePaymentUseCase = new Mock<ICreatePaymentUseCase>();
         _mockPaymentRepository = new Mock<IPaymentRepository>();
-        _target = new PaymentService(_mockCreatePaymentUseCase.Object, _mockPaymentRepository.Object);
+        _mockUpdatePaymentStatusUseCase = new Mock<IUpdatePaymentStatusUseCase>();
+        _mockPaymentGateway = new Mock<IPaymentGateway>();
+        _target = new PaymentService(_mockCreatePaymentUseCase.Object, _mockUpdatePaymentStatusUseCase.Object,
+            _mockPaymentRepository.Object, _mockPaymentGateway.Object);
     }
 
     [Fact]
@@ -61,6 +67,36 @@ public class PaymentServiceTests
             result.Should().NotBeNull();
             result.Should().Be(expectedPayment);
             _mockPaymentRepository.Verify();
+        }
+    }
+
+    [Fact]
+    public async Task UpdatePaymentStatusAsync_Success()
+    {
+        // Arrange
+        var expectedPayment = new Fixture().Create<Payment>();
+        _mockPaymentRepository.Setup(p => p.GetPaymentAsync(It.IsAny<string>()))
+            .ReturnsAsync(expectedPayment)
+            .Verifiable();
+
+        _mockPaymentGateway.Setup(p => p.GetPaymentStatusAsync(expectedPayment.Id.Code))
+            .ReturnsAsync(PaymentStatus.Paid)
+            .Verifiable();
+
+        _mockUpdatePaymentStatusUseCase.Setup(p => p.Execute(expectedPayment, PaymentStatus.Paid))
+            .Returns(Task.FromResult(true))
+            .Verifiable();
+
+        // Act
+        var result = await _target.SyncPaymentStatusWithGatewayAsync(expectedPayment.Id.Code);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeTrue();
+            _mockPaymentRepository.Verify();
+            _mockPaymentGateway.Verify();
+            _mockUpdatePaymentStatusUseCase.Verify();
         }
     }
 }

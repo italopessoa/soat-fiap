@@ -35,7 +35,7 @@ public class MercadoPagoHmacSignatureValidator : IMercadoPagoHmacSignatureValida
     {
         reasonToFail = string.Empty;
 
-        if (!TryValidateRequestParams(context, out var dataId, out var signature, out var xRequestIdHeader,
+            if (!TryValidateRequestParams(context, out var dataId, out var signature, out var xRequestIdHeader,
                 out var reasonParamFail))
         {
             reasonToFail = reasonParamFail;

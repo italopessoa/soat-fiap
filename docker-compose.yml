@@ -30,6 +30,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - Serilog__WriteTo__2__Args__serverUrl=http://seq:5341
       - MercadoPago__WebhookSecret=${MercadoPago_WebhookSecret}
+      - MercadoPago__AccessToken=${MercadoPago_AccessToken}
+      - MercadoPago__NotificationUrl=${MercadoPago_NotificationUrl}
   database:
     container_name: restaurant_db
     build:

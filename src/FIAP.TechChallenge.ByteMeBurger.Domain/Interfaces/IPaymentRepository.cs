@@ -5,7 +5,6 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
@@ -14,4 +13,6 @@ public interface IPaymentRepository
     Task<Payment> SaveAsync(Payment payment);
 
     Task<Payment?> GetPaymentAsync(string paymentId);
+
+    Task<bool> UpdatePaymentStatusAsync(Payment payment);
 }

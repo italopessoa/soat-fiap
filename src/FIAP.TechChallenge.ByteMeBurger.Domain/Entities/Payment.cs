@@ -19,8 +19,6 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
 
     public decimal Amount { get; set; }
 
-    public DateTime Created { get; set; }
-
     public PaymentStatus Status { get; set; }
 
     public Payment()

@@ -13,13 +13,19 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
 public class PaymentService : IPaymentService
 {
     private readonly ICreatePaymentUseCase _createOrderPaymentUseCase;
+    private readonly IUpdatePaymentStatusUseCase _updatePaymentStatusUseCase;
     private readonly IPaymentRepository _paymentRepository;
+    private readonly IPaymentGateway _paymentGateway;
 
     public PaymentService(ICreatePaymentUseCase createOrderPaymentUseCase,
-        IPaymentRepository paymentRepository)
+        IUpdatePaymentStatusUseCase updatePaymentStatusUseCase,
+        IPaymentRepository paymentRepository,
+        IPaymentGateway paymentGateway)
     {
         _createOrderPaymentUseCase = createOrderPaymentUseCase;
+        _updatePaymentStatusUseCase = updatePaymentStatusUseCase;
         _paymentRepository = paymentRepository;
+        _paymentGateway = paymentGateway;
     }
 
     public async Task<Payment> CreateOrderPaymentAsync(Guid orderId)
@@ -33,5 +39,19 @@ public class PaymentService : IPaymentService
     public async Task<Payment?> GetPaymentAsync(string paymentId)
     {
         return await _paymentRepository.GetPaymentAsync(paymentId);
+    }
+
+    public async Task<bool> SyncPaymentStatusWithGatewayAsync(string paymentId)
+    {
+        var payment = await GetPaymentAsync(paymentId);
+        if (payment is null)
+            return false;
+
+        var paymentStatus = await _paymentGateway.GetPaymentStatusAsync(paymentId);
+        if (paymentStatus is null)
+            return false;
+
+        await _updatePaymentStatusUseCase.Execute(payment, paymentStatus.Value);
+        return true;
     }
 }

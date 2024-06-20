@@ -34,7 +34,7 @@ public class CreatePaymentUseCaseTest
             .Without(o => o.PaymentId)
             .Create();
 
-        var expectedPayment = fixture.Build<Payment>()
+        var expectedPayment = fixture.Build<Domain.Entities.Payment>()
             .With(p => p.Id, new PaymentId("paymentId", order.Id))
             .With(p => p.Status, PaymentStatus.Pending)
             .Create();

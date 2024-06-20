@@ -4,7 +4,6 @@ public abstract class Entity<TId>
 {
     protected Entity()
     {
-
     }
 
     protected Entity(TId id)
@@ -23,6 +22,10 @@ public abstract class Entity<TId>
 
         return false;
     }
+
+    public DateTime Created { get; set; }
+
+    public DateTime? Updated { get; set; }
 
     public override int GetHashCode()
     {
