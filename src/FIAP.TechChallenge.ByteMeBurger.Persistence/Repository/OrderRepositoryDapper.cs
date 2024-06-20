@@ -99,7 +99,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         logger.LogInformation("Getting order with ID: {OrderId}", orderId);
         var ordersDictionary = new Dictionary<Guid, Order>();
 
-        var orderDetail = await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
+        await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
             Constants.GetOrderByIdQuery,
             (orderListDto, customerDto, paymentDao, orderItemDto) =>
             {
@@ -135,19 +135,25 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
     public async Task<bool> UpdateOrderStatusAsync(Order order)
     {
         logger.LogInformation("Updating order {orderId} status", order.Id);
+        try
+        {
+            var updated = await dbConnection.ExecuteAsync(
+                Constants.UpdateOrderStatusQuery,
+                new
+                {
+                    order.Status,
+                    Updated = order.LastUpdate,
+                    order.Id
+                }) == 1;
 
-        var updated = await dbConnection.ExecuteAsync(
-            Constants.UpdateOrderStatusQuery,
-            new
-            {
-                order.Status,
-                order.LastUpdate,
-                order.Id
-            }) == 1;
-
-        logger.LogInformation(
-            updated ? "Order {orderId} status updated" : "Order {orderId} status not updated", order.Id);
-
-        return updated;
+            logger.LogInformation(
+                updated ? "Order {orderId} status updated" : "Order {orderId} status not updated", order.Id);
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error when trying to Update Order {OrderId}. Details {@Exception}", order.Id, e);
+            return false;
+        }
     }
 }

@@ -50,7 +50,7 @@ internal static class Constants
                      left join Payments p on p.OrderId = o.Id;";
 
     internal const string UpdateOrderStatusQuery =
-        "UPDATE Orders SET Status=@Status, Updated=@LastUpdate WHERE Id = @Id";
+        "UPDATE Orders SET Status=@Status, Updated=@Updated WHERE Id = @Id";
 
     internal const string InsertOrderQuery =
         "insert into Orders (Id, CustomerId, Status, Created, TrackingCode) values (@Id, @CustomerId, @Status, @Created, @TrackingCode);";
@@ -63,5 +63,8 @@ internal static class Constants
         "insert into Payments (Id, OrderId, Status, Created, PaymentType, Amount) " +
         "values (@Id, @OrderId, @Status, @Created, @PaymentType, @Amount);";
 
-    internal const string GetPaymentQuery = "select * from Payments  where Id = @Id;";
+    internal const string GetPaymentQuery = "select * from Payments where Id = @Id;";
+
+    internal const string UpdatePaymentStatusQuery =
+        "UPDATE Payments SET Status=@Status, Updated=@Updated WHERE Id = @Id";
 }

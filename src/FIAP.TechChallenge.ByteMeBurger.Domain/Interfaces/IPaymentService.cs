@@ -13,4 +13,6 @@ public interface IPaymentService
     Task<Payment> CreateOrderPaymentAsync(Guid orderId);
 
     Task<Payment?> GetPaymentAsync(string paymentId);
+
+    Task<bool> SyncPaymentStatusWithGatewayAsync(string paymentId);
 }

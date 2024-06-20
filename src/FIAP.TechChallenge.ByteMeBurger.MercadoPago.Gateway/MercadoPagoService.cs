@@ -12,19 +12,23 @@ using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using MercadoPago.Client;
 using MercadoPago.Client.Common;
 using MercadoPago.Client.Payment;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DomainPayment = FIAP.TechChallenge.ByteMeBurger.Domain.Entities.Payment;
+using DomainPaymentStatus = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentStatus;
 
 namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 
 [ExcludeFromCodeCoverage]
 public class MercadoPagoService : IPaymentGateway
 {
+    private readonly ILogger<MercadoPagoService> _logger;
     private readonly MercadoPagoOptions _mercadoPagoOptions;
     private const decimal IntegrationPrice = 0.01M;
 
-    public MercadoPagoService(IOptions<MercadoPagoOptions> mercadoPagoOptions)
+    public MercadoPagoService(IOptions<MercadoPagoOptions> mercadoPagoOptions, ILogger<MercadoPagoService> logger)
     {
+        _logger = logger;
         ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.Value.WebhookSecret,
             nameof(mercadoPagoOptions.Value.WebhookSecret));
         _mercadoPagoOptions = mercadoPagoOptions.Value;
@@ -56,7 +60,8 @@ public class MercadoPagoService : IPaymentGateway
             Items = items.ToList(),
         };
 
-        var paymentCreateRequest = MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo, totalAmount!.Value);
+        var paymentCreateRequest =
+            MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo, totalAmount!.Value);
         var client = new PaymentClient();
         var mercadoPagoPayment = await client.CreateAsync(paymentCreateRequest, requestOptions);
 
@@ -70,6 +75,26 @@ public class MercadoPagoService : IPaymentGateway
             Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
             PaymentType = PaymentType.MercadoPago,
             QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode
+        };
+    }
+
+    public async Task<DomainPaymentStatus?> GetPaymentStatusAsync(string paymentId)
+    {
+        var requestOptions = new RequestOptions()
+        {
+            AccessToken = _mercadoPagoOptions.AccessToken,
+        };
+        var client = new PaymentClient();
+        var payment = await client.GetAsync(long.Parse(paymentId),requestOptions);
+
+        return payment?.Status switch
+        {
+            global::MercadoPago.Resource.Payment.PaymentStatus.Approved => DomainPaymentStatus.Approved,
+            global::MercadoPago.Resource.Payment.PaymentStatus.Pending => DomainPaymentStatus.Pending,
+            global::MercadoPago.Resource.Payment.PaymentStatus.InProcess => DomainPaymentStatus.InProgress,
+            global::MercadoPago.Resource.Payment.PaymentStatus.Rejected => DomainPaymentStatus.Rejected,
+            global::MercadoPago.Resource.Payment.PaymentStatus.Cancelled => DomainPaymentStatus.Cancelled,
+            _ => null
         };
     }
 
@@ -118,6 +143,6 @@ public class MercadoPagoService : IPaymentGateway
             StatementDescriptor = "tech challenge restaurant order",
             TransactionAmount = amount,
             AdditionalInfo = paymentAdditionalInfoRequest,
-            DateOfExpiration = DateTime.UtcNow.AddMinutes(5)
+            DateOfExpiration = DateTime.UtcNow.AddMinutes(15)
         };
 }

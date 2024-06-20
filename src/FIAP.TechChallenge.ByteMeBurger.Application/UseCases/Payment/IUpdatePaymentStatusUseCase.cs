@@ -4,14 +4,11 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 
-public interface IPaymentGateway
+public interface IUpdatePaymentStatusUseCase
 {
-    Task<Payment> CreatePaymentAsync(Order order);
-
-    Task<PaymentStatus?> GetPaymentStatusAsync(string paymentId);
+    Task<bool> Execute(Domain.Entities.Payment payment, PaymentStatus status);
 }

@@ -75,4 +75,23 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
             Status = (PaymentStatus)paymentDao.Status
         };
     }
+
+    public async Task<bool> UpdatePaymentStatusAsync(Payment payment)
+    {
+        logger.LogInformation("Updating Payment {PaymentId} status", payment.Id.Code);
+
+        var updated = await dbConnection.ExecuteAsync(
+            Constants.UpdatePaymentStatusQuery,
+            new
+            {
+                Id = payment.Id.Code,
+                Status = (int)payment.Status,
+                payment.Updated
+            }) == 1;
+
+        logger.LogInformation(
+            updated ? "Payment {PaymentId} status updated" : "Payment {PaymentId} status not updated", payment.Id.Code);
+
+        return updated;
+    }
 }
