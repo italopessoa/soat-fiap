@@ -106,7 +106,7 @@ public class OrderServiceTest
             result.Should().NotBeNull();
             _mockOrderRepository.Verify(m => m.CreateAsync(
                 It.Is<Order>(o => o.Created != DateTime.MinValue
-                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
+                                  && o.Status == OrderStatus.Received)), Times.Once);
         }
     }
 

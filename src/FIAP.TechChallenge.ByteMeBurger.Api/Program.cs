@@ -27,7 +27,8 @@ public class Program
         try
         {
             builder.Host.UseSerilog((context, configuration) =>
-                configuration.ReadFrom.Configuration(context.Configuration));
+                configuration.Enrich.FromLogContext()
+                    .ReadFrom.Configuration(context.Configuration));
 
             // Add services to the container.
             builder.Services.AddAuthorization();

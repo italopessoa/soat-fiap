@@ -17,7 +17,7 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public OrderTrackingCode TrackingCode { get; private set; }
 
-    public OrderStatus Status { get; private set; }
+    public OrderStatus Status { get; private set; } = OrderStatus.Received;
 
     public DateTime Created { get; private set; }
 
@@ -68,7 +68,7 @@ public class Order : Entity<Guid>, IAggregateRoot
         Customer = customer;
         TrackingCode = trackingCode;
         Created = DateTime.UtcNow;
-        Status = OrderStatus.PaymentPending;
+        Status = OrderStatus.Received;
 
         if (!selectedProducts.Any())
         {
@@ -83,7 +83,7 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)
     {
-        if (Status == OrderStatus.PaymentPending)
+        if (Status == OrderStatus.Received)
             _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
         else
             throw new DomainException(
@@ -103,31 +103,13 @@ public class Order : Entity<Guid>, IAggregateRoot
         }
 
         Created = DateTime.UtcNow;
-        Status = OrderStatus.PaymentPending;
+        Status = OrderStatus.Received;
     }
 
     public void ConfirmPayment()
     {
-        if (Status != OrderStatus.PaymentPending)
-            throw new DomainException("Payment cannot be confirmed if order isn't pending.");
-
-        Status = OrderStatus.PaymentConfirmed;
-        Update();
-    }
-
-    public void ConfirmReceiving()
-    {
-        if (Status != OrderStatus.PaymentConfirmed)
-            throw new DomainException("Cannot confirm receiving if payment isn't confirmed.");
-
-        Status = OrderStatus.Received;
-        Update();
-    }
-
-    public void InitiatePrepare()
-    {
         if (Status != OrderStatus.Received)
-            throw new DomainException("Cannot start preparing if order isn't received.");
+            throw new DomainException($"Payment cannot be confirmed because of order status '{Status}'.");
 
         Status = OrderStatus.InPreparation;
         Update();
@@ -153,7 +135,7 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public void SetTrackingCode(OrderTrackingCode code)
     {
-        if (Status != OrderStatus.PaymentPending)
+        if (Status != OrderStatus.Received)
             throw new DomainException("Cannot set status code for a existing Order.");
 
         TrackingCode = code;
