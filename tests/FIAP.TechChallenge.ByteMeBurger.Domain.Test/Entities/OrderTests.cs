@@ -29,7 +29,7 @@ public class OrderTests
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.PaymentPending);
+            order.Status.Should().Be(OrderStatus.Received);
             order.Customer.Should().NotBeNull();
             order.Customer!.Id.Should().Be(customerId);
         }
@@ -38,15 +38,14 @@ public class OrderTests
     [Fact]
     public void Order_NoCustomer_HasId()
     {
-        // Arrange
-        // Act
+        // Arrange & Act
         var order = new Order();
 
         // Assert
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.PaymentPending);
+            order.Status.Should().Be(OrderStatus.Received);
             order.Customer.Should().BeNull();
         }
     }
@@ -80,14 +79,14 @@ public class OrderTests
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.PaymentPending);
+            order.Status.Should().Be(OrderStatus.Received);
             order.Created.Should().NotBe(default);
             order.Customer.Should().NotBeNull();
         }
     }
 
     [Fact]
-    public void Order_ConfirmPayment_NotPending_ThrowsError()
+    public void Order_ConfirmPayment_AlreadyConfirmed_ThrowsError()
     {
         // Arrange
         var order = new Order();
@@ -100,43 +99,11 @@ public class OrderTests
 
         // Assert
         func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Payment cannot be confirmed if order isn't pending.");
+            .Be($"Payment cannot be confirmed because of order status '{OrderStatus.InPreparation}'.");
     }
 
     [Fact]
-    public void Order_ConfirmReceiving_NoPayment_ThrowsError()
-    {
-        // Arrange
-        var order = new Order();
-        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
-        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
-        order.Create();
-        // Act
-        var func = () => order.ConfirmReceiving();
-
-        // Assert
-        func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Cannot confirm receiving if payment isn't confirmed.");
-    }
-
-    [Fact]
-    public void Order_Initiate_NotConfirmed_ThrowsError()
-    {
-        // Arrange
-        var order = new Order();
-        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
-        order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
-
-        // Act
-        var func = () => order.InitiatePrepare();
-
-        // Assert
-        func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Cannot start preparing if order isn't received.");
-    }
-
-    [Fact]
-    public void Order_Finish_NotInitiated_ThrowsError()
+    public void Order_FinishPreparing_NotInitiated_ThrowsError()
     {
         // Arrange
         // Act
@@ -157,8 +124,6 @@ public class OrderTests
         order.SetTrackingCode(new OrderTrackingCode("trackingCode"));
         order.Create();
         order.ConfirmPayment();
-        order.ConfirmReceiving();
-        order.InitiatePrepare();
 
         // Act
         var func = () => order.DeliverOrder();
@@ -187,8 +152,6 @@ public class OrderTests
         // Act
         order.Create();
         order.ConfirmPayment();
-        order.ConfirmReceiving();
-        order.InitiatePrepare();
         var preparingDate = order.LastUpdate;
         order.FinishPreparing();
         var doneDate = order.LastUpdate;
