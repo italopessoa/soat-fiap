@@ -20,7 +20,7 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
         _orderRepository = orderRepository;
     }
 
-    public async Task<Domain.Entities.Payment> Execute(Guid orderId)
+    public async Task<Domain.Entities.Payment?> Execute(Guid orderId)
     {
         var order = await _orderRepository.GetAsync(orderId);
 

@@ -12,11 +12,11 @@ metadata:
     app: api
 data:
   MySqlSettings__Server: "svc-mysql"
-  MySqlSettings__Database: "restaurante2"
+  MySqlSettings__Database: "tech_restaurante"
   MySqlSettings__Port: "3306"
+  ConnectionStrings__MySql: "Server=svc-mysql;Database=tech_restaurante;Uid=techchallenge;Pwd=tech@1234;Port=3306"
   ASPNETCORE_ENVIRONMENT: "Development"
   Serilog__WriteTo__2__Args__serverUrl: "http://svc-seq:80"
   Serilog__WriteTo__2__Args__formatter: "Serilog.Formatting.Json.JsonFormatter, Serilog"
-  MercadoPago__WebhookSecret: ""
-
-
+  MercadoPago__NotificationUrl: "/mercadopago"
+  Serilog__Enrich__0: "FromLogContext"

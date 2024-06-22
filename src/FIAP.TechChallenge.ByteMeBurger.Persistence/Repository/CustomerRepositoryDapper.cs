@@ -18,18 +18,14 @@ public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<Custom
 {
     public async Task<Customer?> FindByCpfAsync(string cpf)
     {
-        logger.LogInformation("Finding customer with CPF: {Cpf}", cpf);
+        logger.LogInformation("Finding customer by CPF: {Cpf}", cpf);
         var customerDto = await dbConnection.QuerySingleOrDefaultAsync<CustomerDto>(
             "SELECT * FROM Customers WHERE Cpf=@Cpf",
             new { Cpf = cpf });
 
         if (customerDto == null)
         {
-            logger.LogWarning("Customer with CPF: {Cpf} not found", cpf);
-        }
-        else
-        {
-            logger.LogInformation("Customer with CPF: {Cpf} found", cpf);
+            logger.LogInformation("Customer with CPF: {Cpf} not found", cpf);
         }
 
         return (Customer)customerDto;

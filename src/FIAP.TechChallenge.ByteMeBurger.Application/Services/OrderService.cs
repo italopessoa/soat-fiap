@@ -16,7 +16,6 @@ public class OrderService(
     ICreateOrderUseCase createOrderUseCase,
     IGetOrderDetailsUseCase getOrderDetailsUseCase,
     IOrderGetAllUseCase orderGetAllUseCase,
-    ICheckoutOrderUseCase checkoutOrderUseCase,
     IOrderRepository orderRepository,
     IUpdateOrderStatusUseCase updateOrderStatusUseCase)
     : IOrderService
@@ -41,14 +40,8 @@ public class OrderService(
         return await getOrderDetailsUseCase.Execute(id);
     }
 
-    public async Task CheckoutAsync(Guid id)
-    {
-        await checkoutOrderUseCase.Execute(id);
-    }
-
     public async Task<bool> UpdateStatusAsync(Guid orderId, OrderStatus newStatus)
     {
-        var order = await updateOrderStatusUseCase.Execute(orderId, newStatus);
-        return await orderRepository.UpdateOrderStatusAsync(order);
+        return await updateOrderStatusUseCase.Execute(orderId, newStatus);
     }
 }

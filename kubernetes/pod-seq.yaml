@@ -12,7 +12,7 @@ metadata:
     app: seq
 spec:
   containers:
-    - name: seq-pod
+    - name: seq-container
       image: datalust/seq:latest
       ports:
         - containerPort: 80

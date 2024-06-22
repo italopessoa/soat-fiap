@@ -8,12 +8,12 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Events;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
@@ -27,7 +27,10 @@ public class Program
         try
         {
             builder.Host.UseSerilog((context, configuration) =>
-                configuration.Enrich.FromLogContext()
+                configuration
+                    .MinimumLevel.Debug()
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                     .ReadFrom.Configuration(context.Configuration));
 
             // Add services to the container.
@@ -92,7 +95,7 @@ public class Program
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
 
-            AddHealthChecks(builder);
+            AddHealthChecks(builder, builder.Configuration);
 
             var app = builder.Build();
             app.UseExceptionHandler();
@@ -128,9 +131,9 @@ public class Program
         }
     }
 
-    private static void AddHealthChecks(WebApplicationBuilder builder)
+    private static void AddHealthChecks(WebApplicationBuilder builder, IConfiguration configuration)
     {
         builder.Services.AddHealthChecks()
-            .AddMySql(provider => provider.GetRequiredService<DbConnectionStringBuilder>().ConnectionString);
+            .AddMySql(configuration.GetConnectionString("MySql")!);
     }
 }

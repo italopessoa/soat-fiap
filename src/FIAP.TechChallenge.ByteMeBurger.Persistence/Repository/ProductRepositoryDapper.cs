@@ -21,18 +21,14 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
 {
     public async Task<Product?> FindByIdAsync(Guid id)
     {
-        logger.LogInformation("Finding product with ID: {ProductId}", id);
+        logger.LogInformation("Finding product {ProductId}", id);
         var productDto = await dbConnection.QuerySingleOrDefaultAsync<ProductDto>(
             "SELECT * FROM Products WHERE Id=@Id",
             param: new { Id = id });
 
         if (productDto == null)
         {
-            logger.LogWarning("Product with ID: {ProductId} not found", id);
-        }
-        else
-        {
-            logger.LogInformation("Product with ID: {ProductId} found", id);
+            logger.LogInformation("Product {ProductId} not found", id);
         }
 
         return productDto;
@@ -60,7 +56,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
 
     public async Task<bool> DeleteAsync(Guid productId)
     {
-        logger.LogInformation("Deleting product with ID: {ProductId}", productId);
+        logger.LogInformation("Deleting product {ProductId}", productId);
         var affectedRows = await dbConnection.ExecuteAsync("delete from Products where Id = @Id;",
             new { Id = productId });
 

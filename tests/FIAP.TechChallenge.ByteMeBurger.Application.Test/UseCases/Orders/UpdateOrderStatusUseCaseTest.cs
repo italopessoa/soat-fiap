@@ -29,17 +29,26 @@ public class UpdateOrderStatusUseCaseTest
     public async Task Execute_ShouldUpdateOrderStatus_WhenOrderExists(OrderStatus currentStatus, OrderStatus newStatus)
     {
         // Arrange
-        var currentOrder = new Order(Guid.NewGuid(), null, currentStatus, new OrderTrackingCode("code"), DateTime.UtcNow, null);
+        var currentOrder = new Order(Guid.NewGuid(), null, currentStatus, new OrderTrackingCode("code"),
+            DateTime.UtcNow, null);
         _orderRepositoryMock.Setup(r => r.GetAsync(currentOrder.Id)).ReturnsAsync(currentOrder);
+        _orderRepositoryMock.Setup(r => r.UpdateOrderStatusAsync(It.IsAny<Order>()))
+            .ReturnsAsync(true);
 
         // Act
-        var updatedOrder = await _useCase.Execute(currentOrder.Id, newStatus);
+        var updated = await _useCase.Execute(currentOrder.Id, newStatus);
 
         // Assert
-        _orderRepositoryMock.Verify(r => r.GetAsync(It.Is<Guid>(orderId => orderId == currentOrder.Id)),
-            Times.Once);
+        using (new AssertionScope())
+        {
+            _orderRepositoryMock.Verify(r => r.GetAsync(It.Is<Guid>(orderId => orderId == currentOrder.Id)),
+                Times.Once);
+            _orderRepositoryMock.Verify(
+                r => r.UpdateOrderStatusAsync(It.Is<Order>(orderId => orderId.Status == newStatus)),
+                Times.Once);
+        }
 
-        updatedOrder.Status.Should().Be(newStatus);
+        updated.Should().BeTrue();
     }
 
     [Fact]
@@ -59,7 +68,8 @@ public class UpdateOrderStatusUseCaseTest
         // Arrange
         var orderId = Guid.NewGuid();
         _orderRepositoryMock.Setup(r => r.GetAsync(orderId))
-            .ReturnsAsync(new Order(Guid.NewGuid(), null, OrderStatus.Completed, new OrderTrackingCode("orderCode"), DateTime.UtcNow, null));
+            .ReturnsAsync(new Order(Guid.NewGuid(), null, OrderStatus.Completed, new OrderTrackingCode("orderCode"),
+                DateTime.UtcNow, null));
 
         // Act & Assert
         await Assert.ThrowsAsync<DomainException>(() => _useCase.Execute(orderId, OrderStatus.Completed));

@@ -12,13 +12,12 @@ metadata:
     app: mysql-pod
 spec:
   containers:
-    - name: mysql-pod
-      image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/db:latest
+    - name: mysql-container
+      image: techchallenge/db:latest
       volumeMounts:
         - mountPath: /var/lib/mysql
           name: mysql-persistent-storage
       ports:
-        -
         - containerPort: 80
       imagePullPolicy: IfNotPresent
       env:

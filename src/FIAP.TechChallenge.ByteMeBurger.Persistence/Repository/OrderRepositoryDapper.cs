@@ -21,7 +21,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 {
     public async Task<Order> CreateAsync(Order order)
     {
-        logger.LogInformation("Persisting order with ID: {OrderId}", order.Id);
+        logger.LogInformation("Persisting order {OrderId}", order.Id);
         dbConnection.Open();
         var transaction = dbConnection.BeginTransaction();
         {
@@ -31,16 +31,16 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                     Constants.InsertOrderQuery,
                     new
                     {
-                        Id = order.Id,
+                        order.Id,
                         CustomerId = order.Customer?.Id,
                         Status = (int)order.Status,
-                        Created = order.Created,
+                        order.Created,
                         TrackingCode = order.TrackingCode.Value
                     });
                 await dbConnection.ExecuteAsync(Constants.InsertOrderItemsQuery, order.OrderItems);
 
                 transaction.Commit();
-                logger.LogInformation("Order with ID: {OrderId} persisted", order.Id);
+                logger.LogInformation("Order {OrderId} persisted", order.Id);
                 return order;
             }
             catch (Exception e)
@@ -58,7 +58,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 
     public async Task<ReadOnlyCollection<Order>> GetAllAsync()
     {
-        logger.LogInformation("Getting all orders");
+        logger.LogInformation("Fetching all orders");
         var ordersDictionary = new Dictionary<Guid, Order>();
 
         await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
@@ -96,7 +96,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         "unit test is not working due to moq.dapper limitations, maybe one day...")]
     public async Task<Order?> GetAsync(Guid orderId)
     {
-        logger.LogInformation("Getting order with ID: {OrderId}", orderId);
+        logger.LogInformation("Getting order {OrderId} from database", orderId);
         var ordersDictionary = new Dictionary<Guid, Order>();
 
         await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
@@ -128,13 +128,13 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         );
 
 
-        logger.LogInformation("Order with ID: {OrderId} retrieved", orderId);
+        logger.LogInformation("Order {OrderId} retrieved", orderId);
         return ordersDictionary.Any() ? ordersDictionary.First().Value : null;
     }
 
     public async Task<bool> UpdateOrderStatusAsync(Order order)
     {
-        logger.LogInformation("Updating order {orderId} status", order.Id);
+        logger.LogInformation("Updating order {orderId} status to {OrderStatus}", order.Id, order.Status);
         try
         {
             var updated = await dbConnection.ExecuteAsync(
@@ -147,12 +147,12 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 }) == 1;
 
             logger.LogInformation(
-                updated ? "Order {orderId} status updated" : "Order {orderId} status not updated", order.Id);
+                updated ? "Order {orderId} status updated to {OrderStatus}" : "Order {orderId} status not updated to {OrderStatus}", order.Id, order.Status);
             return true;
         }
         catch (Exception e)
         {
-            logger.LogError("Error when trying to Update Order {OrderId}. Details {@Exception}", order.Id, e);
+            logger.LogError("Error when trying to update Order {OrderId}. Details {@Exception}", order.Id, e);
             return false;
         }
     }
