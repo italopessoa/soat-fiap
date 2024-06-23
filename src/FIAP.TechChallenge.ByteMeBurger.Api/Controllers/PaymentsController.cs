@@ -25,16 +25,16 @@ public class PaymentsController : ControllerBase
     /// <summary>
     /// Create a payment for an order
     /// </summary>
-    /// <param name="orderId">Order id.</param>
+    /// <param name="createPaymentRequest"></param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Payment details</returns>
     [HttpPost]
     public async Task<ActionResult<PaymentViewModel>> Create(
-        [FromBody] CreatePaymentRequest paymentRequest, CancellationToken cancellationToken)
+        CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
     {
         var payment =
-            await _paymentService.CreateOrderPaymentAsync(paymentRequest.OrderId,
-                (PaymentType)paymentRequest.PaymentType);
+            await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.OrderId,
+                (PaymentType)createPaymentRequest.PaymentType);
         return Ok(new PaymentViewModel(payment.Id.Code, payment.QrCode));
     }
 

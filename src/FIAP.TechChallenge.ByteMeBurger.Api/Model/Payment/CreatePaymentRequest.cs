@@ -8,6 +8,9 @@ using Microsoft.Build.Framework;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
 
+/// <summary>
+/// Create payment request.
+/// </summary>
 public class CreatePaymentRequest
 {
     /// <summary>
