@@ -36,14 +36,6 @@ public interface IOrderService
     Task<Order?> GetAsync(Guid id);
 
     /// <summary>
-    /// Checkout order
-    /// After checkout, the order status will be updated to "Received"
-    /// </summary>
-    /// <param name="id">Order Id</param>
-    [Obsolete("This method will be removed in the future.")]
-    Task CheckoutAsync(Guid id);
-
-    /// <summary>
     /// Update Order status
     /// </summary>
     /// <param name="orderId">Order Id.</param>

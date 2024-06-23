@@ -34,7 +34,7 @@ public class MercadoPagoService : IPaymentGateway
         _mercadoPagoOptions = mercadoPagoOptions.Value;
     }
 
-    public async Task<DomainPayment> CreatePaymentAsync(Order order)
+    public async Task<DomainPayment?> CreatePaymentAsync(Order order)
     {
         var requestOptions = new RequestOptions()
         {
@@ -69,13 +69,23 @@ public class MercadoPagoService : IPaymentGateway
             ? (PaymentStatus)paymentStatus
             : PaymentStatus.Pending;
 
-        return new DomainPayment
+        try
         {
-            Status = status,
-            Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
-            PaymentType = PaymentType.MercadoPago,
-            QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode
-        };
+            _logger.LogInformation("Trying to create new payment on MercadoPago for Order {OrderId}", order.Id);
+            return new DomainPayment
+            {
+                Status = status,
+                Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
+                PaymentType = PaymentType.MercadoPago,
+                QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode,
+            };
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error when trying to create new payment on MercadoPago for Order {OrderId}. {@Error}",
+                order.Id, e);
+            return null;
+        }
     }
 
     public async Task<DomainPaymentStatus?> GetPaymentStatusAsync(string paymentId)
@@ -85,7 +95,7 @@ public class MercadoPagoService : IPaymentGateway
             AccessToken = _mercadoPagoOptions.AccessToken,
         };
         var client = new PaymentClient();
-        var payment = await client.GetAsync(long.Parse(paymentId),requestOptions);
+        var payment = await client.GetAsync(long.Parse(paymentId), requestOptions);
 
         return payment?.Status switch
         {
@@ -137,7 +147,7 @@ public class MercadoPagoService : IPaymentGateway
             Description = $"Payment for Order {order.TrackingCode.Value}",
             ExternalReference = order.TrackingCode.Value,
             Installments = 1,
-            NotificationUrl = _mercadoPagoOptions.NotificationUrl,
+            NotificationUrl = _mercadoPagoOptions.NotificationUrl ?? string.Empty,
             Payer = payer,
             PaymentMethodId = "pix",
             StatementDescriptor = "tech challenge restaurant order",

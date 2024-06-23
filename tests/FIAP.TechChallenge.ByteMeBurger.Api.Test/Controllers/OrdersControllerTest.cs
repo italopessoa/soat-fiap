@@ -230,25 +230,6 @@ public class OrdersControllerTest
         }
     }
 
-    [Fact]
-    public async void CheckoutOrder_Success()
-    {
-        // Arrange
-        var checkoutCommand = new CheckoutOrderCommandDto(Guid.NewGuid());
-
-        // Act
-        var response = await _target.Checkout(checkoutCommand, CancellationToken.None);
-
-        // Assert
-        using (new AssertionScope())
-        {
-            response.Result.Should().BeOfType<OkResult>();
-
-            _serviceMock.Verify(o => o.CheckoutAsync(It.IsAny<Guid>()), Times.Once);
-            _serviceMock.VerifyAll();
-        }
-    }
-
     [Theory]
     [InlineData(true)]
     [InlineData(false)]

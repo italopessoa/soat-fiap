@@ -22,7 +22,6 @@ public class MercadoPagoOptions
     [MinLength(1)]
     public string AccessToken { get; set; }
 
-    [Required]
     [MinLength(1)]
-    public string NotificationUrl { get; set; }
+    public string? NotificationUrl { get; set; }
 }

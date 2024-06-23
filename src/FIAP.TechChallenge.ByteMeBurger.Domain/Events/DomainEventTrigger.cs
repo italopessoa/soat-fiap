@@ -44,9 +44,9 @@ public static class DomainEventTrigger
         OrderStatusChanged?.Invoke(null, new OrderStatusChanged((orderId, oldStatus, newStatus)));
     }
 
-    internal static void RaiseOrderPaymentConfirmed(Order order)
+    internal static void RaiseOrderPaymentConfirmed(Guid orderId)
     {
-        OrderPaymentConfirmed?.Invoke(null, new OrderPaymentConfirmed(order));
+        OrderPaymentConfirmed?.Invoke(null, new OrderPaymentConfirmed(orderId));
     }
 
     internal static void RaiseCustomerRegistered(CustomerRegistered e)

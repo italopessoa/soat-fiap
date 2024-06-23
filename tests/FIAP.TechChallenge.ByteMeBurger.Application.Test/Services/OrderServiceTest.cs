@@ -18,7 +18,6 @@ public class OrderServiceTest
     private readonly Mock<ICreateOrderUseCase> _mockCreateOrderUseCase;
     private readonly Mock<IGetOrderDetailsUseCase> _mockGetOrderDetailsUseCase;
     private readonly Mock<IOrderGetAllUseCase> _mockOrderGetAllUseCase;
-    private readonly Mock<ICheckoutOrderUseCase> _mockCheckoutOrderUseCase;
     private readonly Mock<IUpdateOrderStatusUseCase> _mockUpdateOrderStatusUseCase;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
 
@@ -31,12 +30,11 @@ public class OrderServiceTest
         _mockCreateOrderUseCase = new Mock<ICreateOrderUseCase>();
         _mockGetOrderDetailsUseCase = new Mock<IGetOrderDetailsUseCase>();
         _mockOrderGetAllUseCase = new Mock<IOrderGetAllUseCase>();
-        _mockCheckoutOrderUseCase = new Mock<ICheckoutOrderUseCase>();
         _mockUpdateOrderStatusUseCase = new Mock<IUpdateOrderStatusUseCase>();
         _mockOrderRepository = new Mock<IOrderRepository>();
 
         _target = new OrderService(_mockCreateOrderUseCase.Object, _mockGetOrderDetailsUseCase.Object,
-            _mockOrderGetAllUseCase.Object, _mockCheckoutOrderUseCase.Object, _mockOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object);
+            _mockOrderGetAllUseCase.Object, _mockOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object);
     }
 
     [Fact]
@@ -150,33 +148,10 @@ public class OrderServiceTest
     }
 
     [Fact]
-    public async Task Checkout_Success()
-    {
-        // Arrange
-        _mockCheckoutOrderUseCase.Setup(r => r.Execute(It.IsAny<Guid>()))
-            .Returns(Task.CompletedTask)
-            .Verifiable();
-
-        // Act
-        await _target.CheckoutAsync(Guid.NewGuid());
-
-        // Assert
-        using (new AssertionScope())
-        {
-            _mockCheckoutOrderUseCase.VerifyAll();
-        }
-    }
-
-    [Fact]
     public async Task UpdateStatusAsync_Success()
     {
         // Arrange
-        var order = new Fixture().Create<Order>();
         _mockUpdateOrderStatusUseCase.Setup(r => r.Execute(It.IsAny<Guid>(), It.IsAny<OrderStatus>()))
-            .ReturnsAsync(order)
-            .Verifiable();
-
-        _mockOrderRepository.Setup(r => r.UpdateOrderStatusAsync(It.Is<Order>(o => o.Equals(order))))
             .ReturnsAsync(true)
             .Verifiable();
 

@@ -43,7 +43,7 @@ public class DomainEventsHandler : IDisposable
 
     private void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
     {
-        _logger.LogInformation("Order: {Id} payment confirmed", e.Payload.Id);
+        _logger.LogInformation("Order: {Id} payment confirmed", e.Payload);
     }
 
     private void OnOrderCreated(object? sender, OrderCreated e)

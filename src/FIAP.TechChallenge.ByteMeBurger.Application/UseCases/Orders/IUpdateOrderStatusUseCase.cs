@@ -11,5 +11,5 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 public interface IUpdateOrderStatusUseCase
 {
-    Task<Order> Execute(Guid orderId, OrderStatus newStatus);
+    Task<bool> Execute(Guid orderId, OrderStatus newStatus);
 }

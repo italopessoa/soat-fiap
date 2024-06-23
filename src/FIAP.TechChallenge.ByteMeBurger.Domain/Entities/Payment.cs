@@ -23,6 +23,7 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
 
     public Payment()
     {
+        Created = DateTime.UtcNow;
     }
 
     public Payment(PaymentId id, string qrCode, decimal amount, PaymentType paymentType = PaymentType.Test)

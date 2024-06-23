@@ -19,7 +19,7 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
 {
     public async Task<Payment> SaveAsync(Payment payment)
     {
-        logger.LogInformation("Persisting Payment with Id: {Id} for Order {OrderId}", payment.Id.Code,
+        logger.LogInformation("Persisting Payment {PaymentId} for Order {OrderId}", payment.Id.Code,
             payment.Id.OrderId);
         dbConnection.Open();
 
@@ -38,7 +38,7 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Error Persisting Payment with Id: {Id} for Order {OrderId}", payment.Id.Code,
+                logger.LogError(e, "Error Persisting Payment {Id} for Order {OrderId}", payment.Id.Code,
                     payment.Id.Code);
                 transaction.Rollback();
                 throw;
@@ -52,7 +52,7 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
 
     public async Task<Payment?> GetPaymentAsync(string paymentId)
     {
-        logger.LogInformation("Getting Payment with ID: {PaymentId}", paymentId);
+        logger.LogInformation("Getting Payment {PaymentId}", paymentId);
 
         var paymentDao = await dbConnection.QuerySingleOrDefaultAsync<PaymentDAO>(
             Constants.GetPaymentQuery,
@@ -64,7 +64,7 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
             return null;
         }
 
-        logger.LogInformation("Payment with ID: {PaymentId} retrieved", paymentId);
+        logger.LogInformation("Payment {PaymentId} retrieved", paymentId);
         return new Payment()
         {
             Id = new PaymentId(paymentDao.Id, paymentDao.OrderId),
@@ -86,11 +86,11 @@ public class PaymentRepositoryDapper(IDbConnection dbConnection, ILogger<Payment
             {
                 Id = payment.Id.Code,
                 Status = (int)payment.Status,
-                payment.Updated
+                payment.Updated,
             }) == 1;
 
         logger.LogInformation(
-            updated ? "Payment {PaymentId} status updated" : "Payment {PaymentId} status not updated", payment.Id.Code);
+            updated ? "Payment {PaymentId} status updated to {PaymentStatus}" : "Payment {PaymentId} status not updated to {PaymentStatus}", payment.Id.Code, payment.Status);
 
         return updated;
     }

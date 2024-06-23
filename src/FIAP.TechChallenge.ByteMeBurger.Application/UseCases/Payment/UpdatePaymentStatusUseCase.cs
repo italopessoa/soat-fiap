@@ -5,6 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -22,9 +23,10 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
         _paymentRepository = paymentRepository;
     }
 
-    public async Task<bool> Execute(Domain.Entities.Payment payment, PaymentStatus status)
+    public async Task<bool> Execute(Domain.Entities.Payment? payment, PaymentStatus status)
     {
-        if (payment is not null && payment.Status is not PaymentStatus.Paid
+        if (payment is not null && payment.Status
+                is not PaymentStatus.Paid
                 and not PaymentStatus.Cancelled
                 and not PaymentStatus.Rejected)
         {
@@ -35,6 +37,8 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
 
             if (paymentStatusUpdated && status is PaymentStatus.Approved)
             {
+                DomainEventTrigger.RaiseOrderPaymentConfirmed(payment.Id.OrderId);
+                // TODO change to eventual consistency. use events to update order status
                 await _updateOrderStatusUseCase.Execute(payment.Id.OrderId, OrderStatus.InPreparation);
             }
 

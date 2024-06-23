@@ -22,8 +22,8 @@ spec:
         app: api
     spec:
       containers:
-        - name: container-pod-api
-          image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:latest
+        - name: api-container
+          image: techchallenge/api:latest
           ports:
             - name: liveness-port
               containerPort: 8080
@@ -60,3 +60,5 @@ spec:
           envFrom:
             - configMapRef:
                 name: configmap-api
+            - secretRef:
+                name: secret-mercadopago

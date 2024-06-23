@@ -12,7 +12,7 @@ metadata:
     app: mysql-pod
 spec:
   containers:
-    - name: mysql-pod
+    - name: mysql-container
       image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/db:latest
       volumeMounts:
         - mountPath: /var/lib/mysql

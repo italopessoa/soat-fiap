@@ -88,22 +88,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         }
 
         /// <summary>
-        /// Checkout order
-        /// </summary>
-        /// <param name="command">Checkout order command.</param>
-        /// <param name="cancellationToken">Cancellation token</param>
-        [Obsolete("This endpoint will be removed in the future.")]
-        [Route("checkout")]
-        [HttpPost]
-        public async Task<ActionResult<OrderDto>> Checkout([FromBody] CheckoutOrderCommandDto command,
-            CancellationToken cancellationToken)
-        {
-            logger.LogInformation("Checkout order: {Id}", command.Id);
-            await orderService.CheckoutAsync(command.Id);
-            return Ok();
-        }
-
-        /// <summary>
         /// Update order status
         /// </summary>
         /// <param name="id"></param>

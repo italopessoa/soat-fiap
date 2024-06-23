@@ -7,12 +7,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-api
+  name: api-pod
   labels:
     app: api
 spec:
   containers:
-    - name: container-pod-api
+    - name: api-container
       image: techchallenge/api
       ports:
         - containerPort: 80

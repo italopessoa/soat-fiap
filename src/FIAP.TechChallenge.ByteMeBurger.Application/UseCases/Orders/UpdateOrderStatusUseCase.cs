@@ -5,7 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -13,7 +13,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
 public class UpdateOrderStatusUseCase(IOrderRepository repository) : IUpdateOrderStatusUseCase
 {
-    public async Task<Order> Execute(Guid orderId, OrderStatus newStatus)
+    public async Task<bool> Execute(Guid orderId, OrderStatus newStatus)
     {
         var order = await repository.GetAsync(orderId);
         if (order == null)
@@ -26,6 +26,7 @@ public class UpdateOrderStatusUseCase(IOrderRepository repository) : IUpdateOrde
             throw new DomainException("Order is already completed.");
         }
 
+        var oldStatus = order.Status;
         Action updateStatus = newStatus switch
         {
             OrderStatus.InPreparation => order.ConfirmPayment,
@@ -35,6 +36,13 @@ public class UpdateOrderStatusUseCase(IOrderRepository repository) : IUpdateOrde
         };
 
         updateStatus.Invoke();
-        return order;
+
+        var updated = await repository.UpdateOrderStatusAsync(order);
+        if (updated)
+        {
+            DomainEventTrigger.RaiseOrderStatusChanged(order.Id, oldStatus, order.Status);
+        }
+
+        return updated;
     }
 }
