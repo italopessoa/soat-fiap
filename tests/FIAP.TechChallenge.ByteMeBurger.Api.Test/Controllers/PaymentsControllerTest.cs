@@ -35,11 +35,16 @@ public class PaymentsControllerTest
         // Arrange
         var paymentId = new PaymentId("123", Guid.NewGuid());
         var payment = new Payment(paymentId, "qrcode", 10);
-        _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<Guid>()))
+        _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<Guid>(), It.IsAny<PaymentType>()))
             .ReturnsAsync(payment);
+        var paymentRequest = new CreatePaymentRequest
+        {
+            OrderId = Guid.NewGuid(),
+            PaymentType = (int)PaymentType.Test
+        };
 
         // Act
-        var response = await _target.Create(Guid.NewGuid(), CancellationToken.None);
+        var response = await _target.Create(paymentRequest, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())

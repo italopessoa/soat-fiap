@@ -1,5 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
@@ -29,9 +30,11 @@ public class PaymentsController : ControllerBase
     /// <returns>Payment details</returns>
     [HttpPost]
     public async Task<ActionResult<PaymentViewModel>> Create(
-        [FromQuery] Guid orderId, CancellationToken cancellationToken)
+        [FromBody] CreatePaymentRequest paymentRequest, CancellationToken cancellationToken)
     {
-        var payment = await _paymentService.CreateOrderPaymentAsync(orderId);
+        var payment =
+            await _paymentService.CreateOrderPaymentAsync(paymentRequest.OrderId,
+                (PaymentType)paymentRequest.PaymentType);
         return Ok(new PaymentViewModel(payment.Id.Code, payment.QrCode));
     }
 

@@ -39,11 +39,11 @@ public class PaymentServiceTests
     public async Task CreateOrderPaymentAsync_Success()
     {
         // Arrange
-        _mockCreatePaymentUseCase.Setup(p => p.Execute(It.IsAny<Guid>()))
+        _mockCreatePaymentUseCase.Setup(p => p.Execute(It.IsAny<Guid>(), It.IsAny<PaymentType>()))
             .ReturnsAsync(new Fixture().Create<Payment>());
 
         // Act
-        var result = await _target.CreateOrderPaymentAsync(Guid.NewGuid());
+        var result = await _target.CreateOrderPaymentAsync(Guid.NewGuid(), PaymentType.Test);
 
         // Assert
         using (new AssertionScope())

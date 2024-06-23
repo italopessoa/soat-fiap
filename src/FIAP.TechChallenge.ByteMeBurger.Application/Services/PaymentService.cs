@@ -29,9 +29,9 @@ public class PaymentService : IPaymentService
         _paymentGatewayFactory = paymentGatewayFactory;
     }
 
-    public async Task<Payment> CreateOrderPaymentAsync(Guid orderId)
+    public async Task<Payment> CreateOrderPaymentAsync(Guid orderId, PaymentType paymentType)
     {
-        var payment = await _createOrderPaymentUseCase.Execute(orderId);
+        var payment = await _createOrderPaymentUseCase.Execute(orderId, paymentType);
 
         await _paymentRepository.SaveAsync(payment);
         return payment;

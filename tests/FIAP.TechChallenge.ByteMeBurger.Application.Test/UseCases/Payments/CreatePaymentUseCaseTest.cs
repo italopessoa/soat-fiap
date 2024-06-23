@@ -49,7 +49,7 @@ public class CreatePaymentUseCaseTest
             .ReturnsAsync(expectedPayment);
 
         // Act
-        var payment = await _createPaymentUseCase.Execute(Guid.NewGuid());
+        var payment = await _createPaymentUseCase.Execute(Guid.NewGuid(), PaymentType.Test);
 
         // Assert
         using var scope = new AssertionScope();
@@ -66,7 +66,7 @@ public class CreatePaymentUseCaseTest
             .ReturnsAsync((Order?)default);
 
         // Act
-        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid());
+        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid(), PaymentType.Test);
 
         // Assert
         using var scope = new AssertionScope();
@@ -87,7 +87,7 @@ public class CreatePaymentUseCaseTest
             });
 
         // Act
-        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid());
+        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid(), PaymentType.Test);
 
         // Assert
         using var scope = new AssertionScope();

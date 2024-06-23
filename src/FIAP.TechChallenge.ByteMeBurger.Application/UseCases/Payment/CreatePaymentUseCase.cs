@@ -21,7 +21,7 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
         _orderRepository = orderRepository;
     }
 
-    public async Task<Domain.Entities.Payment?> Execute(Guid orderId)
+    public async Task<Domain.Entities.Payment?> Execute(Guid orderId, PaymentType paymentType)
     {
         var order = await _orderRepository.GetAsync(orderId);
 
@@ -31,7 +31,7 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
         if (order.PaymentId is not null)
             throw new DomainException("There's already a Payment for the order.");
 
-        var paymentGateway = _paymentGatewayFactory.Create(PaymentType.Test);
+        var paymentGateway = _paymentGatewayFactory.Create(paymentType);
         return await paymentGateway.CreatePaymentAsync(order);
     }
 }
