@@ -18,7 +18,6 @@ public class PaymentServiceTests
     private readonly Mock<IPaymentRepository> _mockPaymentRepository;
     private readonly Mock<IUpdatePaymentStatusUseCase> _mockUpdatePaymentStatusUseCase;
     private readonly Mock<IPaymentGateway> _mockPaymentGateway;
-
     private readonly PaymentService _target;
 
     public PaymentServiceTests()
@@ -27,8 +26,13 @@ public class PaymentServiceTests
         _mockPaymentRepository = new Mock<IPaymentRepository>();
         _mockUpdatePaymentStatusUseCase = new Mock<IUpdatePaymentStatusUseCase>();
         _mockPaymentGateway = new Mock<IPaymentGateway>();
+        Mock<IPaymentGatewayFactoryMethod> paymentGatewayFactory = new();
+
+        paymentGatewayFactory.Setup(g => g.Create(It.IsAny<PaymentType>()))
+            .Returns(_mockPaymentGateway.Object);
+
         _target = new PaymentService(_mockCreatePaymentUseCase.Object, _mockUpdatePaymentStatusUseCase.Object,
-            _mockPaymentRepository.Object, _mockPaymentGateway.Object);
+            _mockPaymentRepository.Object, paymentGatewayFactory.Object);
     }
 
     [Fact]
@@ -88,7 +92,7 @@ public class PaymentServiceTests
             .Verifiable();
 
         // Act
-        var result = await _target.SyncPaymentStatusWithGatewayAsync(expectedPayment.Id.Code);
+        var result = await _target.SyncPaymentStatusWithGatewayAsync(expectedPayment.Id.Code, PaymentType.MercadoPago);
 
         // Assert
         using (new AssertionScope())

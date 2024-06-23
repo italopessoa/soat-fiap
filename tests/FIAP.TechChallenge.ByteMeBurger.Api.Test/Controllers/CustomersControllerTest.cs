@@ -39,7 +39,7 @@ public class CustomersControllerTest
             .ReturnsAsync(default(Customer));
 
         // Act
-        var response = await _target.GetByCpf("863.917.790-23", CancellationToken.None);
+        var response = await _target.Get("863.917.790-23", CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -67,7 +67,7 @@ public class CustomersControllerTest
             .ReturnsAsync(new Customer(customerId, cpf, "customer name", "customer@email.com"));
 
         // Act
-        var response = await _target.GetByCpf("863.917.790-23", CancellationToken.None);
+        var response = await _target.Get("863.917.790-23", CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -98,7 +98,7 @@ public class CustomersControllerTest
             .ReturnsAsync(newCustomer);
 
         // Act
-        var response = await _target.Create(command, CancellationToken.None);
+        var response = await _target.Post(command, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -133,7 +133,7 @@ public class CustomersControllerTest
             .ReturnsAsync(newCustomer);
 
         // Act
-        var response = await _target.Create(command, CancellationToken.None);
+        var response = await _target.Post(command, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())

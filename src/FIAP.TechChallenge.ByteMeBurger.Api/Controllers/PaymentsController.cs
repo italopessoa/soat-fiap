@@ -6,11 +6,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PaymentController : ControllerBase
+[Produces("application/json")]
+[Consumes("application/json")]
+public class PaymentsController : ControllerBase
 {
     private readonly IPaymentService _paymentService;
 
-    public PaymentController(IPaymentService paymentService)
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="paymentService"></param>
+    public PaymentsController(IPaymentService paymentService)
     {
         _paymentService = paymentService;
     }
@@ -20,7 +26,7 @@ public class PaymentController : ControllerBase
     /// </summary>
     /// <param name="orderId">Order id.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns></returns>
+    /// <returns>Payment details</returns>
     [HttpPost]
     public async Task<ActionResult<PaymentViewModel>> Create(
         [FromQuery] Guid orderId, CancellationToken cancellationToken)
@@ -30,7 +36,7 @@ public class PaymentController : ControllerBase
     }
 
     /// <summary>
-    /// Get the payment status
+    /// Get payment status
     /// </summary>
     /// <param name="id">Payment Id.</param>
     /// <param name="cancellationToken">Cancellation token.</param>

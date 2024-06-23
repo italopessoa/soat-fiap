@@ -22,7 +22,11 @@ public class CreatePaymentUseCaseTest
     {
         _orderRepository = new Mock<IOrderRepository>();
         _paymentGatewayMock = new Mock<IPaymentGateway>();
-        _createPaymentUseCase = new CreatePaymentUseCase(_paymentGatewayMock.Object, _orderRepository.Object);
+        Mock<IPaymentGatewayFactoryMethod> paymentGatewayFactory = new();
+        _createPaymentUseCase = new CreatePaymentUseCase(paymentGatewayFactory.Object, _orderRepository.Object);
+
+        paymentGatewayFactory.Setup(g => g.Create(It.IsAny<PaymentType>()))
+            .Returns(_paymentGatewayMock.Object);
     }
 
     [Fact]

@@ -17,9 +17,10 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
     /// <param name="customerService">Customer service (port implementation).</param>
     /// <param name="logger">Logger</param>
     [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
-    [Produces("application/json")]
     public class CustomersController(ICustomerService customerService, ILogger<CustomersController> logger)
         : ControllerBase
     {
@@ -30,7 +31,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Customer</returns>
         [HttpGet]
-        public async Task<ActionResult<CustomerDto>> GetByCpf([FromQuery] [MaxLength(14)] string cpf,
+        public async Task<ActionResult<CustomerDto>> Get([FromQuery] [MaxLength(14)] string cpf,
             CancellationToken cancellationToken)
         {
             logger.LogInformation("Getting customer by CPF: {Cpf}", cpf);
@@ -52,7 +53,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Customer</returns>
         [HttpPost]
-        public async Task<ActionResult<CustomerDto>> Create([FromBody] CreateCustomerCommand createCustomerCommand,
+        public async Task<ActionResult<CustomerDto>> Post([FromBody] CreateCustomerCommand createCustomerCommand,
             CancellationToken cancellationToken)
         {
             logger.LogInformation("Creating customer with CPF: {Cpf}", createCustomerCommand.Cpf);

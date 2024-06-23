@@ -17,16 +17,16 @@ using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
-[TestSubject(typeof(PaymentController))]
-public class PaymentControllerTest
+[TestSubject(typeof(PaymentsController))]
+public class PaymentsControllerTest
 {
     private readonly Mock<IPaymentService> _serviceMock;
-    private readonly PaymentController _target;
+    private readonly PaymentsController _target;
 
-    public PaymentControllerTest()
+    public PaymentsControllerTest()
     {
         _serviceMock = new Mock<IPaymentService>();
-        _target = new PaymentController(_serviceMock.Object);
+        _target = new PaymentsController(_serviceMock.Object);
     }
 
     [Fact]

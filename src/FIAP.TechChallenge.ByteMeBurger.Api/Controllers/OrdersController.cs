@@ -21,6 +21,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class OrdersController(IOrderService orderService, ILogger<OrdersController> logger)
         : ControllerBase
     {
@@ -31,7 +32,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Order</returns>
         [HttpPost]
-        public async Task<ActionResult<NewOrderDto>> Create(
+        public async Task<ActionResult<NewOrderDto>> Post(
             CreateOrderCommandDto newOrder,
             CancellationToken cancellationToken)
         {
@@ -95,7 +96,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         [Route("{id:guid}/status")]
         [HttpPatch]
-        public async Task<ActionResult<OrderDto>> UpdateStatus(Guid id,
+        public async Task<ActionResult<OrderDto>> Put(Guid id,
             [FromBody] UpdateOrderStatusCommandDto command,
             CancellationToken cancellationToken)
         {

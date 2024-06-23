@@ -30,7 +30,8 @@ public static class DefaultApiConventions
     public static void Post(
         [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Any)]
         [ApiConventionTypeMatch(ApiConventionTypeMatchBehavior.Any)]
-        object model)
+        object model,
+        CancellationToken cancellationToken)
     {
     }
 
@@ -44,7 +45,8 @@ public static class DefaultApiConventions
         object id,
         [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Any)]
         [ApiConventionTypeMatch(ApiConventionTypeMatchBehavior.Any)]
-        object model)
+        object model,
+        CancellationToken cancellationToken)
     {
     }
 

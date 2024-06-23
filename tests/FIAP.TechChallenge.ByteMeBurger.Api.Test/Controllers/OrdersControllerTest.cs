@@ -96,7 +96,7 @@ public class OrdersControllerTest
             .ReturnsAsync(expectedOrder);
 
         // Act
-        var response = await _target.Create(createOrderCommand, CancellationToken.None);
+        var response = await _target.Post(createOrderCommand, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -143,7 +143,7 @@ public class OrdersControllerTest
             .ReturnsAsync(expectedOrder);
 
         // Act
-        var response = await _target.Create(createOrderCommand, CancellationToken.None);
+        var response = await _target.Post(createOrderCommand, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -241,7 +241,7 @@ public class OrdersControllerTest
             .Verifiable();
 
         // Act
-        var response = await _target.UpdateStatus(Guid.NewGuid(),
+        var response = await _target.Put(Guid.NewGuid(),
             new UpdateOrderStatusCommandDto() { Status = OrderStatusDto.Ready }, CancellationToken.None);
 
         // Assert
