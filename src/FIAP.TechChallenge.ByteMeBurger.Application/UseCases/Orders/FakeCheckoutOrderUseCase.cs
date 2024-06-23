@@ -26,7 +26,6 @@ public class FakeCheckoutOrderUseCase : ICheckoutOrderUseCase
 
         try
         {
-            // DomainEventTrigger.RaiseOrderPaymentConfirmed(order);
             await _orderRepository.UpdateOrderStatusAsync(order);
             DomainEventTrigger.RaiseOrderStatusChanged(order.Id, oldStatus, order.Status);
         }
