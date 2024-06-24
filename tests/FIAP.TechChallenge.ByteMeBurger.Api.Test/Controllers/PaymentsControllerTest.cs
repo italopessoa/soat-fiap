@@ -17,16 +17,16 @@ using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
-[TestSubject(typeof(PaymentController))]
-public class PaymentControllerTest
+[TestSubject(typeof(PaymentsController))]
+public class PaymentsControllerTest
 {
     private readonly Mock<IPaymentService> _serviceMock;
-    private readonly PaymentController _target;
+    private readonly PaymentsController _target;
 
-    public PaymentControllerTest()
+    public PaymentsControllerTest()
     {
         _serviceMock = new Mock<IPaymentService>();
-        _target = new PaymentController(_serviceMock.Object);
+        _target = new PaymentsController(_serviceMock.Object);
     }
 
     [Fact]
@@ -35,11 +35,16 @@ public class PaymentControllerTest
         // Arrange
         var paymentId = new PaymentId("123", Guid.NewGuid());
         var payment = new Payment(paymentId, "qrcode", 10);
-        _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<Guid>()))
+        _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<Guid>(), It.IsAny<PaymentType>()))
             .ReturnsAsync(payment);
+        var paymentRequest = new CreatePaymentRequest
+        {
+            OrderId = Guid.NewGuid(),
+            PaymentType = (int)PaymentType.Test
+        };
 
         // Act
-        var response = await _target.Create(Guid.NewGuid(), CancellationToken.None);
+        var response = await _target.Create(paymentRequest, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())

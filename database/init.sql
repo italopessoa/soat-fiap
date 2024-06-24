@@ -44,7 +44,7 @@ create table IF NOT EXISTS OrderItems
 
 create table IF NOT EXISTS Payments
 (
-    Id         char(36)   not null,
+    Id         char(37)   not null,
     OrderId    char(36)   not null,
     Status     int        not null,
     Created    datetime   null,

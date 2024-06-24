@@ -6,9 +6,9 @@
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
+namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
-public interface ICreatePaymentUseCase
+public interface IPaymentGatewayFactoryMethod
 {
-    Task<Domain.Entities.Payment?> Execute(Guid orderId, PaymentType paymentType);
+    IPaymentGateway? Create(PaymentType paymentType);
 }

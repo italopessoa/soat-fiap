@@ -22,7 +22,11 @@ public class CreatePaymentUseCaseTest
     {
         _orderRepository = new Mock<IOrderRepository>();
         _paymentGatewayMock = new Mock<IPaymentGateway>();
-        _createPaymentUseCase = new CreatePaymentUseCase(_paymentGatewayMock.Object, _orderRepository.Object);
+        Mock<IPaymentGatewayFactoryMethod> paymentGatewayFactory = new();
+        _createPaymentUseCase = new CreatePaymentUseCase(paymentGatewayFactory.Object, _orderRepository.Object);
+
+        paymentGatewayFactory.Setup(g => g.Create(It.IsAny<PaymentType>()))
+            .Returns(_paymentGatewayMock.Object);
     }
 
     [Fact]
@@ -45,7 +49,7 @@ public class CreatePaymentUseCaseTest
             .ReturnsAsync(expectedPayment);
 
         // Act
-        var payment = await _createPaymentUseCase.Execute(Guid.NewGuid());
+        var payment = await _createPaymentUseCase.Execute(Guid.NewGuid(), PaymentType.Test);
 
         // Assert
         using var scope = new AssertionScope();
@@ -62,7 +66,7 @@ public class CreatePaymentUseCaseTest
             .ReturnsAsync((Order?)default);
 
         // Act
-        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid());
+        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid(), PaymentType.Test);
 
         // Assert
         using var scope = new AssertionScope();
@@ -83,7 +87,7 @@ public class CreatePaymentUseCaseTest
             });
 
         // Act
-        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid());
+        var func = () => _createPaymentUseCase.Execute(Guid.NewGuid(), PaymentType.Test);
 
         // Assert
         using var scope = new AssertionScope();

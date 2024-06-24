@@ -4,7 +4,6 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -53,6 +52,7 @@ public class Program
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerGen(c =>
             {

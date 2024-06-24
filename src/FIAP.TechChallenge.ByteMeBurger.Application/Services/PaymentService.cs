@@ -7,6 +7,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
 
@@ -15,22 +16,22 @@ public class PaymentService : IPaymentService
     private readonly ICreatePaymentUseCase _createOrderPaymentUseCase;
     private readonly IUpdatePaymentStatusUseCase _updatePaymentStatusUseCase;
     private readonly IPaymentRepository _paymentRepository;
-    private readonly IPaymentGateway _paymentGateway;
+    private readonly IPaymentGatewayFactoryMethod _paymentGatewayFactory;
 
     public PaymentService(ICreatePaymentUseCase createOrderPaymentUseCase,
         IUpdatePaymentStatusUseCase updatePaymentStatusUseCase,
         IPaymentRepository paymentRepository,
-        IPaymentGateway paymentGateway)
+        IPaymentGatewayFactoryMethod paymentGatewayFactory)
     {
         _createOrderPaymentUseCase = createOrderPaymentUseCase;
         _updatePaymentStatusUseCase = updatePaymentStatusUseCase;
         _paymentRepository = paymentRepository;
-        _paymentGateway = paymentGateway;
+        _paymentGatewayFactory = paymentGatewayFactory;
     }
 
-    public async Task<Payment> CreateOrderPaymentAsync(Guid orderId)
+    public async Task<Payment> CreateOrderPaymentAsync(Guid orderId, PaymentType paymentType)
     {
-        var payment = await _createOrderPaymentUseCase.Execute(orderId);
+        var payment = await _createOrderPaymentUseCase.Execute(orderId, paymentType);
 
         await _paymentRepository.SaveAsync(payment);
         return payment;
@@ -41,13 +42,14 @@ public class PaymentService : IPaymentService
         return await _paymentRepository.GetPaymentAsync(paymentId);
     }
 
-    public async Task<bool> SyncPaymentStatusWithGatewayAsync(string paymentId)
+    public async Task<bool> SyncPaymentStatusWithGatewayAsync(string paymentId, PaymentType paymentType)
     {
         var payment = await GetPaymentAsync(paymentId);
         if (payment is null)
             return false;
 
-        var paymentStatus = await _paymentGateway.GetPaymentStatusAsync(paymentId);
+        var paymentGateway = _paymentGatewayFactory.Create(paymentType);
+        var paymentStatus = await paymentGateway.GetPaymentStatusAsync(paymentId);
         if (paymentStatus is null)
             return false;
 

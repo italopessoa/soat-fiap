@@ -21,6 +21,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class ProductsController(IProductService productService, ILogger<ProductsController> logger)
         : ControllerBase
     {

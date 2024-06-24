@@ -1,16 +1,23 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Model;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PaymentController : ControllerBase
+[Produces("application/json")]
+[Consumes("application/json")]
+public class PaymentsController : ControllerBase
 {
     private readonly IPaymentService _paymentService;
 
-    public PaymentController(IPaymentService paymentService)
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="paymentService"></param>
+    public PaymentsController(IPaymentService paymentService)
     {
         _paymentService = paymentService;
     }
@@ -18,19 +25,21 @@ public class PaymentController : ControllerBase
     /// <summary>
     /// Create a payment for an order
     /// </summary>
-    /// <param name="orderId">Order id.</param>
+    /// <param name="createPaymentRequest"></param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns></returns>
+    /// <returns>Payment details</returns>
     [HttpPost]
     public async Task<ActionResult<PaymentViewModel>> Create(
-        [FromQuery] Guid orderId, CancellationToken cancellationToken)
+        CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
     {
-        var payment = await _paymentService.CreateOrderPaymentAsync(orderId);
+        var payment =
+            await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.OrderId,
+                (PaymentType)createPaymentRequest.PaymentType);
         return Ok(new PaymentViewModel(payment.Id.Code, payment.QrCode));
     }
 
     /// <summary>
-    /// Get the payment status
+    /// Get payment status
     /// </summary>
     /// <param name="id">Payment Id.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
