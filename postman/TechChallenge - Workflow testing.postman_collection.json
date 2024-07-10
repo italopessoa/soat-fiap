@@ -1,0 +1,967 @@
+{
+	"info": {
+		"_postman_id": "2c0bb4a5-6bcd-4f18-b14a-8454d93f26a8",
+		"name": "TechChallenge - Workflow testing",
+		"description": "# ⛓️ Get started here\n\nPostman allows you to test your APIs using simple Javascript code. You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis template guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## 🔖 **How to use this template**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\".\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" alt=\"\" height=\"103\" width=\"266\">\n\n**Step 3:** To customize this template, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## ℹ️ Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1447846"
+	},
+	"item": [
+		{
+			"name": "Create Product (Meal)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(201)",
+							"})",
+							"",
+							"var responseBody = pm.response.json();",
+							"var productCode = responseBody.id;",
+							"pm.environment.set(\"mealId\", responseBody.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Hamburguer\",\n  \"description\": \"sanduiche de presunto\",\n  \"category\": \"Meal\",\n  \"price\": 10,\n  \"images\": [\n    \"img1\",\n    \"img2\"\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Products"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product (Dessert)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(201)",
+							"})",
+							"",
+							"var responseBody = pm.response.json();",
+							"var productCode = responseBody.id;",
+							"pm.environment.set(\"dessertId\", responseBody.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Doce de leite\",\n  \"description\": \"leite fervido com açucar\",\n  \"category\": \"Dessert\",\n  \"price\": 5,\n  \"images\": [\n    \"img1\",\n    \"img2\"\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Products"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product (Drink)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(201)",
+							"})",
+							"",
+							"var responseBody = pm.response.json();",
+							"var productCode = responseBody.id;",
+							"pm.environment.set(\"drinkId\", responseBody.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"H20\",\n  \"description\": \"Agua top\",\n  \"category\": \"Drink\",\n  \"price\": 7.5,\n  \"images\": [\n    \"img1\",\n    \"img2\"\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Products"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product (Sides)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {",
+							"    pm.response.to.have.status(201)",
+							"})",
+							"",
+							"var responseBody = pm.response.json();",
+							"var productCode = responseBody.id;",
+							"pm.environment.set(\"sidesId\", responseBody.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Batata frinta\",\n  \"description\": \"Feito na airfryer\",\n  \"category\": \"Sides\",\n  \"price\": 8.70,\n  \"images\": [\n    \"img1\",\n    \"img2\"\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Products"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var sanityzedCpf = pm.environment.get(\"cpf\").replaceAll(\".\", \"\").replaceAll(\"-\",\"\");\r",
+							"pm.variables.set(\"sanitizedCpf\", sanityzedCpf);\r",
+							"\r",
+							"console.log(sanityzedCpf)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Customers?cpf={{sanitizedCpf}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Customers"
+					],
+					"query": [
+						{
+							"key": "cpf",
+							"value": "{{sanitizedCpf}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cpf\": \"{{cpf}}\",\r\n  \"name\": \"Italo FIAP\",\r\n  \"email\": \"italofiap@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Customers",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order with customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.environment.set(\"orderId\", responseBody.id);\r",
+							"    pm.environment.set(\"numberOfOrders\", parseInt(pm.environment.get(\"numberOfOrders\")) + 1);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cpf\": \"{{cpf}}\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"{{mealId}}\",\r\n      \"quantity\": \"1\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders"
+					]
+				},
+				"description": "\n# Create a New Order\n\nThis endpoint allows you to create a new order by sending a POST request to the specified URL.\n\n### Request Body\n- `cpf` (string, required): The CPF (Cadastro de Pessoas Físicas) of the customer.\n- `items` (array, required): An array containing the details of the items in the order.\n  - `productId` (string, required): The ID of the product being ordered.\n  - `quantity` (string, required): The quantity of the product being ordered.\n\n### Example\n```json\n{\n  \"cpf\": \"masked\",\n  \"items\": [\n    {\n      \"productId\": \"masked\",\n      \"quantity\": \"masked\"\n    }\n  ]\n}\n```\n\n### Response\nThe response will include the details of the newly created order.\n\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order without customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.environment.set(\"orderId\", responseBody.id);\r",
+							"    pm.environment.set(\"numberOfOrders\", parseInt(pm.environment.get(\"numberOfOrders\")) + 1);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"{{mealId}}\",\r\n      \"quantity\": \"1\"\r\n    },\r\n    {\r\n      \"productId\": \"{{dessertId}}\",\r\n      \"quantity\": \"1\"\r\n    },\r\n    {\r\n      \"productId\": \"{{sidesId}}\",\r\n      \"quantity\": \"1\"\r\n    },\r\n    {\r\n      \"productId\": \"{{drinkId}}\",\r\n      \"quantity\": \"1\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders"
+					]
+				},
+				"description": "\n# Create a New Order\n\nThis endpoint allows you to create a new order by sending a POST request to the specified URL.\n\n### Request Body\n- `cpf` (string, required): The CPF (Cadastro de Pessoas Físicas) of the customer.\n- `items` (array, required): An array containing the details of the items in the order.\n  - `productId` (string, required): The ID of the product being ordered.\n  - `quantity` (string, required): The quantity of the product being ordered.\n\n### Example\n```json\n{\n  \"cpf\": \"masked\",\n  \"items\": [\n    {\n      \"productId\": \"masked\",\n      \"quantity\": \"masked\"\n    }\n  ]\n}\n```\n\n### Response\nThe response will include the details of the newly created order.\n\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"check not all orders are returned\", () => {\r",
+							"    var responseBody = pm.response.json()\r",
+							"    pm.expect(pm.environment.get(\"numberOfOrders\")).to.greaterThan(responseBody.length);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders?listAll=false",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders"
+					],
+					"query": [
+						{
+							"key": "listAll",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get order details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create fake payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 201 Created status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.environment.set(\"paymentId\", responseBody.paymentId);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{orderId}}\",\r\n  \"paymentType\": \"Test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Payments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Payments"
+					]
+				},
+				"description": "\n# Create a New Order\n\nThis endpoint allows you to create a new order by sending a POST request to the specified URL.\n\n### Request Body\n- `cpf` (string, required): The CPF (Cadastro de Pessoas Físicas) of the customer.\n- `items` (array, required): An array containing the details of the items in the order.\n  - `productId` (string, required): The ID of the product being ordered.\n  - `quantity` (string, required): The quantity of the product being ordered.\n\n### Example\n```json\n{\n  \"cpf\": \"masked\",\n  \"items\": [\n    {\n      \"productId\": \"masked\",\n      \"quantity\": \"masked\"\n    }\n  ]\n}\n```\n\n### Response\nThe response will include the details of the newly created order.\n\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Create MercadoPago payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 201 Created status\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.environment.set(\"paymentId\", responseBody.paymentId);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{orderId}}\",\r\n  \"paymentType\": \"MercadoPago\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Payments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Payments"
+					]
+				},
+				"description": "\n# Create a New Order\n\nThis endpoint allows you to create a new order by sending a POST request to the specified URL.\n\n### Request Body\n- `cpf` (string, required): The CPF (Cadastro de Pessoas Físicas) of the customer.\n- `items` (array, required): An array containing the details of the items in the order.\n  - `productId` (string, required): The ID of the product being ordered.\n  - `quantity` (string, required): The quantity of the product being ordered.\n\n### Example\n```json\n{\n  \"cpf\": \"masked\",\n  \"items\": [\n    {\n      \"productId\": \"masked\",\n      \"quantity\": \"masked\"\n    }\n  ]\n}\n```\n\n### Response\nThe response will include the details of the newly created order.\n\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Get payment status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/payments/{{paymentId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"payments",
+						"{{paymentId}}",
+						"status"
+					]
+				},
+				"description": "\n# Create a New Order\n\nThis endpoint allows you to create a new order by sending a POST request to the specified URL.\n\n### Request Body\n- `cpf` (string, required): The CPF (Cadastro de Pessoas Físicas) of the customer.\n- `items` (array, required): An array containing the details of the items in the order.\n  - `productId` (string, required): The ID of the product being ordered.\n  - `quantity` (string, required): The quantity of the product being ordered.\n\n### Example\n```json\n{\n  \"cpf\": \"masked\",\n  \"items\": [\n    {\n      \"productId\": \"masked\",\n      \"quantity\": \"masked\"\n    }\n  ]\n}\n```\n\n### Response\nThe response will include the details of the newly created order.\n\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Sync payment status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"\r",
+							"    var responseBody = pm.response.json();\r",
+							"     pm.environment.set(\"paymentId\", responseBody.paymentId);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{paymentId}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/fakepayment",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications",
+						"fakepayment"
+					]
+				},
+				"description": "\n# Create a New Order\n\nThis endpoint allows you to create a new order by sending a POST request to the specified URL.\n\n### Request Body\n- `cpf` (string, required): The CPF (Cadastro de Pessoas Físicas) of the customer.\n- `items` (array, required): An array containing the details of the items in the order.\n  - `productId` (string, required): The ID of the product being ordered.\n  - `quantity` (string, required): The quantity of the product being ordered.\n\n### Example\n```json\n{\n  \"cpf\": \"masked\",\n  \"items\": [\n    {\n      \"productId\": \"masked\",\n      \"quantity\": \"masked\"\n    }\n  ]\n}\n```\n\n### Response\nThe response will include the details of the newly created order.\n\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order - Ready",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 204 NoContent status\", () => {\r",
+							"    pm.response.to.have.status(204)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"Ready\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order - Completed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 204 NoContent status\", () => {\r",
+							"    pm.response.to.have.status(204)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"Completed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all orders (list all)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 200 OK status\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"checck all orders are returned\", () => {\r",
+							"    var responseBody = pm.response.json()\r",
+							"    pm.expect(pm.environment.get(\"numberOfOrders\")).to.equal(responseBody.length);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders?listAll=true",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders"
+					],
+					"query": [
+						{
+							"key": "listAll",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order - Ready (Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 400 BadRequest status\", () => {\r",
+							"    pm.response.to.have.status(400)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"Ready\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order - Received (Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 400 BadRequest status\", () => {\r",
+							"    pm.response.to.have.status(400)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"Received\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Bug - Update Order - In preparation (Error) No Payment created",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 400 BadRequest status\", () => {\r",
+							"    pm.response.to.have.status(400)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"InPreparation\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order - Complete (Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 400 BadRequest status\", () => {\r",
+							"    pm.response.to.have.status(400)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"Completed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://postman-integration-testing.glitch.me/"
+		}
+	]
+}

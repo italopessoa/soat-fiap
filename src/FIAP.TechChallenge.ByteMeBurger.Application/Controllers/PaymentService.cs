@@ -10,7 +10,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
+namespace FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 
 public class PaymentService : IPaymentService
 {
@@ -35,7 +35,7 @@ public class PaymentService : IPaymentService
         var payment = await _createOrderPaymentUseCase.Execute(command.OrderId, command.PaymentType);
         if (payment is null)
             return null;
-        
+
         await _paymentRepository.SaveAsync(payment);
         DomainEventTrigger.RaisePaymentCreated(new PaymentCreated(payment));
         return payment;
