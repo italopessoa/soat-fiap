@@ -10,7 +10,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Model;
 
 public class MercadoPagoWebhookEvent
 {
-    public string Action { get; set; }
+    public string Action { get; set; } = null!;
 
     [JsonPropertyName("api_version")]
     public string ApiVersion { get; set; }

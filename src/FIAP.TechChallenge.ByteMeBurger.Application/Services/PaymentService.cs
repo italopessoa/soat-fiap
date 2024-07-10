@@ -6,6 +6,7 @@
 
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -29,11 +30,14 @@ public class PaymentService : IPaymentService
         _paymentGatewayFactory = paymentGatewayFactory;
     }
 
-    public async Task<Payment> CreateOrderPaymentAsync(Guid orderId, PaymentType paymentType)
+    public async Task<Payment> CreateOrderPaymentAsync(CreateOrderPaymentRequestDto command)
     {
-        var payment = await _createOrderPaymentUseCase.Execute(orderId, paymentType);
-
+        var payment = await _createOrderPaymentUseCase.Execute(command.OrderId, command.PaymentType);
+        if (payment is null)
+            return null;
+        
         await _paymentRepository.SaveAsync(payment);
+        DomainEventTrigger.RaisePaymentCreated(new PaymentCreated(payment));
         return payment;
     }
 

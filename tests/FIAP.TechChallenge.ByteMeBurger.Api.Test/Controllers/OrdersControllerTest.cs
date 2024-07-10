@@ -6,7 +6,7 @@
 
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model;
+using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -47,9 +47,9 @@ public class OrdersControllerTest
         {
             expectedOrder
         };
-        var expectedOrdersDto = new OrderDto[]
+        var expectedOrdersDto = new OrderListViewModel[]
         {
-            new(expectedOrder)
+            expectedOrder.ToOrderListViewModel()
         };
 
         _serviceMock.Setup(s => s.GetAllAsync(false))
@@ -82,7 +82,7 @@ public class OrdersControllerTest
         };
         var chosenProduct = products.First();
 
-        var createOrderCommand = fixture.Build<CreateOrderCommandDto>()
+        var createOrderCommand = fixture.Build<CreateOrderRequest>()
             .With(c => c.Cpf, FakeCpf)
             .Create();
 
@@ -129,7 +129,7 @@ public class OrdersControllerTest
         };
         var chosenProduct = products.First();
 
-        var createOrderCommand = fixture.Build<CreateOrderCommandDto>()
+        var createOrderCommand = fixture.Build<CreateOrderRequest>()
             .With(c => c.Cpf, FakeCpf)
             .Create();
 
@@ -174,7 +174,7 @@ public class OrdersControllerTest
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
 
-        var expectedOrderDto = new OrderDto(expectedOrder);
+        var expectedOrderDto = expectedOrder.ToOrderViewModel();
 
         _serviceMock.Setup(s => s.GetAsync(It.IsAny<Guid>()))
             .ReturnsAsync(expectedOrder);
@@ -242,7 +242,7 @@ public class OrdersControllerTest
 
         // Act
         var response = await _target.Put(Guid.NewGuid(),
-            new UpdateOrderStatusCommandDto() { Status = OrderStatusDto.Ready }, CancellationToken.None);
+            new UpdateOrderStatusRequest() { Status = OrderStatusDto.Ready }, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())

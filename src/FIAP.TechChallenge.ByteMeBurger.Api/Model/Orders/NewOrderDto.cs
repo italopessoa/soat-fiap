@@ -4,13 +4,11 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-using System.ComponentModel.DataAnnotations;
-
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
-
+namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 
 /// <summary>
-/// Command to checkout an order.
+/// Newly created order
 /// </summary>
-/// <param name="Id">Order Id.</param>
-public record CheckoutOrderCommandDto([Required] Guid Id);
+/// <param name="Id">Order internal Id. </param>
+/// <param name="TrackingCode">Tracking code. </param>
+public record NewOrderDto(Guid Id, string TrackingCode);

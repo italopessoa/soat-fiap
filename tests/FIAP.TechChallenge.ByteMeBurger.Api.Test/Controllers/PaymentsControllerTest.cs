@@ -5,7 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model;
+using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -14,6 +14,8 @@ using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using DomainPaymentType = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentType;
+using PaymentType = FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment.PaymentType;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
@@ -35,12 +37,12 @@ public class PaymentsControllerTest
         // Arrange
         var paymentId = new PaymentId("123", Guid.NewGuid());
         var payment = new Payment(paymentId, "qrcode", 10);
-        _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<Guid>(), It.IsAny<PaymentType>()))
+        _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<CreateOrderPaymentRequestDto>()))
             .ReturnsAsync(payment);
         var paymentRequest = new CreatePaymentRequest
         {
             OrderId = Guid.NewGuid(),
-            PaymentType = (int)PaymentType.Test
+            PaymentType = PaymentType.Test
         };
 
         // Act
@@ -62,7 +64,7 @@ public class PaymentsControllerTest
     {
         // Arrange
         var paymentId = new PaymentId("123", Guid.NewGuid());
-        var payment = new Payment(paymentId, "qrcode", 10, PaymentType.MercadoPago)
+        var payment = new Payment(paymentId, "qrcode", 10, DomainPaymentType.MercadoPago)
         {
             Status = PaymentStatus.Paid
         };

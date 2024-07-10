@@ -8,17 +8,21 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.Build.Framework;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
+namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 
-public class CreateProductCommandDto
+public class CreateProductRequest
 {
-    [Required] public string Name { get; set; } = string.Empty;
+    [Required]
+    public string Name { get; set; } = string.Empty;
 
-    [Required] public string Description { get; set; }= string.Empty;
+    [Required]
+    public string Description { get; set; } = string.Empty;
 
-    [Required] public ProductCategory Category { get; set; }
+    [Required]
+    public ProductCategory Category { get; set; }
 
-    [Required] public decimal Price { get; set; }
+    [Required]
+    public decimal Price { get; set; }
 
     public string[] Images { get; set; } = Array.Empty<string>();
 

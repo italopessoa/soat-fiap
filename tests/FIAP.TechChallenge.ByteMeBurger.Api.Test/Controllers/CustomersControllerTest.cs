@@ -5,7 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model;
+using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -56,7 +56,7 @@ public class CustomersControllerTest
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        var expectedCustomer = new CustomerDto
+        var expectedCustomer = new CustomerViewModel
         {
             Id = customerId,
             Name = "customer name",
@@ -87,8 +87,8 @@ public class CustomersControllerTest
     {
         // Arrange
         var newCustomer = new Customer(cpf);
-        var expectedCustomer = new CustomerDto(newCustomer);
-        var command = new CreateCustomerCommand()
+        var expectedCustomer = newCustomer.ToCustomerViewModel();
+        var command = new CreateCustomerRequest()
         {
             Cpf = cpf
         };
@@ -105,7 +105,7 @@ public class CustomersControllerTest
         {
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>().Value.Should()
-                .BeEquivalentTo(expectedCustomer, o => o.ComparingByMembers<CustomerDto>());
+                .BeEquivalentTo(expectedCustomer, o => o.ComparingByMembers<CustomerViewModel>());
         }
 
         _serviceMock.VerifyAll();
@@ -117,8 +117,8 @@ public class CustomersControllerTest
     {
         // Arrange
         var newCustomer = new Customer(cpf, name, email);
-        var expectedCustomer = new CustomerDto(newCustomer);
-        var command = new CreateCustomerCommand()
+        var expectedCustomer = newCustomer.ToCustomerViewModel();
+        var command = new CreateCustomerRequest()
         {
             Cpf = cpf,
             Name = name,

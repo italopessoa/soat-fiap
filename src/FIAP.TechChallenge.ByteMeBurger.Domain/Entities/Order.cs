@@ -19,10 +19,6 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public OrderStatus Status { get; private set; } = OrderStatus.Received;
 
-    public DateTime Created { get; private set; }
-
-    public DateTime? LastUpdate { get; private set; }
-
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
     public decimal Total => _orderItems.Sum(o => o.UnitPrice * o.Quantity);
@@ -59,7 +55,7 @@ public class Order : Entity<Guid>, IAggregateRoot
         Status = status;
         TrackingCode = trackingCode;
         Created = created;
-        LastUpdate = updated;
+        Updated = updated;
     }
 
     public Order(Customer? customer, OrderTrackingCode trackingCode, Dictionary<Product, int> selectedProducts)
@@ -141,5 +137,5 @@ public class Order : Entity<Guid>, IAggregateRoot
         TrackingCode = code;
     }
 
-    private void Update() => LastUpdate = DateTime.UtcNow;
+    private void Update() => Updated = DateTime.UtcNow;
 };

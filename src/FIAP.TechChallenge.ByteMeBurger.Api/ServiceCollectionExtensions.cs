@@ -5,10 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using System.Diagnostics.CodeAnalysis;
-using FIAP.TechChallenge.ByteMeBurger.Application;
-using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
-using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
-using FIAP.TechChallenge.ByteMeBurger.Persistence;
+using FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
@@ -17,16 +14,6 @@ internal static class ServiceCollectionExtensions
 {
     public static void ConfigureApiDependencyInversion(this WebApplicationBuilder builder)
     {
-        ConfigureDependencies(builder.Services, builder.Configuration);
-    }
-
-    private static void ConfigureDependencies(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.ConfigurePersistenceApp(configuration);
-        services.ConfigureApplicationApp();
-        services.ConfigureMercadoPagoGatewayApp(configuration);
-        services.AddOptionsWithValidateOnStart<MercadoPagoOptions>()
-            .Bind(configuration.GetSection(MercadoPagoOptions.MercadoPago))
-            .ValidateDataAnnotations();
+        builder.Services.ConfigureApplicationDI(builder.Configuration);
     }
 }

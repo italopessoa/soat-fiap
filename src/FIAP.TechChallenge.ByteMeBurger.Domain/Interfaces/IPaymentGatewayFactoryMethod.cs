@@ -10,5 +10,5 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 public interface IPaymentGatewayFactoryMethod
 {
-    IPaymentGateway? Create(PaymentType paymentType);
+    IPaymentGateway Create(PaymentType paymentType);
 }

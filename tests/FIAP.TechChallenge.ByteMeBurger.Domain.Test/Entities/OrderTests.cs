@@ -152,11 +152,11 @@ public class OrderTests
         // Act
         order.Create();
         order.ConfirmPayment();
-        var preparingDate = order.LastUpdate;
+        var preparingDate = order.Updated;
         order.FinishPreparing();
-        var doneDate = order.LastUpdate;
+        var doneDate = order.Updated;
         order.DeliverOrder();
-        var finishedDate = order.LastUpdate;
+        var finishedDate = order.Updated;
 
         // Assert
         using (new AssertionScope())

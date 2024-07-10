@@ -27,6 +27,7 @@ public class DomainEventsHandler : IDisposable
         DomainEventTrigger.OrderPaymentConfirmed += OnOrderPaymentConfirmed;
         DomainEventTrigger.OrderStatusChanged += OnOrderStatusChanged;
         DomainEventTrigger.CustomerRegistered += OnCustomerRegistered;
+        DomainEventTrigger.PaymentCreated += OnPaymentCreated;
     }
 
     private void OnCustomerRegistered(object? sender, CustomerRegistered e)
@@ -53,7 +54,8 @@ public class DomainEventsHandler : IDisposable
 
     private void OnProductUpdated(object? sender, ProductUpdated e)
     {
-        _logger.LogInformation("Product: {@oldProduct} updated {@newProduct}", e.Payload.newProduct, e.Payload.newProduct);
+        _logger.LogInformation("Product: {@oldProduct} updated {@newProduct}", e.Payload.newProduct,
+            e.Payload.newProduct);
     }
 
     private void OnProductDeleted(object? sender, ProductDeleted e)
@@ -66,6 +68,11 @@ public class DomainEventsHandler : IDisposable
         _logger.LogInformation("Product created: {@Product}", e.Payload);
     }
 
+    private void OnPaymentCreated(object? sender, PaymentCreated e)
+    {
+        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.Id.Code, e.Payload.Id.OrderId);
+    }
+
     public void Dispose()
     {
         DomainEventTrigger.ProductCreated -= OnProductCreated;
@@ -75,5 +82,6 @@ public class DomainEventsHandler : IDisposable
         DomainEventTrigger.OrderPaymentConfirmed -= OnOrderPaymentConfirmed;
         DomainEventTrigger.OrderStatusChanged -= OnOrderStatusChanged;
         DomainEventTrigger.CustomerRegistered -= OnCustomerRegistered;
+        DomainEventTrigger.PaymentCreated -= OnPaymentCreated;
     }
 }

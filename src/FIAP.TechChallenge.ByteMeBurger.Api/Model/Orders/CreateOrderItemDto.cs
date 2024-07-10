@@ -6,28 +6,22 @@
 
 using Microsoft.Build.Framework;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
+namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 
 /// <summary>
-/// Create payment request.
+/// Add Product to order
 /// </summary>
-public class CreatePaymentRequest
+public class CreateOrderItemDto
 {
     /// <summary>
-    /// Order id.
+    /// Product Id
     /// </summary>
     [Required]
-    public Guid OrderId { get; set; }
+    public Guid ProductId { get; set; }
 
     /// <summary>
-    /// Payment type
+    /// Quantity
     /// </summary>
     [Required]
-    public PaymentType PaymentType { get; set; }
-}
-
-public enum PaymentType
-{
-    Test = 0,
-    MercadoPago = 1
+    public int Quantity { get; set; }
 }

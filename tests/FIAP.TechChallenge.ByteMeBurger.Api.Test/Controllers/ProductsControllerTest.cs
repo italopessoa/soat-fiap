@@ -9,7 +9,7 @@ using AutoFixture;
 using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model;
+using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -52,10 +52,10 @@ public class ProductsControllerTest
         {
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>()
-                .Value.Should().BeOfType<ReadOnlyCollection<ProductDto>>()
-                .And.BeEquivalentTo(new List<ProductDto>
+                .Value.Should().BeOfType<ReadOnlyCollection<ProductViewModel>>()
+                .And.BeEquivalentTo(new List<ProductViewModel>
                 {
-                    new(product)
+                    product.ToProductViewModel()
                 }.AsReadOnly());
 
             _serviceMock.Verify(s => s.GetAll(), Times.Once);
@@ -79,7 +79,7 @@ public class ProductsControllerTest
         {
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>()
-                .Value.As<ReadOnlyCollection<ProductDto>>()
+                .Value.As<ReadOnlyCollection<ProductViewModel>>()
                 .Should().BeEmpty();
 
             _serviceMock.Verify(s => s.GetAll(), Times.Once);
@@ -104,10 +104,10 @@ public class ProductsControllerTest
         {
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>()
-                .Value.Should().BeOfType<ReadOnlyCollection<ProductDto>>()
-                .And.BeEquivalentTo(new List<ProductDto>
+                .Value.Should().BeOfType<ReadOnlyCollection<ProductViewModel>>()
+                .And.BeEquivalentTo(new List<ProductViewModel>
                 {
-                    new(product)
+                    product.ToProductViewModel()
                 }.AsReadOnly());
 
             _serviceMock.Verify(s => s.GetAll(), Times.Never);
@@ -133,7 +133,7 @@ public class ProductsControllerTest
         {
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>()
-                .Value.As<ReadOnlyCollection<ProductDto>>()
+                .Value.As<ReadOnlyCollection<ProductViewModel>>()
                 .Should().BeEmpty();
 
             _serviceMock.Verify(s => s.GetAll(), Times.Never);
@@ -207,7 +207,7 @@ public class ProductsControllerTest
     {
         // Arrange
         // Act
-        var response = await _target.Create(new CreateProductCommandDto
+        var response = await _target.Create(new CreateProductRequest
         {
             Price = price
         }, CancellationToken.None);
@@ -228,7 +228,7 @@ public class ProductsControllerTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Create_Success(CreateProductCommandDto newProductCommand)
+    public async Task Create_Success(CreateProductRequest newProductCommand)
     {
         // Arrange
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string>(), It.IsAny<string>(),
@@ -252,7 +252,7 @@ public class ProductsControllerTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Create_Error(CreateProductCommandDto newProductCommand)
+    public async Task Create_Error(CreateProductRequest newProductCommand)
     {
         // Arrange
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string>(), It.IsAny<string>(),
@@ -277,7 +277,7 @@ public class ProductsControllerTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Update_Error(UpdateProductCommandDto updateProductCommandDto)
+    public async Task Update_Error(UpdateProductRequest updateProductRequest)
     {
         // Arrange
         _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(),
@@ -286,7 +286,7 @@ public class ProductsControllerTest
 
         // Act
         var response =
-            await _target.Update(updateProductCommandDto.Id, updateProductCommandDto, CancellationToken.None);
+            await _target.Update(updateProductRequest.Id, updateProductRequest, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -307,7 +307,7 @@ public class ProductsControllerTest
         // Arrange
         // Act
         var response =
-            await _target.Update(Guid.Empty, new UpdateProductCommandDto(), CancellationToken.None);
+            await _target.Update(Guid.Empty, new UpdateProductRequest(), CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -324,7 +324,7 @@ public class ProductsControllerTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Update_Success(UpdateProductCommandDto updateProductCommandDto)
+    public async Task Update_Success(UpdateProductRequest updateProductRequest)
     {
         // Arrange
         _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(),
@@ -333,7 +333,7 @@ public class ProductsControllerTest
 
         // Act
         var response =
-            await _target.Update(updateProductCommandDto.Id, updateProductCommandDto, CancellationToken.None);
+            await _target.Update(updateProductRequest.Id, updateProductRequest, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())

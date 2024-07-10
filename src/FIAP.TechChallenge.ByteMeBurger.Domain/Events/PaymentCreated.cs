@@ -4,17 +4,12 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+
+namespace FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 
 /// <summary>
-/// Represents the payment status view model.
+/// Payment created event
 /// </summary>
-public enum PaymentStatusViewModel
-{
-    Pending = 0,
-    InProgress = 1,
-    Approved = 2,
-    Rejected = 3,
-    Paid = 4,
-    Cancelled = 5
-}
+/// <param name="payload"></param>
+public class PaymentCreated (Payment payload): DomainEvent<Payment>(payload);

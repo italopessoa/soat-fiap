@@ -4,6 +4,6 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
+namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 
 public record PaymentViewModel(string PaymentId, string QrCode);
