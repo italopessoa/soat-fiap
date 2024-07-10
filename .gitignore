@@ -44,3 +44,4 @@ msbuild.err
 msbuild.wrn
 
 Logs/
+kubernetes/secret-mercadopago.yaml
