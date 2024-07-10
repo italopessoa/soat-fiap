@@ -1,4 +1,4 @@
-using FIAP.TechChallenge.ByteMeBurger.Application.Services;
+using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 

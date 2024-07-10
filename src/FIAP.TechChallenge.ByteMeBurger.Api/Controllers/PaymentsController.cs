@@ -15,6 +15,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
+[ApiConventionType(typeof(DefaultApiConventions))]
 [Produces("application/json")]
 [Consumes("application/json")]
 public class PaymentsController : ControllerBase
@@ -24,7 +25,7 @@ public class PaymentsController : ControllerBase
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="paymentService"></param>
+    /// <param name="paymentService">PaymentService controller. </param>
     public PaymentsController(IPaymentService paymentService)
     {
         _paymentService = paymentService;
@@ -42,7 +43,7 @@ public class PaymentsController : ControllerBase
     {
         var payment =
             await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.ToDomain());
-        return Ok(new PaymentViewModel(payment.Id.Code, payment.QrCode));
+        return Created("", new PaymentViewModel(payment.Id.Code, payment.QrCode));
     }
 
     /// <summary>

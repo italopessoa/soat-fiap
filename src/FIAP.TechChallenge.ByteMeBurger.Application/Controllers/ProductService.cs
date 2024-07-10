@@ -9,7 +9,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
+namespace FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 
 public class ProductService(
     IGetAllProductsUseCase getAllProductsUseCase,

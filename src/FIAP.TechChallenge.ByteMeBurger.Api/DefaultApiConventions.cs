@@ -20,7 +20,8 @@ public static class DefaultApiConventions
     public static void Get(
         [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Suffix)]
         [ApiConventionTypeMatch(ApiConventionTypeMatchBehavior.Any)]
-        object id)
+        object id,
+        CancellationToken cancellationToken)
     {
     }
 

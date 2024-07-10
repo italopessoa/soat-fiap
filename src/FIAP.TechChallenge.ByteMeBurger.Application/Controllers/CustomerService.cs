@@ -8,7 +8,7 @@ using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Services;
+namespace FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 
 public class CustomerService(
     ICreateCustomerUseCase createCustomerUseCase,

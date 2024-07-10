@@ -28,7 +28,6 @@ create table IF NOT EXISTS Orders
     Created    datetime   null,
     Updated    datetime   null,
     TrackingCode       varchar(7) null
-
 );
 
 
@@ -51,4 +50,4 @@ create table IF NOT EXISTS Payments
     PaymentType int       not null,
     Amount     decimal(10,2) not null,
     PRIMARY KEY (Id, OrderId)
-    );
+);

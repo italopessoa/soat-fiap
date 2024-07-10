@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.DomainServices;
-using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;

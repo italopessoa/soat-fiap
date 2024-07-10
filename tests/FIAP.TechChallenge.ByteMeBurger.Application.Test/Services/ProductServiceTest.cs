@@ -1,7 +1,7 @@
 using AutoFixture;
 using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
-using FIAP.TechChallenge.ByteMeBurger.Application.Services;
+using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;

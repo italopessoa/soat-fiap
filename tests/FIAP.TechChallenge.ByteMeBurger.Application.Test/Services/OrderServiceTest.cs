@@ -6,7 +6,7 @@
 
 using AutoFixture;
 using AutoFixture.Xunit2;
-using FIAP.TechChallenge.ByteMeBurger.Application.Services;
+using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
