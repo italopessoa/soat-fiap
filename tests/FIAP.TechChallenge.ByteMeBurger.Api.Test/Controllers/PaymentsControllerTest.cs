@@ -51,8 +51,8 @@ public class PaymentsControllerTest
         // Assert
         using (new AssertionScope())
         {
-            response.Result.Should().BeOfType<OkObjectResult>();
-            var paymentViewModel = response.Result.As<OkObjectResult>().Value.As<PaymentViewModel>();
+            response.Result.Should().BeOfType<CreatedResult>();
+            var paymentViewModel = response.Result.As<CreatedResult>().Value.As<PaymentViewModel>();
 
             paymentViewModel.PaymentId.Should().Be(payment.Id.Code);
             paymentViewModel.QrCode.Should().Be(payment.QrCode);
