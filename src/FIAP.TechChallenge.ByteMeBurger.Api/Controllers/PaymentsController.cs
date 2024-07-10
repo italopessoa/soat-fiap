@@ -1,10 +1,18 @@
-using FIAP.TechChallenge.ByteMeBurger.Api.Model;
+// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+// All rights reserved.
+//
+// This source code is licensed under the BSD-style license found in the
+// LICENSE file in the root directory of this source tree.
+
+using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 
+/// <summary>
+/// Payment controller
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 [Produces("application/json")]
@@ -33,8 +41,7 @@ public class PaymentsController : ControllerBase
         CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
     {
         var payment =
-            await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.OrderId,
-                (PaymentType)createPaymentRequest.PaymentType);
+            await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.ToDomain());
         return Ok(new PaymentViewModel(payment.Id.Code, payment.QrCode));
     }
 

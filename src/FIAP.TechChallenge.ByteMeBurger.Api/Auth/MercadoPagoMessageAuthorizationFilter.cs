@@ -19,7 +19,7 @@ public class MercadoPagoMessageAuthorizationFilter : IAuthorizationFilter
     private readonly IMercadoPagoHmacSignatureValidator _mercadoPagoHmacSignatureValidator;
 
     /// <summary>
-    /// Initilize class
+    /// Initialize class
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="mercadoPagoHmacSignatureValidator"></param>

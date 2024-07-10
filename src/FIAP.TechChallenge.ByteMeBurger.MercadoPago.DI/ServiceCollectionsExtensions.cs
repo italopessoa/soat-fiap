@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Application.DomainServices;
 using FIAP.TechChallenge.ByteMeBurger.Application.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
@@ -6,20 +6,31 @@ using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
+using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
+using FIAP.TechChallenge.ByteMeBurger.Persistence;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application;
+namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
-    public static void ConfigureApplicationApp(this IServiceCollection serviceCollection)
+    public static void ConfigureApplicationDI(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         AddCustomerUseCases(serviceCollection);
         AddProductUseCases(serviceCollection);
         AddOrderUseCases(serviceCollection);
         AddPaymentUseCases(serviceCollection);
-        RegisterServices(serviceCollection);
+        RegisterControllers(serviceCollection);
+
+        serviceCollection.AddOptionsWithValidateOnStart<MercadoPagoOptions>()
+            .Bind(configuration.GetSection(MercadoPagoOptions.MercadoPago))
+            .ValidateDataAnnotations();
+
+        serviceCollection.ConfigurePersistenceApp(configuration);
+        serviceCollection.ConfigureMercadoPagoGatewayApp(configuration);
     }
 
     private static void AddCustomerUseCases(IServiceCollection serviceCollection)
@@ -42,8 +53,7 @@ public static class ServiceCollectionsExtensions
             .AddScoped<IFindProductsByCategoryUseCase, FindProductsByCategoryUseCase>()
             .AddScoped<IUpdateProductUseCase, UpdateProductUseCase>()
             .AddScoped<IGetAllProductsUseCase, GetAllProductsUseCase>()
-            .AddScoped<IDeleteProductUseCase, DeleteProductUseCase>()
-            .AddScoped<ICheckoutOrderUseCase, FakeCheckoutOrderUseCase>();
+            .AddScoped<IDeleteProductUseCase, DeleteProductUseCase>();
     }
 
     private static void AddPaymentUseCases(IServiceCollection serviceCollection)
@@ -52,7 +62,7 @@ public static class ServiceCollectionsExtensions
             .AddScoped<IUpdatePaymentStatusUseCase, UpdatePaymentStatusUseCase>();
     }
 
-    private static void RegisterServices(IServiceCollection services)
+    private static void RegisterControllers(IServiceCollection services)
     {
         services.AddScoped<ICustomerService, CustomerService>()
             .AddScoped<IProductService, ProductService>()

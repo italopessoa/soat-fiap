@@ -70,6 +70,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test", "tests\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test.csproj", "{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI", "src\FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI\FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI.csproj", "{207C0604-793B-4829-A407-6385E2457A03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,7 @@ Global
 		{81F17B4E-ACC8-4640-9F1A-1068600019DE} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 		{A8FC6701-D7C9-4342-B68A-4FE1538567DA} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
+		{207C0604-793B-4829-A407-6385E2457A03} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B8F244B5-F703-441C-8A8A-C720F605709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -133,5 +136,9 @@ Global
 		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{207C0604-793B-4829-A407-6385E2457A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{207C0604-793B-4829-A407-6385E2457A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{207C0604-793B-4829-A407-6385E2457A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{207C0604-793B-4829-A407-6385E2457A03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

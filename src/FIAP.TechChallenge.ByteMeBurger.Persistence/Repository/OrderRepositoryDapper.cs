@@ -142,7 +142,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 new
                 {
                     order.Status,
-                    Updated = order.LastUpdate,
+                    order.Updated,
                     order.Id
                 }) == 1;
 

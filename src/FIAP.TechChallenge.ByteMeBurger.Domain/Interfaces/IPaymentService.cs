@@ -11,9 +11,11 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 public interface IPaymentService
 {
-    Task<Payment> CreateOrderPaymentAsync(Guid orderId, PaymentType paymentType);
+    Task<Payment> CreateOrderPaymentAsync(CreateOrderPaymentRequestDto command);
 
     Task<Payment?> GetPaymentAsync(string paymentId);
 
     Task<bool> SyncPaymentStatusWithGatewayAsync(string paymentId, PaymentType paymentType);
 }
+
+public record CreateOrderPaymentRequestDto(Guid OrderId, PaymentType PaymentType);

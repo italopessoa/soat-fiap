@@ -35,8 +35,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI\FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI.csproj" />
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Persistence\FIAP.TechChallenge.ByteMeBurger.Persistence.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Api.Test" />
+    </ItemGroup>
 </Project>

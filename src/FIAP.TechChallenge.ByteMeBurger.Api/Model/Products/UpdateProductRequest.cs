@@ -4,6 +4,9 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
+namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 
-public record NewOrderDto(Guid Id, string TrackingCode);
+public class UpdateProductRequest : CreateProductRequest
+{
+    public Guid Id { get; set; }
+}

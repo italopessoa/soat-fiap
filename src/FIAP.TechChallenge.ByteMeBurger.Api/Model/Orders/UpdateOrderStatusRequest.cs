@@ -6,14 +6,16 @@
 
 using Microsoft.Build.Framework;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model;
+namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 
 /// <summary>
-/// Command to update an order status.
+/// Request to update an order status.
 /// </summary>
-/// <param name="Status"></param>
-public class  UpdateOrderStatusCommandDto
+public class  UpdateOrderStatusRequest
 {
+    /// <summary>
+    /// Order status
+    /// </summary>
     [Required]
     public OrderStatusDto Status { get; set; }
 }

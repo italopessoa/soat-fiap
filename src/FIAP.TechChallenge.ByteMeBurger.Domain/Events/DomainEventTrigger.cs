@@ -18,6 +18,7 @@ public static class DomainEventTrigger
     public static event EventHandler<OrderPaymentConfirmed>? OrderPaymentConfirmed;
     public static event EventHandler<OrderStatusChanged>? OrderStatusChanged;
     public static event EventHandler<CustomerRegistered>? CustomerRegistered;
+    public static event EventHandler<PaymentCreated>? PaymentCreated;
 
     internal static void RaiseProductCreated(ProductCreated e)
     {
@@ -52,5 +53,10 @@ public static class DomainEventTrigger
     internal static void RaiseCustomerRegistered(CustomerRegistered e)
     {
         CustomerRegistered?.Invoke(null, e);
+    }
+
+    internal static void RaisePaymentCreated(PaymentCreated e)
+    {
+        PaymentCreated?.Invoke(null, e);
     }
 }

@@ -13,14 +13,16 @@ namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 
 public sealed class PaymentGatewayFactory(IServiceProvider provider) : IPaymentGatewayFactoryMethod
 {
-    public IPaymentGateway? Create(PaymentType paymentType)
+    public IPaymentGateway Create(PaymentType paymentType)
     {
-        return paymentType switch
+        var gateway = paymentType switch
         {
             PaymentType.MercadoPago => provider.GetKeyedService<IPaymentGateway>(
                 $"Payment-{nameof(PaymentType.MercadoPago)}"),
             PaymentType.Test => provider.GetKeyedService<IPaymentGateway>($"Payment-{nameof(PaymentType.Test)}"),
-            _ => throw new DomainException($"Payment Gateway Payment-{paymentType} not found.")
+            _ => null
         };
+
+        return gateway ?? throw new DomainException($"Payment Gateway Payment-{paymentType} not found.");
     }
 }
