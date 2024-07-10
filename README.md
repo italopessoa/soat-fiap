@@ -53,3 +53,57 @@ You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat
     docker-compose down
    ```
 
+## Running with Kubernetes locally
+
+### Prerequisites
+- Docker with Minikube configured
+- [webhook.site](https://webhook.site) token
+
+To Use local docker images in minikube, you can use the following commands to [Push directly to the in-cluster Docker daemon (docker-env)](https://minikube.sigs.k8s.io/docs/handbook/pushing/#Windows)
+
+```bash
+  minikube start
+  minikube -p minikube docker-env --shell powershell | Invoke-Expression
+```
+
+#### Database
+```bash
+docker build -t techchallenge/db:latest -f .\database\Dockerfile .\database
+docker image push techchallenge/db:latest
+```
+- update the image in [pod-mysql.yaml](kubernetes/pod-mysql.yaml) file
+
+```yaml
+    image: techchallenge/db:latest
+```
+#### API
+
+```bash
+docker build -t techchallenge/api:latest -f .\src\FIAP.TechChallenge.ByteMeBurger.Api\Dockerfile .
+docker image push techchallenge/api:latest
+```
+- update the image in [deployment-api.yaml](kubernetes/deployment-api.yaml) file
+
+```yaml
+    image: techchallenge/api:latest
+```
+
+### Setup kubernetes
+Run [deploy.ps1](kubernetes/deploy.ps1) script to deploy the application to minikube
+
+Use tunnel and port-forward to access the application
+
+#### To access Seq from host
+```bash
+kubectl port-forward service/svc-seq 30008:80
+```
+#### To access the API from host
+```bash
+minikube tunnel
+```
+#### To forward mercado pago webhook notifications to host
+```bash
+whcli forward --token=f513d4a6-4dbd-4e32-93f5-b35376f33c89 --target=http://localhost/api/notifications/mercadopago
+```
+### Cleanup
+Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1)script
