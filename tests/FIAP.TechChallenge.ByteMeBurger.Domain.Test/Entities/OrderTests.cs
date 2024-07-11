@@ -29,7 +29,7 @@ public class OrderTests
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.Received);
+            order.Status.Should().Be(OrderStatus.PaymentPending);
             order.Customer.Should().NotBeNull();
             order.Customer!.Id.Should().Be(customerId);
         }
@@ -45,41 +45,38 @@ public class OrderTests
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.Received);
+            order.Status.Should().Be(OrderStatus.PaymentPending);
             order.Customer.Should().BeNull();
         }
     }
 
-    [Fact]
-    public void Order_CreateEmptyOrder_ThrowsError()
-    {
-        // Arrange
-        var order = new Order();
-
-        // Act
-        var func = () => order.Create();
-
-        // Assert
-        func.Should().ThrowExactly<DomainException>();
-    }
+    // [Fact]
+    // public void Order_CreateEmptyOrder_ThrowsError()
+    // {
+    //     // Arrange
+    //     var order = new Order();
+    //
+    //     // Act
+    //     var func = () => order.Create();
+    //
+    //     // Assert
+    //     func.Should().ThrowExactly<DomainException>();
+    // }
 
     [Fact]
     public void Order_CheckoutOrder_UpdateStatus()
     {
-        // Arrange
+        // Arrange & Act
         var customerId = Guid.NewGuid();
         var order = new Order(customerId);
         order.AddOrderItem(Guid.NewGuid(), "bread", 1, 5);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 2, 6);
 
-        // Act
-        order.Create();
-
         // Assert
         using (new AssertionScope())
         {
             order.Id.Should().NotBe(Guid.Empty);
-            order.Status.Should().Be(OrderStatus.Received);
+            order.Status.Should().Be(OrderStatus.PaymentPending);
             order.Created.Should().NotBe(default);
             order.Customer.Should().NotBeNull();
         }
@@ -92,14 +89,14 @@ public class OrderTests
         var order = new Order();
         order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
-        order.Create();
         order.ConfirmPayment();
+
         // Act
         var func = () => order.ConfirmPayment();
 
         // Assert
         func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be($"Payment cannot be confirmed because of order status '{OrderStatus.InPreparation}'.");
+            .Be($"Payment cannot be confirmed because of order status '{OrderStatus.Received}'.");
     }
 
     [Fact]
@@ -111,7 +108,7 @@ public class OrderTests
 
         // Assert
         func.Should().ThrowExactly<DomainException>().And.Message.Should()
-            .Be("Cannot Finish order if it's not In Preparation yet.");
+            .Be("Cannot Finish preparing order if it's not In Preparation yet.");
     }
 
     [Fact]
@@ -122,7 +119,6 @@ public class OrderTests
         order.AddOrderItem(Guid.NewGuid(), "bread", 2.5m, 4);
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 3, 4);
         order.SetTrackingCode(new OrderTrackingCode("trackingCode"));
-        order.Create();
         order.ConfirmPayment();
 
         // Act
@@ -150,8 +146,9 @@ public class OrderTests
         order.AddOrderItem(Guid.NewGuid(), "milk shake", 6, 2);
 
         // Act
-        order.Create();
         order.ConfirmPayment();
+        var receivedDate = order.Updated;
+        order.InitiatePrepare();
         var preparingDate = order.Updated;
         order.FinishPreparing();
         var doneDate = order.Updated;
@@ -164,6 +161,7 @@ public class OrderTests
             order.Customer.Should().NotBeNull();
             order.Customer!.Id.Should().Be(customerId);
             order.Created.Should().BeAfter(initDate);
+            receivedDate.Should().BeAfter(order.Created);
             order.Created.Should().BeBefore(preparingDate.Value);
             doneDate.Should().BeAfter(preparingDate.Value);
             finishedDate.Should().BeAfter(doneDate.Value);

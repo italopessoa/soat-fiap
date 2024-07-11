@@ -17,7 +17,7 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public OrderTrackingCode TrackingCode { get; private set; }
 
-    public OrderStatus Status { get; private set; } = OrderStatus.Received;
+    public OrderStatus Status { get; private set; } = OrderStatus.PaymentPending;
 
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
@@ -28,23 +28,27 @@ public class Order : Entity<Guid>, IAggregateRoot
     public Order()
         : base(Guid.NewGuid())
     {
+        Created = DateTime.UtcNow;
     }
 
-    public Order(Guid customerId)
+    internal Order(Guid customerId)
         : this(Guid.NewGuid(), new Customer(customerId))
     {
+        Created = DateTime.UtcNow;
     }
 
-    public Order(Customer customer)
+    internal Order(Customer customer)
         : base(Guid.NewGuid())
     {
         Customer = customer;
+        Created = DateTime.UtcNow;
     }
 
-    public Order(Guid id, Customer customer)
+    internal Order(Guid id, Customer customer)
         : base(id)
     {
         Customer = customer;
+        Created = DateTime.UtcNow;
     }
 
     public Order(Guid id, Customer? customer, OrderStatus status, OrderTrackingCode trackingCode, DateTime created,
@@ -64,7 +68,6 @@ public class Order : Entity<Guid>, IAggregateRoot
         Customer = customer;
         TrackingCode = trackingCode;
         Created = DateTime.UtcNow;
-        Status = OrderStatus.Received;
 
         if (!selectedProducts.Any())
         {
@@ -79,7 +82,7 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public void AddOrderItem(Guid productId, string productName, decimal unitPrice, int quantity)
     {
-        if (Status == OrderStatus.Received)
+        if (Status == OrderStatus.PaymentPending)
             _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
         else
             throw new DomainException(
@@ -91,21 +94,19 @@ public class Order : Entity<Guid>, IAggregateRoot
         _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
     }
 
-    public void Create()
-    {
-        if (!_orderItems.Any())
-        {
-            throw new DomainException("An Order must have at least one item");
-        }
-
-        Created = DateTime.UtcNow;
-        Status = OrderStatus.Received;
-    }
-
     public void ConfirmPayment()
     {
-        if (Status != OrderStatus.Received)
+        if (Status != OrderStatus.PaymentPending)
             throw new DomainException($"Payment cannot be confirmed because of order status '{Status}'.");
+
+        Status = OrderStatus.Received;
+        Update();
+    }
+
+    public void InitiatePrepare()
+    {
+        if (Status != OrderStatus.Received)
+            throw new DomainException("Cannot start preparing if order isn't received.");
 
         Status = OrderStatus.InPreparation;
         Update();
@@ -114,7 +115,7 @@ public class Order : Entity<Guid>, IAggregateRoot
     public void FinishPreparing()
     {
         if (Status != OrderStatus.InPreparation)
-            throw new DomainException("Cannot Finish order if it's not In Preparation yet.");
+            throw new DomainException("Cannot Finish preparing order if it's not In Preparation yet.");
 
         Status = OrderStatus.Ready;
         Update();
@@ -131,8 +132,8 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public void SetTrackingCode(OrderTrackingCode code)
     {
-        if (Status != OrderStatus.Received)
-            throw new DomainException("Cannot set status code for a existing Order.");
+        if (Status != OrderStatus.PaymentPending)
+            throw new DomainException("Cannot set status code for an existing Order.");
 
         TrackingCode = code;
     }

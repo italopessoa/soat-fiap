@@ -89,7 +89,6 @@ public class OrdersControllerTest
         var expectedOrder = new Order(orderId, customer);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
-        expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))
@@ -136,7 +135,6 @@ public class OrdersControllerTest
         var expectedOrder = new Order(orderId, null);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
-        expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))

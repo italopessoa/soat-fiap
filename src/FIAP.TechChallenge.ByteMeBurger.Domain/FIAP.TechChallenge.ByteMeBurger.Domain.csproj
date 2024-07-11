@@ -6,9 +6,14 @@
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Application" />
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Api.Test" />
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Application.Test" />
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Domain.Test" />
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Persistence.Test" />
+        <InternalsVisibleTo Include="AutoFixture.Xunit2" />
     </ItemGroup>
 
 </Project>

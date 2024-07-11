@@ -86,7 +86,6 @@ public class OrderServiceTest
         var expectedOrder = new Order(expectedCustomer);
         selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "product name", 1, i.Quantity); });
 
-        expectedOrder.Create();
         _mockCreateOrderUseCase.Setup(s => s.Execute(It.IsAny<Cpf?>(),
                 It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder);
@@ -104,7 +103,7 @@ public class OrderServiceTest
             result.Should().NotBeNull();
             _mockOrderRepository.Verify(m => m.CreateAsync(
                 It.Is<Order>(o => o.Created != DateTime.MinValue
-                                  && o.Status == OrderStatus.Received)), Times.Once);
+                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
         }
     }
 

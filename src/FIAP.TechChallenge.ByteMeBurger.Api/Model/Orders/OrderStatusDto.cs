@@ -11,6 +11,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 /// </summary>
 public enum OrderStatusDto
 {
+    PaymentPending = 0,
     Received = 1,
     InPreparation = 2,
     Ready = 3,

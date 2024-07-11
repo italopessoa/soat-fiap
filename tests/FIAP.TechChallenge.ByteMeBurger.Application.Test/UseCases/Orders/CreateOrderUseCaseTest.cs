@@ -42,8 +42,6 @@ public class CreateOrderUseCaseTest
         expectedOrder.SetTrackingCode(_trackingCode);
         expectedOrder.AddOrderItem(selectedProduct.ProductId, product.Name, product.Price, selectedProduct.Quantity);
 
-        expectedOrder.Create();
-
         _customerRepository.Setup(r => r.FindByCpfAsync(
                 It.Is<string>(cpf => cpf == _validCpf.Value)))
             .ReturnsAsync(expectedCustomer);
@@ -79,7 +77,6 @@ public class CreateOrderUseCaseTest
         var expectedOrder = new Order(expectedCustomer);
         expectedOrder.SetTrackingCode(_trackingCode);
         selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "productName", 1, i.Quantity); });
-        expectedOrder.Create();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
                 It.Is<string>(cpf => cpf == _validCpf.Value)))
@@ -113,7 +110,6 @@ public class CreateOrderUseCaseTest
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
         var expectedOrder = new Order(expectedCustomer);
         selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "productName", 2, i.Quantity); });
-        expectedOrder.Create();
 
         _customerRepository.Setup(r => r.FindByCpfAsync(
                 It.Is<string>(cpf => cpf == _validCpf.Value)))

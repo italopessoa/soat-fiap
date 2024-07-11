@@ -21,6 +21,7 @@ public class OrderGetAllUseCaseTest
     {
         _orders = new List<Order>()
         {
+            new(Guid.NewGuid(), null, OrderStatus.PaymentPending, null, DateTime.Now, null),
             new(Guid.NewGuid(), null, OrderStatus.InPreparation, null, DateTime.Now, null),
             new(Guid.NewGuid(), null, OrderStatus.Ready, null, DateTime.Now, null),
             new(Guid.NewGuid(), null, OrderStatus.Received, null, DateTime.Now, null),

@@ -38,9 +38,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     {
         logger.LogInformation("Creating product with name: {ProductName}", product.Name);
         var param = (ProductDto)product;
-        var affectedRows = await dbConnection.ExecuteAsync(
-            "insert into Products (Id, Name, Description, Category, Price, Images) values (@Id, @Name, @Description, @Category, @Price, @Images);",
-            param);
+        var affectedRows = await dbConnection.ExecuteAsync(Constants.InsertProductQuery, param);
 
         if (affectedRows > 0)
         {
@@ -57,7 +55,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     public async Task<bool> DeleteAsync(Guid productId)
     {
         logger.LogInformation("Deleting product {ProductId}", productId);
-        var affectedRows = await dbConnection.ExecuteAsync("delete from Products where Id = @Id;",
+        var affectedRows = await dbConnection.ExecuteAsync(Constants.DeleteProductQuery,
             new { Id = productId });
 
         if (affectedRows == 1)
@@ -99,7 +97,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     {
         logger.LogInformation("Updating product with ID: {ProductId}", product.Id);
         var affectedRows = await dbConnection.ExecuteAsync(
-            "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id",
+            Constants.UpdateProductQuery,
             (ProductDto)product);
 
         if (affectedRows == 1)

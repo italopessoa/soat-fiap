@@ -39,7 +39,7 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
             {
                 DomainEventTrigger.RaiseOrderPaymentConfirmed(payment.Id.OrderId);
                 // TODO change to eventual consistency. use events to update order status
-                await _updateOrderStatusUseCase.Execute(payment.Id.OrderId, OrderStatus.InPreparation);
+                await _updateOrderStatusUseCase.Execute(payment.Id.OrderId, OrderStatus.Received);
             }
 
             return true;

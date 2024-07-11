@@ -23,6 +23,7 @@ public class UpdateOrderStatusUseCaseTest
     }
 
     [Theory]
+    [InlineData(OrderStatus.PaymentPending, OrderStatus.Received)]
     [InlineData(OrderStatus.Received, OrderStatus.InPreparation)]
     [InlineData(OrderStatus.InPreparation, OrderStatus.Ready)]
     [InlineData(OrderStatus.Ready, OrderStatus.Completed)]
