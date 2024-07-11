@@ -15,7 +15,7 @@ public class Order : Entity<Guid>, IAggregateRoot
 
     public Customer? Customer { get; private set; }
 
-    public OrderTrackingCode TrackingCode { get; private set; }
+    public OrderTrackingCode TrackingCode { get; set; }
 
     public OrderStatus Status { get; private set; } = OrderStatus.PaymentPending;
 

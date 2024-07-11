@@ -9,7 +9,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 /// <summary>
 /// Orders statuses
 /// </summary>
-public enum OrderStatusDto
+public enum OrderStatusViewModel
 {
     PaymentPending = 0,
     Received = 1,

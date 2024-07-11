@@ -10,6 +10,6 @@ public record OrderListViewModel(
     Guid OrderId,
     string TrackingCode,
     decimal Total,
-    OrderStatusDto Status,
+    OrderStatusViewModel Status,
     DateTime CreatedAt,
     DateTime? UpdatedAt);

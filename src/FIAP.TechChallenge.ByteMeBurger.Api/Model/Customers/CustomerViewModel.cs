@@ -11,7 +11,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 /// </summary>
 public class CustomerViewModel
 {
-
     public Guid Id { get; set; }
 
     /// <summary>

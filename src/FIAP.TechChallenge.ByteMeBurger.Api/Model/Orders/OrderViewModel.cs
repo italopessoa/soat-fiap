@@ -20,7 +20,7 @@ public class OrderViewModel
 
     public decimal Total { get; set; }
 
-    public OrderStatusDto Status { get; set; }
+    public OrderStatusViewModel Status { get; set; }
 
     public DateTime CreationDate { get; set; }
 
