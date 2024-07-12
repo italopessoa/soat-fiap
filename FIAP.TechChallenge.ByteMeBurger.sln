@@ -73,7 +73,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test", "tests\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test.csproj", "{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI", "src\FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI\FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI.csproj", "{207C0604-793B-4829-A407-6385E2457A03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.DI", "src\FIAP.TechChallenge.ByteMeBurger.DI\FIAP.TechChallenge.ByteMeBurger.DI.csproj", "{207C0604-793B-4829-A407-6385E2457A03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

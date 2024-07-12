@@ -13,19 +13,19 @@ using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI;
+namespace FIAP.TechChallenge.ByteMeBurger.DI;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
     public static void ConfigureApplicationDI(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        ConfigHybridCache(serviceCollection, configuration);
         AddCustomerUseCases(serviceCollection);
         AddProductUseCases(serviceCollection);
         AddOrderUseCases(serviceCollection);
         AddPaymentUseCases(serviceCollection);
         RegisterControllers(serviceCollection);
-        ConfigHybridCache(serviceCollection, configuration);
 
         serviceCollection.AddOptionsWithValidateOnStart<MercadoPagoOptions>()
             .Bind(configuration.GetSection(MercadoPagoOptions.MercadoPago))

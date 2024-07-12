@@ -38,9 +38,9 @@ public class OrderGetAllUseCaseTest
         // Arrange
         var expectedOrders = new List<Order>()
         {
-            _orders[1],
-            _orders[0],
             _orders[2],
+            _orders[1],
+            _orders[3],
         }.AsReadOnly();
 
         _orderRepository.Setup(r => r.GetAllAsync())

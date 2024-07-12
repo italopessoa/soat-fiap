@@ -5,7 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using System.Diagnostics.CodeAnalysis;
-using FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI;
+using FIAP.TechChallenge.ByteMeBurger.DI;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
