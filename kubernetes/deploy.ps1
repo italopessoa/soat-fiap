@@ -10,7 +10,9 @@ kubectl apply -f configmap-api.yaml
 kubectl apply -f configmap-db.yaml
 kubectl apply -f secret-mercadopago.yaml
 kubectl apply -f pv-db.yaml
+kubectl apply -f pv-seq.yaml
 kubectl apply -f pvc-db.yaml
+kubectl apply -f pvc-seq.yaml
 kubectl apply -f svc-mysql.yaml
 kubectl apply -f pod-mysql.yaml
 

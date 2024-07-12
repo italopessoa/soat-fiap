@@ -14,12 +14,12 @@ spec:
     kind: Deployment
     name: deployment-api
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   metrics:
     - type: ContainerResource
       containerResource:
         container: api-container
         name: cpu
         target:
-          averageUtilization: 50
+          averageUtilization: 65
           type: Utilization

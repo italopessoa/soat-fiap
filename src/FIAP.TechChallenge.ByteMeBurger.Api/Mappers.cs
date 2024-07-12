@@ -60,7 +60,6 @@ internal static class Mappers
     {
         return new OrderItemViewModel()
         {
-            Id = orderItem.Id,
             OrderId = orderItem.OrderId,
             ProductId = orderItem.ProductId,
             Quantity = orderItem.Quantity,

@@ -20,3 +20,6 @@ data:
   Serilog__WriteTo__2__Args__formatter: "Serilog.Formatting.Json.JsonFormatter, Serilog"
   MercadoPago__NotificationUrl: "/mercadopago"
   Serilog__Enrich__0: "FromLogContext"
+  HybridCache__Expiration: "01:00:00"
+  HybridCache__LocalCacheExpiration: "01:00:00"
+  HybridCache__Flags: "DisableDistributedCache"

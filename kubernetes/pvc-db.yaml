@@ -11,6 +11,9 @@ metadata:
   labels:
     app: pod-mysql
 spec:
+  selector:
+    matchLabels:
+      app: pod-mysql
   accessModes:
     - ReadWriteOnce
   resources:
