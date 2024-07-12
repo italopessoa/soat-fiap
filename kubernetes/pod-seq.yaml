@@ -17,6 +17,18 @@ spec:
       ports:
         - containerPort: 80
       imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /data
+          name: seq-persistent-storage
+        - mountPath: /data/Dashboards/Custom
+          name: dashboards-volume
       env:
         - name: ACCEPT_EULA
           value: "Y"
+  volumes:
+    - name: seq-persistent-storage
+      persistentVolumeClaim:
+        claimName: pvc-seq
+    - name: dashboards-volume
+      hostPath:
+        path: /home/docker/seq

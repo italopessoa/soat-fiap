@@ -11,6 +11,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 /// </summary>
 public enum OrderStatus
 {
+    PaymentPending = 0,
     Received = 1,
     InPreparation = 2,
     Ready = 3,

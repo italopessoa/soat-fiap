@@ -37,7 +37,6 @@ public class OrderRepositoryDapperTest
         // Arrange
         var order = new Order(Guid.NewGuid());
         order.AddOrderItem(Guid.NewGuid(), "banana", 10, 1);
-        order.Create();
         order.ConfirmPayment();
 
         var expected = new[]
@@ -69,7 +68,6 @@ public class OrderRepositoryDapperTest
         var order = new Order(Guid.NewGuid());
         order.AddOrderItem(Guid.NewGuid(), "banana", 10, 1);
         order.SetTrackingCode(new OrderTrackingCode("code"));
-        order.Create();
 
         _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
 

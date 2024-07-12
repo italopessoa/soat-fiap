@@ -34,7 +34,7 @@ internal static class Constants
                    o.Created,
                    o.Updated,
                    o.TrackingCode,
-                   o.Id,
+                   c.Id,
                    c.Cpf,
                    c.Name,
                    c.Email,
@@ -67,4 +67,17 @@ internal static class Constants
 
     internal const string UpdatePaymentStatusQuery =
         "UPDATE Payments SET Status=@Status, Updated=@Updated WHERE Id = @Id";
+
+    internal const string InsertProductQuery =
+        "insert into Products (Id, Name, Description, Category, Price, Images) values (@Id, @Name, @Description, @Category, @Price, @Images);";
+
+    internal const string DeleteProductQuery = "delete from Products where Id = @Id;";
+
+    internal const string UpdateProductQuery =
+        "UPDATE Products SET Name=@Name, Description=@Description, Category=@Category, Price=@Price, Images=@Images WHERE Id = @Id";
+
+    internal const string InsertCustomerQuery =
+        "insert into Customers (Id, Cpf, Name, Email) values (@Id, @Cpf, @Name, @Email);";
+
+    internal const string GetCustomerByCpfQuery = "SELECT * FROM Customers WHERE Cpf=@Cpf";
 }

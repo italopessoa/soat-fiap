@@ -17,5 +17,5 @@ public class  UpdateOrderStatusRequest
     /// Order status
     /// </summary>
     [Required]
-    public OrderStatusDto Status { get; set; }
+    public OrderStatusViewModel Status { get; set; }
 }

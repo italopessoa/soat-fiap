@@ -14,6 +14,8 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -29,7 +31,7 @@ public class OrdersControllerTest
     public OrdersControllerTest()
     {
         _serviceMock = new Mock<IOrderService>();
-        _target = new OrdersController(_serviceMock.Object, Mock.Of<ILogger<OrdersController>>());
+        _target = new OrdersController(_serviceMock.Object, Mock.Of<ILogger<OrdersController>>(), new MockHybridCache());
     }
 
     [Fact]
@@ -89,7 +91,6 @@ public class OrdersControllerTest
         var expectedOrder = new Order(orderId, customer);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
-        expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))
@@ -136,7 +137,6 @@ public class OrdersControllerTest
         var expectedOrder = new Order(orderId, null);
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
-        expectedOrder.Create();
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))
@@ -242,7 +242,7 @@ public class OrdersControllerTest
 
         // Act
         var response = await _target.Put(Guid.NewGuid(),
-            new UpdateOrderStatusRequest() { Status = OrderStatusDto.Ready }, CancellationToken.None);
+            new UpdateOrderStatusRequest() { Status = OrderStatusViewModel.Ready }, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())

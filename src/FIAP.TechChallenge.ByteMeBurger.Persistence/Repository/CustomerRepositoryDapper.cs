@@ -20,7 +20,7 @@ public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<Custom
     {
         logger.LogInformation("Finding customer by CPF: {Cpf}", cpf);
         var customerDto = await dbConnection.QuerySingleOrDefaultAsync<CustomerDto>(
-            "SELECT * FROM Customers WHERE Cpf=@Cpf",
+            Constants.GetCustomerByCpfQuery,
             new { Cpf = cpf });
 
         if (customerDto == null)
@@ -36,7 +36,7 @@ public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<Custom
         logger.LogInformation("Creating customer with CPF: {Cpf}", customer.Cpf);
         var param = (CustomerDto)customer;
         var rowsAffected = await dbConnection.ExecuteAsync(
-            "insert into Customers (Id, Cpf, Name, Email) values (@Id, @Cpf, @Name, @Email);",
+            Constants.InsertCustomerQuery,
             param);
 
         if (rowsAffected > 0)

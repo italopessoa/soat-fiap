@@ -9,16 +9,18 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using FIAP.TechChallenge.ByteMeBurger.Persistence;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.DI;
+namespace FIAP.TechChallenge.ByteMeBurger.DI;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
     public static void ConfigureApplicationDI(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        ConfigHybridCache(serviceCollection, configuration);
         AddCustomerUseCases(serviceCollection);
         AddProductUseCases(serviceCollection);
         AddOrderUseCases(serviceCollection);
@@ -69,5 +71,19 @@ public static class ServiceCollectionsExtensions
             .AddScoped<IOrderService, OrderService>()
             .AddScoped<IOrderTrackingCodeService, OrderTrackingCodeService>()
             .AddScoped<IPaymentService, PaymentService>();
+    }
+
+    private static void ConfigHybridCache(IServiceCollection services, IConfiguration configuration)
+    {
+        var hybridCacheSettings = configuration.GetSection("HybridCache")
+            .Get<HybridCacheEntryOptions>();
+        services.AddHybridCache(options =>
+            options.DefaultEntryOptions = new HybridCacheEntryOptions()
+            {
+                Expiration = hybridCacheSettings.Expiration,
+                LocalCacheExpiration = hybridCacheSettings.LocalCacheExpiration,
+                Flags = hybridCacheSettings.Flags,
+            }
+        );
     }
 }

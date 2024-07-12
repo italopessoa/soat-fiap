@@ -12,11 +12,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 public class OrderItemViewModel
 {
     /// <summary>
-    /// Id
-    /// </summary>
-    public Guid Id { get; set; }
-
-    /// <summary>
     /// Order Id
     /// </summary>
     public Guid OrderId { get; set; }

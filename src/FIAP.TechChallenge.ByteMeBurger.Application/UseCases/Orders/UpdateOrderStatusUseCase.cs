@@ -29,7 +29,8 @@ public class UpdateOrderStatusUseCase(IOrderRepository repository) : IUpdateOrde
         var oldStatus = order.Status;
         Action updateStatus = newStatus switch
         {
-            OrderStatus.InPreparation => order.ConfirmPayment,
+            OrderStatus.Received => order.ConfirmPayment,
+            OrderStatus.InPreparation => order.InitiatePrepare,
             OrderStatus.Ready => order.FinishPreparing,
             OrderStatus.Completed => order.DeliverOrder,
             _ => throw new DomainException(nameof(newStatus), new Exception($"Invalid Status '{newStatus}'"))

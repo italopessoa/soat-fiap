@@ -33,6 +33,9 @@ services:
       - MercadoPago__WebhookSecret=${MercadoPago_WebhookSecret}
       - MercadoPago__AccessToken=${MercadoPago_AccessToken}
       - MercadoPago__NotificationUrl=${MercadoPago_NotificationUrl}
+      - HybridCache__Expiration=${HybridCache_Expiration}
+      - HybridCache__LocalCacheExpiration=${HybridCache_LocalCacheExpiration}
+      - HybridCache__Flags=${HybridCache_Flags}
   database:
     container_name: restaurant_db
     build:

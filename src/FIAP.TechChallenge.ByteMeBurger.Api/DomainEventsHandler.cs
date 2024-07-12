@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
@@ -16,10 +17,12 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api;
 public class DomainEventsHandler : IDisposable
 {
     private readonly ILogger<DomainEventsHandler> _logger;
+    private readonly HybridCache _cache;
 
-    public DomainEventsHandler(ILogger<DomainEventsHandler> logger)
+    public DomainEventsHandler(ILogger<DomainEventsHandler> logger, HybridCache cache)
     {
         _logger = logger;
+        _cache = cache;
         DomainEventTrigger.ProductCreated += OnProductCreated;
         DomainEventTrigger.ProductDeleted += OnProductDeleted;
         DomainEventTrigger.ProductUpdated += OnProductUpdated;
@@ -38,6 +41,7 @@ public class DomainEventsHandler : IDisposable
 
     private void OnOrderStatusChanged(object? sender, OrderStatusChanged e)
     {
+        InvalidateOrderCache(e.Payload.orderId);
         _logger.LogInformation("Order: {Id} status changed from '{oldStatus}' to '{newStatus}'", e.Payload.orderId,
             e.Payload.oldStatus, e.Payload.newStatus);
     }
@@ -49,6 +53,7 @@ public class DomainEventsHandler : IDisposable
 
     private void OnOrderCreated(object? sender, OrderCreated e)
     {
+        InvalidateOrderCache(e.Payload.Id);
         _logger.LogInformation("New Order created: {Id}", e.Payload.Id);
     }
 
@@ -70,7 +75,20 @@ public class DomainEventsHandler : IDisposable
 
     private void OnPaymentCreated(object? sender, PaymentCreated e)
     {
-        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.Id.Code, e.Payload.Id.OrderId);
+        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.Id.Code,
+            e.Payload.Id.OrderId);
+    }
+
+    private void InvalidateOrderCache(Guid orderId)
+    {
+        _cache.RemoveAsync($"order-{orderId}").ConfigureAwait(false);
+        InvalidateOrderList();
+    }
+
+    private void InvalidateOrderList()
+    {
+        _cache.RemoveAsync("orders-filter").ConfigureAwait(false);
+        _cache.RemoveAsync($"orders-nonFilter").ConfigureAwait(false);
     }
 
     public void Dispose()

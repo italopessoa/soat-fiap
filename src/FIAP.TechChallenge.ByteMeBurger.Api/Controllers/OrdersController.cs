@@ -9,6 +9,7 @@ using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 
@@ -22,7 +23,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Produces("application/json")]
 [Consumes("application/json")]
-public class OrdersController(IOrderService orderService, ILogger<OrdersController> logger)
+public class OrdersController(IOrderService orderService, ILogger<OrdersController> logger, HybridCache cache)
     : ControllerBase
 {
     /// <summary>
@@ -57,8 +58,9 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting all orders");
-        var orders = await orderService.GetAllAsync(listAll);
-        var ordersDto = orders.Select(o => o.ToOrderListViewModel());
+
+        var ordersDto = await cache.GetOrCreateAsync($"orders-{(listAll ? "nonFilter" : "filter")}",
+            async cancel => (await orderService.GetAllAsync(listAll)).ToOrderListViewModel(), token: cancellationToken);
 
         logger.LogInformation("Retrieved {Count} orders", ordersDto.Count());
         return Ok(ordersDto);
@@ -77,7 +79,9 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         if (Guid.Empty == id)
             return BadRequest("Invalid OrderId: An order ID must not be empty.");
 
-        var order = await orderService.GetAsync(id);
+        var order = await cache.GetOrCreateAsync($"order-{id}",
+            async cancel => (await orderService.GetAsync(id)).ToOrderViewModel(), token: cancellationToken);
+
         if (order is null)
         {
             logger.LogWarning("Order with ID: {OrderId} not found", id);
@@ -85,7 +89,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         }
 
         logger.LogInformation("Order with ID: {OrderId} found", id);
-        return Ok(order.ToOrderViewModel());
+        return Ok(order);
     }
 
     /// <summary>

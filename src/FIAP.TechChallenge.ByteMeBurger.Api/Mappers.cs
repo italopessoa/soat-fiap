@@ -4,6 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
@@ -29,19 +30,25 @@ internal static class Mappers
     internal static OrderListViewModel ToOrderListViewModel(this Order order)
     {
         return new OrderListViewModel(order.Id, order.TrackingCode.Value, order.Total,
-            (OrderStatusDto)order.Status,
+            (OrderStatusViewModel)order.Status,
             order.Created,
             order.Updated);
     }
 
-    internal static OrderViewModel ToOrderViewModel(this Order order)
+    internal static IReadOnlyCollection<OrderListViewModel> ToOrderListViewModel(this ReadOnlyCollection<Order> orders)
     {
+        return orders.Select(o => o.ToOrderListViewModel()).ToList();
+    }
+
+    internal static OrderViewModel? ToOrderViewModel(this Order? order)
+    {
+        if (order is null) return null;
         return new OrderViewModel
         {
             Id = order.Id,
             TrackingCode = order.TrackingCode.Value,
             Total = order.Total,
-            Status = (OrderStatusDto)order.Status,
+            Status = (OrderStatusViewModel)order.Status,
             CreationDate = order.Created,
             LastUpdate = order.Updated,
             OrderItems = order.OrderItems.Select(o => o.ToOrderItemViewModel()).ToList(),
@@ -53,7 +60,6 @@ internal static class Mappers
     {
         return new OrderItemViewModel()
         {
-            Id = orderItem.Id,
             OrderId = orderItem.OrderId,
             ProductId = orderItem.ProductId,
             Quantity = orderItem.Quantity,
