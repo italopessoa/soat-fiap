@@ -43,7 +43,10 @@ public class NotificationsController : ControllerBase
         {
             Response.OnCompleted(async () =>
             {
-                await _paymentService.SyncPaymentStatusWithGatewayAsync(@event.Data.Id, PaymentType.MercadoPago);
+                using (_logger.BeginScope("Processing payment {PaymentId}", @event.Data.Id))
+                {
+                    await _paymentService.SyncPaymentStatusWithGatewayAsync(@event.Data.Id, PaymentType.MercadoPago);
+                }
             });
         }
 

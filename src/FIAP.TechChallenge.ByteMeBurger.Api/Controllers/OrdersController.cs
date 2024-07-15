@@ -104,12 +104,14 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         [FromBody] UpdateOrderStatusRequest command,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Updating order status: {Id}", id);
-        if (await orderService.UpdateStatusAsync(id, (OrderStatus)command.Status))
+        using (logger.BeginScope("Updating order {OrderId} status", id))
         {
-            return NoContent();
-        }
+            if (await orderService.UpdateStatusAsync(id, (OrderStatus)command.Status))
+            {
+                return NoContent();
+            }
 
-        return BadRequest("Status not updated.");
+            return BadRequest("Status not updated.");
+        }
     }
 }

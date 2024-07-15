@@ -45,32 +45,15 @@ public class MercadoPagoService : IPaymentGateway
             }
         };
 
-        var paymentPayerRequest = order.Customer is null
-            ? new PaymentPayerRequest
-            {
-                Email = "guest@mercadofiado.com",
-            }
-            : MapPaymentPayerRequest(order);
-
-        var items = MapPaymentItemRequests(order).ToList();
-
-        var totalAmount = items.Sum(i => i.Quantity * i.UnitPrice);
-        var additionalInfo = new PaymentAdditionalInfoRequest
-        {
-            Items = items.ToList(),
-        };
-
-        var paymentCreateRequest =
-            MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo, totalAmount!.Value);
+        var paymentCreateRequest = GetPaymentCreateRequest(order);
         var client = new PaymentClient();
-        var mercadoPagoPayment = await client.CreateAsync(paymentCreateRequest, requestOptions);
-
-        var status = Enum.TryParse(typeof(PaymentStatus), mercadoPagoPayment.Status, true, out var paymentStatus)
-            ? (PaymentStatus)paymentStatus
-            : PaymentStatus.Pending;
-
         try
         {
+            var mercadoPagoPayment = await client.CreateAsync(paymentCreateRequest, requestOptions);
+            var status = Enum.TryParse(typeof(PaymentStatus), mercadoPagoPayment.Status, true, out var paymentStatus)
+                ? (PaymentStatus)paymentStatus
+                : PaymentStatus.Pending;
+
             _logger.LogInformation("Trying to create new payment on MercadoPago for Order {OrderId}", order.Id);
             return new DomainPayment
             {
@@ -86,6 +69,26 @@ public class MercadoPagoService : IPaymentGateway
                 order.Id, e);
             return null;
         }
+    }
+
+    private PaymentCreateRequest GetPaymentCreateRequest(Order order)
+    {
+        var paymentPayerRequest = order.Customer is null
+            ? new PaymentPayerRequest
+            {
+                Email = "guest@mercadofiado.com",
+            }
+            : MapPaymentPayerRequest(order);
+
+        var items = MapPaymentItemRequests(order).ToList();
+
+        var totalAmount = items.Sum(i => i.Quantity * i.UnitPrice);
+        var additionalInfo = new PaymentAdditionalInfoRequest
+        {
+            Items = items.ToList(),
+        };
+
+        return MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo, totalAmount!.Value);
     }
 
     public async Task<DomainPaymentStatus?> GetPaymentStatusAsync(string paymentId)

@@ -7,9 +7,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: mysql-pod
+  name: pod-mysql
   labels:
-    app: mysql-pod
+    app: pod-mysql
 spec:
   containers:
     - name: mysql-container
