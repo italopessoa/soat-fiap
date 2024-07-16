@@ -61,17 +61,17 @@ public class PaymentRepositoryDapperTest
     {
         // Arrange
         var expectedPaymentDao = new Fixture()
-            .Build<PaymentDAO>()
+            .Build<PaymentDto>()
             .With(p => p.PaymentType, (int)PaymentType.MercadoPago)
             .With(p => p.Status, (int)PaymentStatus.Paid)
             .Create();
 
         _mockConnection.SetupDapperAsync(c =>
-                c.QuerySingleOrDefaultAsync<PaymentDAO>(Constants.GetPaymentQuery, null, null, null, null))
+                c.QuerySingleOrDefaultAsync<PaymentDto>(Constants.GetPaymentQuery, null, null, null, null))
             .ReturnsAsync(expectedPaymentDao);
 
         // Act
-        var result = await _target.GetPaymentAsync(expectedPaymentDao.Id);
+        var result = await _target.GetPaymentAsync(new PaymentId(expectedPaymentDao.Id));
 
         // Assert
         using (new AssertionScope())

@@ -37,4 +37,9 @@ public class InMemoryOrderRepository : IOrderRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> UpdateOrderPaymentAsync(Order order)
+    {
+        throw new NotImplementedException();
+    }
 }

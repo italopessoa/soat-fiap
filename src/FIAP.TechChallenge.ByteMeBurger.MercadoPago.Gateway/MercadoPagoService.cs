@@ -58,9 +58,10 @@ public class MercadoPagoService : IPaymentGateway
             return new DomainPayment
             {
                 Status = status,
-                Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
+                Id = new PaymentId(Guid.NewGuid()),
                 PaymentType = PaymentType.MercadoPago,
                 QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode,
+                ExternalReference = mercadoPagoPayment.Id.ToString(),
             };
         }
         catch (Exception e)

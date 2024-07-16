@@ -39,7 +39,7 @@ public class NotificationsController : ControllerBase
     public async Task<IActionResult> Post([FromBody] MercadoPagoWebhookEvent @event)
     {
         _logger.LogInformation("Received MercadoPago webhook event {@Payload}", @event);
-        if (@event.Action == "payment.updated" && await CheckIfPaymentExists(@event.Data.Id))
+        if (@event.Action == "payment.updated" && await CheckIfPaymentExists(@event.Data.Id, PaymentType.MercadoPago))
         {
             Response.OnCompleted(async () =>
             {
@@ -53,9 +53,9 @@ public class NotificationsController : ControllerBase
         return Ok();
     }
 
-    private async Task<bool> CheckIfPaymentExists(string paymentId)
+    private async Task<bool> CheckIfPaymentExists(string paymentId, PaymentType paymentType)
     {
-        var paymentExists = await _paymentService.GetPaymentAsync(paymentId) is not null;
+        var paymentExists = await _paymentService.GetPaymentAsync(paymentId, paymentType) is not null;
         if (!paymentExists)
         {
             _logger.LogWarning("Payment not found {PaymentId}. Message skipped.", paymentId);
@@ -68,15 +68,15 @@ public class NotificationsController : ControllerBase
     /// Fake payment Integration endpoint
     /// </summary>
     [HttpPost("fakepayment")]
-    public async Task<IActionResult> Post([FromBody] Guid paymentId)
+    public async Task<IActionResult> Post([FromBody] string externalReference)
     {
-        _logger.LogInformation("Received FakePayment webhook event {PaymentId}", paymentId);
+        _logger.LogInformation("Received FakePayment webhook event {ExternalReference}", externalReference);
 
-        if (await CheckIfPaymentExists(paymentId.ToString()))
+        if (await CheckIfPaymentExists(externalReference, PaymentType.Test))
         {
             Response.OnCompleted(async () =>
             {
-                await _paymentService.SyncPaymentStatusWithGatewayAsync(paymentId.ToString(), PaymentType.Test);
+                await _paymentService.SyncPaymentStatusWithGatewayAsync(externalReference, PaymentType.Test);
             });
         }
 

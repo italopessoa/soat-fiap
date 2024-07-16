@@ -4,6 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -49,19 +50,6 @@ public class OrderTests
             order.Customer.Should().BeNull();
         }
     }
-
-    // [Fact]
-    // public void Order_CreateEmptyOrder_ThrowsError()
-    // {
-    //     // Arrange
-    //     var order = new Order();
-    //
-    //     // Act
-    //     var func = () => order.Create();
-    //
-    //     // Assert
-    //     func.Should().ThrowExactly<DomainException>();
-    // }
 
     [Fact]
     public void Order_CheckoutOrder_UpdateStatus()
@@ -169,5 +157,21 @@ public class OrderTests
             order.Total.Should().Be(22);
             order.TrackingCode.Should().NotBeNull();
         }
+    }
+
+    [Fact]
+    public void Order_SetPayment_PaymentAlreadyExists_ThrowsError()
+    {
+        // Arrange
+        var order = new Order();
+        order.AddOrderItem(Guid.NewGuid(), "bread", 2, 5);
+        order.SetPayment(new Fixture().Create<PaymentId>());
+
+        // Act
+        var func = () => order.SetPayment(new Fixture().Create<PaymentId>());;
+
+        // Assert
+        func.Should().ThrowExactly<DomainException>().And.Message.Should()
+            .Be("Order already has a payment intent.");
     }
 }

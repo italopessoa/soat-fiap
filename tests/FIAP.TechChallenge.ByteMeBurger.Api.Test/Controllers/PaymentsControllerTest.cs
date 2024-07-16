@@ -13,6 +13,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using DomainPaymentType = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentType;
 using PaymentType = FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment.PaymentType;
@@ -28,14 +29,14 @@ public class PaymentsControllerTest
     public PaymentsControllerTest()
     {
         _serviceMock = new Mock<IPaymentService>();
-        _target = new PaymentsController(_serviceMock.Object);
+        _target = new PaymentsController(_serviceMock.Object, Mock.Of<ILogger<PaymentsController>>());
     }
 
     [Fact]
     public async void Create_Success()
     {
         // Arrange
-        var paymentId = new PaymentId("123", Guid.NewGuid());
+        var paymentId = new PaymentId(Guid.NewGuid());
         var payment = new Payment(paymentId, "qrcode", 10);
         _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<CreateOrderPaymentRequestDto>()))
             .ReturnsAsync(payment);
@@ -54,7 +55,7 @@ public class PaymentsControllerTest
             response.Result.Should().BeOfType<CreatedResult>();
             var paymentViewModel = response.Result.As<CreatedResult>().Value.As<PaymentViewModel>();
 
-            paymentViewModel.PaymentId.Should().Be(payment.Id.Code);
+            paymentViewModel.PaymentId.Should().Be(payment.Id.Value);
             paymentViewModel.QrCode.Should().Be(payment.QrCode);
         }
     }
@@ -63,16 +64,16 @@ public class PaymentsControllerTest
     public async void GetStatus_Success()
     {
         // Arrange
-        var paymentId = new PaymentId("123", Guid.NewGuid());
+        var paymentId = new PaymentId(Guid.NewGuid());
         var payment = new Payment(paymentId, "qrcode", 10, DomainPaymentType.MercadoPago)
         {
-            Status = PaymentStatus.Paid
+            Status = PaymentStatus.Approved
         };
-        _serviceMock.Setup(p => p.GetPaymentAsync(It.IsAny<string>()))
+        _serviceMock.Setup(p => p.GetPaymentAsync(It.IsAny<PaymentId>()))
             .ReturnsAsync(payment);
 
         // Act
-        var response = await _target.GetStatus(paymentId.Code, CancellationToken.None);
+        var response = await _target.GetStatus(paymentId.Value, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -80,7 +81,7 @@ public class PaymentsControllerTest
             response.Result.Should().BeOfType<OkObjectResult>();
             var status = response.Result.As<OkObjectResult>().Value.As<PaymentStatusViewModel>();
 
-            status.Should().Be(PaymentStatusViewModel.Paid);
+            status.Should().Be(PaymentStatusViewModel.Approved);
         }
     }
 }

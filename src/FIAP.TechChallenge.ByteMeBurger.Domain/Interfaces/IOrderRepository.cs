@@ -18,4 +18,6 @@ public interface IOrderRepository
     Task<Order?> GetAsync(Guid orderId);
 
     Task<bool> UpdateOrderStatusAsync(Order order);
+
+    Task<bool> UpdateOrderPaymentAsync(Order order);
 }

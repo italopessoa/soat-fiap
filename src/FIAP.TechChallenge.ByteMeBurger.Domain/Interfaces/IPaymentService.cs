@@ -13,9 +13,11 @@ public interface IPaymentService
 {
     Task<Payment> CreateOrderPaymentAsync(CreateOrderPaymentRequestDto command);
 
-    Task<Payment?> GetPaymentAsync(string paymentId);
+    Task<Payment?> GetPaymentAsync(PaymentId paymentId);
 
-    Task<bool> SyncPaymentStatusWithGatewayAsync(string paymentId, PaymentType paymentType);
+    Task<Payment?> GetPaymentAsync(string paymentId, PaymentType paymentType);
+
+    Task<bool> SyncPaymentStatusWithGatewayAsync(string externalReference, PaymentType paymentType);
 }
 
 public record CreateOrderPaymentRequestDto(Guid OrderId, PaymentType PaymentType);

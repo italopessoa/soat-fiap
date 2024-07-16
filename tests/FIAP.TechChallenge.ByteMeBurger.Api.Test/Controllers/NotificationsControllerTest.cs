@@ -52,11 +52,11 @@ public class NotificationsControllerTest
             .With(e => e.Action, "payment.updated")
             .With(e => e.Data, new MercadoPagoWebhookData
             {
-                Id = payment.Id.Code
+                Id = payment.ExternalReference
             })
             .Create();
 
-        _mockPaymentService.Setup(s => s.GetPaymentAsync(@event.Data.Id))
+        _mockPaymentService.Setup(s => s.GetPaymentAsync(@event.Data.Id, PaymentType.MercadoPago))
             .ReturnsAsync(payment)
             .Verifiable();
 
@@ -80,7 +80,7 @@ public class NotificationsControllerTest
     {
         // Arrange
         var @event = new Fixture().Create<MercadoPagoWebhookEvent>();
-        _mockPaymentService.Setup(s => s.GetPaymentAsync(@event.Data.Id))
+        _mockPaymentService.Setup(s => s.GetPaymentAsync(@event.Data.Id, PaymentType.MercadoPago))
             .ReturnsAsync((Payment?)null)
             .Verifiable();
 
@@ -100,13 +100,13 @@ public class NotificationsControllerTest
     public async Task FakePayment_PaymentEvent_PaymentNotFound()
     {
         // Arrange
-        var paymentId = Guid.NewGuid();
-        _mockPaymentService.Setup(s => s.GetPaymentAsync(paymentId.ToString()))
+        var paymentExternalReference = Guid.NewGuid().ToString();
+        _mockPaymentService.Setup(s => s.GetPaymentAsync(paymentExternalReference, PaymentType.Test))
             .ReturnsAsync((Payment?)null)
             .Verifiable();
 
         // Act
-        var response = await _target.Post(paymentId);
+        var response = await _target.Post(paymentExternalReference);
 
         // Assert
         using (new AssertionScope())
@@ -121,14 +121,14 @@ public class NotificationsControllerTest
     public async Task FakePayment_PaymentEvent_PaymentProcessed()
     {
         // Arrange
-        var paymentId = Guid.NewGuid();
+        var paymentExternalReference = Guid.NewGuid().ToString();
         var payment = new Fixture().Create<Payment>();
-        _mockPaymentService.Setup(s => s.GetPaymentAsync(It.IsAny<string>()))
+        _mockPaymentService.Setup(s => s.GetPaymentAsync(It.IsAny<string>(), It.IsAny<PaymentType>()))
             .ReturnsAsync(payment)
             .Verifiable();
 
         // Act
-        var response = await _target.Post(paymentId);
+        var response = await _target.Post(paymentExternalReference);
 
         // Assert
         using (new AssertionScope())

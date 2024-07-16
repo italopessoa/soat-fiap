@@ -42,4 +42,10 @@ public interface IOrderService
     /// <param name="newStatus">New Status</param>
     /// <returns></returns>
     Task<bool> UpdateStatusAsync(Guid orderId, OrderStatus newStatus);
+
+    /// <summary>
+    /// Update Order payment
+    /// </summary>
+    /// <returns></returns>
+    Task<bool> UpdateOrderPaymentAsync(Guid orderId, PaymentId paymentId);
 }

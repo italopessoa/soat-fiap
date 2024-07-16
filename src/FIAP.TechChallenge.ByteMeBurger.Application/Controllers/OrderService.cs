@@ -17,7 +17,8 @@ public class OrderService(
     IGetOrderDetailsUseCase getOrderDetailsUseCase,
     IOrderGetAllUseCase orderGetAllUseCase,
     IOrderRepository orderRepository,
-    IUpdateOrderStatusUseCase updateOrderStatusUseCase)
+    IUpdateOrderStatusUseCase updateOrderStatusUseCase,
+    IUpdateOrderPaymentUseCase updateOrderPaymentUseCase)
     : IOrderService
 {
     public async Task<Order> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts)
@@ -43,5 +44,10 @@ public class OrderService(
     public async Task<bool> UpdateStatusAsync(Guid orderId, OrderStatus newStatus)
     {
         return await updateOrderStatusUseCase.Execute(orderId, newStatus);
+    }
+
+    public async Task<bool> UpdateOrderPaymentAsync(Guid orderId, PaymentId paymentId)
+    {
+        return await updateOrderPaymentUseCase.Execute(orderId, paymentId);
     }
 }

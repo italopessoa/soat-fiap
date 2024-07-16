@@ -6,6 +6,7 @@
 
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
@@ -21,14 +22,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 public class PaymentsController : ControllerBase
 {
     private readonly IPaymentService _paymentService;
+    private readonly ILogger<PaymentsController> _logger;
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="paymentService">PaymentService controller. </param>
-    public PaymentsController(IPaymentService paymentService)
+    /// <param name="logger"></param>
+    public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger)
     {
         _paymentService = paymentService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -41,9 +45,12 @@ public class PaymentsController : ControllerBase
     public async Task<ActionResult<PaymentViewModel>> Create(
         CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
     {
-        var payment =
-            await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.ToDomain());
-        return Created("", new PaymentViewModel(payment.Id.Code, payment.QrCode));
+        using (_logger.BeginScope("Creating payment for order {OrderId}", createPaymentRequest.OrderId))
+        {
+            var payment =
+                await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.ToDomain());
+            return Created("", new PaymentViewModel(payment.Id.Value, payment.QrCode));
+        }
     }
 
     /// <summary>
@@ -52,11 +59,11 @@ public class PaymentsController : ControllerBase
     /// <param name="id">Payment Id.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Payment status</returns>
-    [HttpGet("{id}/status")]
+    [HttpGet("{id:guid}/status")]
     public async Task<ActionResult<PaymentStatusViewModel>> GetStatus(
-        string id, CancellationToken cancellationToken)
+        Guid id, CancellationToken cancellationToken)
     {
-        var payment = await _paymentService.GetPaymentAsync(id);
+        var payment = await _paymentService.GetPaymentAsync(new PaymentId(id));
 
         if (payment is null)
             return NotFound();

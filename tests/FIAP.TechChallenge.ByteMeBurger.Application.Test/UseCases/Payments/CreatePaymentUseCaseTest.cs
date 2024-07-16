@@ -39,7 +39,7 @@ public class CreatePaymentUseCaseTest
             .Create();
 
         var expectedPayment = fixture.Build<Domain.Entities.Payment>()
-            .With(p => p.Id, new PaymentId("paymentId", order.Id))
+            .With(p => p.Id, new PaymentId(Guid.NewGuid()))
             .With(p => p.Status, PaymentStatus.Pending)
             .Create();
 
@@ -83,7 +83,7 @@ public class CreatePaymentUseCaseTest
         _orderRepository.Setup(o => o.GetAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new Order
             {
-                PaymentId = new PaymentId("code", Guid.NewGuid())
+                PaymentId = new PaymentId(Guid.NewGuid())
             });
 
         // Act

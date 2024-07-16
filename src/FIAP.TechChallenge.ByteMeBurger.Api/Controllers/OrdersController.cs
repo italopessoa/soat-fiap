@@ -100,7 +100,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token</param>
     [Route("{id:guid}/status")]
     [HttpPatch]
-    public async Task<ActionResult<OrderViewModel>> Put(Guid id,
+    public async Task<ActionResult<OrderViewModel>> Patch(Guid id,
         [FromBody] UpdateOrderStatusRequest command,
         CancellationToken cancellationToken)
     {

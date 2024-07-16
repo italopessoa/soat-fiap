@@ -23,6 +23,7 @@ public class DomainEventsHandler : IDisposable
     {
         _logger = logger;
         _cache = cache;
+
         DomainEventTrigger.ProductCreated += OnProductCreated;
         DomainEventTrigger.ProductDeleted += OnProductDeleted;
         DomainEventTrigger.ProductUpdated += OnProductUpdated;
@@ -41,20 +42,20 @@ public class DomainEventsHandler : IDisposable
 
     private void OnOrderStatusChanged(object? sender, OrderStatusChanged e)
     {
-        InvalidateOrderCache(e.Payload.orderId);
-        _logger.LogInformation("Order: {Id} status changed from '{oldStatus}' to '{newStatus}'", e.Payload.orderId,
-            e.Payload.oldStatus, e.Payload.newStatus);
+        _logger.LogInformation("Order: {OrderId} status changed from '{oldStatus}' to '{newStatus}'", e.Payload.OrderId,
+            e.Payload.OldStatus, e.Payload.NewStatus);
     }
 
     private void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
     {
-        _logger.LogInformation("Order: {Id} payment confirmed", e.Payload);
+        _logger.LogInformation("Order: {OrderId} payment confirmed", e.Payload);
+        InvalidateOrderCache(e.Payload.OrderId);
     }
 
     private void OnOrderCreated(object? sender, OrderCreated e)
     {
         InvalidateOrderCache(e.Payload.Id);
-        _logger.LogInformation("New Order created: {Id}", e.Payload.Id);
+        _logger.LogInformation("New Order created: {OrderId}", e.Payload.Id);
     }
 
     private void OnProductUpdated(object? sender, ProductUpdated e)
@@ -75,8 +76,8 @@ public class DomainEventsHandler : IDisposable
 
     private void OnPaymentCreated(object? sender, PaymentCreated e)
     {
-        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.Id.Code,
-            e.Payload.Id.OrderId);
+        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.OrderId,
+            e.Payload.Id.Value);
     }
 
     private void InvalidateOrderCache(Guid orderId)
@@ -88,7 +89,7 @@ public class DomainEventsHandler : IDisposable
     private void InvalidateOrderList()
     {
         _cache.RemoveAsync("orders-filter").ConfigureAwait(false);
-        _cache.RemoveAsync($"orders-nonFilter").ConfigureAwait(false);
+        _cache.RemoveAsync("orders-nonFilter").ConfigureAwait(false);
     }
 
     public void Dispose()

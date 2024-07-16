@@ -6,26 +6,29 @@
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 
-public class PaymentDAO
+public class PaymentDto
 {
-    public string Id { get; init; }
+    public Guid Id { get; init; }
     public Guid OrderId { get; init; }
     public int Status { get; init; }
     public int PaymentType { get; init; }
+    public string QrCode { get; set; }
     public decimal Amount { get; init; }
     public DateTime Created { get; init; }
     public DateTime? Updated { get; init; }
+    public string ExternalReference { get; set; }
 
-    public PaymentDAO()
+    public PaymentDto()
     {
     }
 
-    public PaymentDAO(
-        string id,
+    public PaymentDto(
+        Guid id,
         Guid orderId,
         int status,
         int paymentType,
         decimal amount,
+        string externalReference,
         DateTime created,
         DateTime? updated)
     {
@@ -34,6 +37,7 @@ public class PaymentDAO
         Status = status;
         PaymentType = paymentType;
         Amount = amount;
+        ExternalReference = externalReference;
         Created = created;
         Updated = updated;
     }

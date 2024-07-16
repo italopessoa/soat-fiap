@@ -22,7 +22,6 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
         _updateOrderStatusUseCase = updateOrderStatusUseCase;
         _paymentRepository = paymentRepository;
     }
-
     public async Task<bool> Execute(Domain.Entities.Payment? payment, PaymentStatus status)
     {
         if (payment is not null && payment.Status
@@ -37,9 +36,9 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
 
             if (paymentStatusUpdated && status is PaymentStatus.Approved)
             {
-                DomainEventTrigger.RaiseOrderPaymentConfirmed(payment.Id.OrderId);
+                DomainEventTrigger.RaisePaymentConfirmed(payment);
                 // TODO change to eventual consistency. use events to update order status
-                await _updateOrderStatusUseCase.Execute(payment.Id.OrderId, OrderStatus.Received);
+                await _updateOrderStatusUseCase.Execute(payment.OrderId, OrderStatus.Received);
             }
 
             return true;

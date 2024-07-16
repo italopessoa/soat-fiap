@@ -12,4 +12,4 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 /// Payment confirmed event
 /// </summary>
 /// <param name="payload"></param>
-public class OrderPaymentConfirmed(Guid payload) : DomainEvent<Guid>(payload);
+public class OrderPaymentConfirmed(Payment payload) : DomainEvent<Payment>(payload);
