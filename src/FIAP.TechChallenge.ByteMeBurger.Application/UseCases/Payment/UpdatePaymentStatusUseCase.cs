@@ -22,10 +22,11 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
         _updateOrderStatusUseCase = updateOrderStatusUseCase;
         _paymentRepository = paymentRepository;
     }
+
     public async Task<bool> Execute(Domain.Entities.Payment? payment, PaymentStatus status)
     {
         if (payment is not null && payment.Status
-                is not PaymentStatus.Paid
+                is not PaymentStatus.Approved
                 and not PaymentStatus.Cancelled
                 and not PaymentStatus.Rejected)
         {
@@ -41,7 +42,7 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
                 await _updateOrderStatusUseCase.Execute(payment.OrderId, OrderStatus.Received);
             }
 
-            return true;
+            return paymentStatusUpdated;
         }
 
         return false;
