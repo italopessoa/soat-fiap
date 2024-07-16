@@ -13,19 +13,17 @@ internal static class Constants
                    o.Created,
                    o.Updated,
                    o.TrackingCode,
+                   o.PaymentId Id,
                    o.CustomerId as Id,
                    c.Cpf,
                    c.Name,
                    c.Email,
-                   p.Id,
-                   p.OrderId,
                    oi.ProductId,
                    oi.ProductName,
                    oi.Quantity,
                    oi.UnitPrice
                 from Orders o
                          left join Customers c on o.CustomerId = c.Id
-                         left join Payments p on p.OrderId = o.Id
                          inner join OrderItems oi on oi.OrderId = o.Id
                 where o.Id = @OrderId;";
 
@@ -52,6 +50,9 @@ internal static class Constants
     internal const string UpdateOrderStatusQuery =
         "UPDATE Orders SET Status=@Status, Updated=@Updated WHERE Id = @Id";
 
+    internal const string UpdateOrderPaymentIdQuery =
+        "UPDATE Orders SET PaymentId=@PaymentId, Updated=@Updated WHERE Id = @Id";
+
     internal const string InsertOrderQuery =
         "insert into Orders (Id, CustomerId, Status, Created, TrackingCode) values (@Id, @CustomerId, @Status, @Created, @TrackingCode);";
 
@@ -60,10 +61,12 @@ internal static class Constants
         "values (@OrderId, @ProductId, @ProductName, @UnitPrice, @Quantity);";
 
     internal const string InsertPaymentQuery =
-        "insert into Payments (Id, OrderId, Status, Created, PaymentType, Amount) " +
-        "values (@Id, @OrderId, @Status, @Created, @PaymentType, @Amount);";
+        "insert into Payments (Id, OrderId, Status, ExternalReference, Created, PaymentType, Amount) " +
+        "values (@Id, @OrderId, @Status, @ExternalReference, @Created, @PaymentType, @Amount);";
 
     internal const string GetPaymentQuery = "select * from Payments where Id = @Id;";
+
+    internal const string GetPaymentByExternalReferenceQuery = "select * from Payments where PaymentType = @PaymentType and ExternalReference = @ExternalReference;";
 
     internal const string UpdatePaymentStatusQuery =
         "UPDATE Payments SET Status=@Status, Updated=@Updated WHERE Id = @Id";

@@ -100,16 +100,18 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token</param>
     [Route("{id:guid}/status")]
     [HttpPatch]
-    public async Task<ActionResult<OrderViewModel>> Put(Guid id,
+    public async Task<ActionResult<OrderViewModel>> Patch(Guid id,
         [FromBody] UpdateOrderStatusRequest command,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Updating order status: {Id}", id);
-        if (await orderService.UpdateStatusAsync(id, (OrderStatus)command.Status))
+        using (logger.BeginScope("Updating order {OrderId} status", id))
         {
-            return NoContent();
-        }
+            if (await orderService.UpdateStatusAsync(id, (OrderStatus)command.Status))
+            {
+                return NoContent();
+            }
 
-        return BadRequest("Status not updated.");
+            return BadRequest("Status not updated.");
+        }
     }
 }

@@ -45,6 +45,35 @@ public class MercadoPagoService : IPaymentGateway
             }
         };
 
+        var paymentCreateRequest = GetPaymentCreateRequest(order);
+        var client = new PaymentClient();
+        try
+        {
+            var mercadoPagoPayment = await client.CreateAsync(paymentCreateRequest, requestOptions);
+            var status = Enum.TryParse(typeof(PaymentStatus), mercadoPagoPayment.Status, true, out var paymentStatus)
+                ? (PaymentStatus)paymentStatus
+                : PaymentStatus.Pending;
+
+            _logger.LogInformation("Trying to create new payment on MercadoPago for Order {OrderId}", order.Id);
+            return new DomainPayment
+            {
+                Status = status,
+                Id = new PaymentId(Guid.NewGuid()),
+                PaymentType = PaymentType.MercadoPago,
+                QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode,
+                ExternalReference = mercadoPagoPayment.Id.ToString(),
+            };
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error when trying to create new payment on MercadoPago for Order {OrderId}. {@Error}",
+                order.Id, e);
+            return null;
+        }
+    }
+
+    private PaymentCreateRequest GetPaymentCreateRequest(Order order)
+    {
         var paymentPayerRequest = order.Customer is null
             ? new PaymentPayerRequest
             {
@@ -60,32 +89,7 @@ public class MercadoPagoService : IPaymentGateway
             Items = items.ToList(),
         };
 
-        var paymentCreateRequest =
-            MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo, totalAmount!.Value);
-        var client = new PaymentClient();
-        var mercadoPagoPayment = await client.CreateAsync(paymentCreateRequest, requestOptions);
-
-        var status = Enum.TryParse(typeof(PaymentStatus), mercadoPagoPayment.Status, true, out var paymentStatus)
-            ? (PaymentStatus)paymentStatus
-            : PaymentStatus.Pending;
-
-        try
-        {
-            _logger.LogInformation("Trying to create new payment on MercadoPago for Order {OrderId}", order.Id);
-            return new DomainPayment
-            {
-                Status = status,
-                Id = new PaymentId(mercadoPagoPayment.Id.ToString()!, order.Id),
-                PaymentType = PaymentType.MercadoPago,
-                QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode,
-            };
-        }
-        catch (Exception e)
-        {
-            _logger.LogError("Error when trying to create new payment on MercadoPago for Order {OrderId}. {@Error}",
-                order.Id, e);
-            return null;
-        }
+        return MapPaymentCreateRequest(order, paymentPayerRequest, additionalInfo, totalAmount!.Value);
     }
 
     public async Task<DomainPaymentStatus?> GetPaymentStatusAsync(string paymentId)

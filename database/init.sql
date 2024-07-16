@@ -24,6 +24,7 @@ create table IF NOT EXISTS Orders
 (
     Id         char(36)   not null,
     CustomerId char(36)   null,
+    PaymentId  char(36)   null,
     Status     int        not null,
     Created    datetime   null,
     Updated    datetime   null,
@@ -48,6 +49,7 @@ create table IF NOT EXISTS Payments
     Created    datetime   null,
     Updated    datetime   null,
     PaymentType int       not null,
+    ExternalReference     varchar(36) not null,
     Amount     decimal(10,2) not null,
     PRIMARY KEY (Id, OrderId)
 );

@@ -13,6 +13,9 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+
+// using ILogger = Microsoft.DotNet.Scaffolding.Shared.ILogger;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
@@ -22,7 +25,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+        ILogger<Program>? logger = null;
         try
         {
             builder.Host.UseSerilog((context, configuration) =>
@@ -98,8 +101,9 @@ public class Program
             AddHealthChecks(builder, builder.Configuration);
 
             var app = builder.Build();
+            logger = app.Services.GetService<ILogger<Program>>();
             app.UseExceptionHandler();
-            app.Services.GetRequiredService<DomainEventsHandler>();
+            app.Services.GetService<DomainEventsHandler>();
 
             if (app.Environment.IsDevelopment())
             {
@@ -123,7 +127,8 @@ public class Program
         }
         catch (Exception ex)
         {
-            Log.Fatal(ex, "Application start-up failed");
+            logger?.LogCritical(ex, "Application start-up failed");
+            Console.WriteLine(ex);
         }
         finally
         {

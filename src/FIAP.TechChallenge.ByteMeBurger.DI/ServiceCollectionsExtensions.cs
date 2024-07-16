@@ -61,7 +61,8 @@ public static class ServiceCollectionsExtensions
     private static void AddPaymentUseCases(IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<ICreatePaymentUseCase, CreatePaymentUseCase>()
-            .AddScoped<IUpdatePaymentStatusUseCase, UpdatePaymentStatusUseCase>();
+            .AddScoped<IUpdatePaymentStatusUseCase, UpdatePaymentStatusUseCase>()
+            .AddScoped<IUpdateOrderPaymentUseCase, UpdateOrderPaymentUseCase>();
     }
 
     private static void RegisterControllers(IServiceCollection services)

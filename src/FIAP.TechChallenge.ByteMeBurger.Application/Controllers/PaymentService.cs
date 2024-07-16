@@ -4,6 +4,7 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
@@ -17,16 +18,19 @@ public class PaymentService : IPaymentService
     private readonly ICreatePaymentUseCase _createOrderPaymentUseCase;
     private readonly IUpdatePaymentStatusUseCase _updatePaymentStatusUseCase;
     private readonly IPaymentRepository _paymentRepository;
+    private readonly IUpdateOrderPaymentUseCase _updateOrderPaymentUseCase;
     private readonly IPaymentGatewayFactoryMethod _paymentGatewayFactory;
 
     public PaymentService(ICreatePaymentUseCase createOrderPaymentUseCase,
         IUpdatePaymentStatusUseCase updatePaymentStatusUseCase,
         IPaymentRepository paymentRepository,
+        IUpdateOrderPaymentUseCase updateOrderPaymentUseCase,
         IPaymentGatewayFactoryMethod paymentGatewayFactory)
     {
         _createOrderPaymentUseCase = createOrderPaymentUseCase;
         _updatePaymentStatusUseCase = updatePaymentStatusUseCase;
         _paymentRepository = paymentRepository;
+        _updateOrderPaymentUseCase = updateOrderPaymentUseCase;
         _paymentGatewayFactory = paymentGatewayFactory;
     }
 
@@ -38,22 +42,28 @@ public class PaymentService : IPaymentService
 
         await _paymentRepository.SaveAsync(payment);
         DomainEventTrigger.RaisePaymentCreated(new PaymentCreated(payment));
+        await _updateOrderPaymentUseCase.Execute(payment.OrderId, payment.Id);
         return payment;
     }
 
-    public async Task<Payment?> GetPaymentAsync(string paymentId)
+    public async Task<Payment?> GetPaymentAsync(PaymentId paymentId)
     {
         return await _paymentRepository.GetPaymentAsync(paymentId);
     }
 
-    public async Task<bool> SyncPaymentStatusWithGatewayAsync(string paymentId, PaymentType paymentType)
+    public async Task<Payment?> GetPaymentAsync(string paymentId, PaymentType paymentType)
     {
-        var payment = await GetPaymentAsync(paymentId);
+        return await _paymentRepository.GetPaymentAsync(paymentId, paymentType);
+    }
+
+    public async Task<bool> SyncPaymentStatusWithGatewayAsync(string externalReference, PaymentType paymentType)
+    {
+        var payment = await GetPaymentAsync(externalReference, paymentType);
         if (payment is null)
             return false;
 
         var paymentGateway = _paymentGatewayFactory.Create(paymentType);
-        var paymentStatus = await paymentGateway.GetPaymentStatusAsync(paymentId);
+        var paymentStatus = await paymentGateway.GetPaymentStatusAsync(externalReference);
         if (paymentStatus is null)
             return false;
 

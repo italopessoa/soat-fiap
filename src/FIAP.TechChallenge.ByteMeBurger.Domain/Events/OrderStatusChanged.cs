@@ -12,5 +12,5 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 /// Order status changed event
 /// </summary>
 /// <param name="payload"></param>
-public class OrderStatusChanged((Guid orderId, OrderStatus old, OrderStatus newStatus) payload)
-    : DomainEvent<(Guid orderId, OrderStatus oldStatus, OrderStatus newStatus)>(payload);
+public class OrderStatusChanged((Guid OrderId, OrderStatus OldStatus, OrderStatus NewStatus) payload)
+    : DomainEvent<(Guid OrderId, OrderStatus OldStatus, OrderStatus NewStatus)>(payload);

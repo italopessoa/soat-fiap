@@ -15,6 +15,10 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
 
     public PaymentType PaymentType { get; set; }
 
+    public Guid OrderId { get; set; }
+
+    public string ExternalReference { get; set; }
+
     public string QrCode { get; set; }
 
     public decimal Amount { get; set; }

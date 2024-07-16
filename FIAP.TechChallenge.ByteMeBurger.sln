@@ -55,6 +55,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kubernetes", "kubernetes", 
 		kubernetes\pvc-seq.yaml = kubernetes\pvc-seq.yaml
 		kubernetes\pv-seq.yaml = kubernetes\pv-seq.yaml
 		kubernetes\seq-dashboard.json = kubernetes\seq-dashboard.json
+		kubernetes\deployment-db.yaml = kubernetes\deployment-db.yaml
+		kubernetes\deployment-seq.yaml = kubernetes\deployment-seq.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{23D2EC49-62CF-46E2-A975-1951BB0493C6}"

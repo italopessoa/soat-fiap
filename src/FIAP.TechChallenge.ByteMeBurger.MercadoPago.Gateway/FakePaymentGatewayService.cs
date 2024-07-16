@@ -16,14 +16,17 @@ public class FakePaymentGatewayService : IPaymentGateway
 {
     public Task<Payment?> CreatePaymentAsync(Order order)
     {
+        var id = Guid.NewGuid();
         var payment = new Payment
         {
-            Id = new PaymentId(Guid.NewGuid().ToString(), order.Id),
+            Id = new PaymentId(id),
+            OrderId = order.Id,
             PaymentType = PaymentType.Test,
             Amount = order.Total,
             Created = DateTime.Now,
             Status = PaymentStatus.Pending,
-            QrCode = "https://fake.qrcode.com"
+            QrCode = "https://fake.qrcode.com",
+            ExternalReference = id.ToString()
         };
         return Task.FromResult(payment);
     }

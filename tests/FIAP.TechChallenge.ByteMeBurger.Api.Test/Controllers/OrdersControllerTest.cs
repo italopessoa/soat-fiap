@@ -241,7 +241,7 @@ public class OrdersControllerTest
             .Verifiable();
 
         // Act
-        var response = await _target.Put(Guid.NewGuid(),
+        var response = await _target.Patch(Guid.NewGuid(),
             new UpdateOrderStatusRequest() { Status = OrderStatusViewModel.Ready }, CancellationToken.None);
 
         // Assert

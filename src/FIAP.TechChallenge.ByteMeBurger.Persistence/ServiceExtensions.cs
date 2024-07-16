@@ -20,13 +20,13 @@ public static class ServiceExtensions
 {
     public static void ConfigurePersistenceApp(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<IDbConnection>(_ =>
+        services.AddScoped<IDbConnection>(_ =>
         {
             DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
             var providerFactory = DbProviderFactories.GetFactory("MySql.Data.MySqlClient");
             var conn = providerFactory.CreateConnection();
             conn.ConnectionString = configuration.GetConnectionString("MySql");
-
+            conn.Open();
             return conn;
         });
 

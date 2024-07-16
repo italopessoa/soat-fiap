@@ -22,7 +22,6 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
     public async Task<Order> CreateAsync(Order order)
     {
         logger.LogInformation("Persisting order {OrderId}", order.Id);
-        dbConnection.Open();
         var transaction = dbConnection.BeginTransaction();
         {
             try
@@ -49,10 +48,6 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 transaction.Rollback();
                 throw;
             }
-            finally
-            {
-                dbConnection.Close();
-            }
         }
     }
 
@@ -61,7 +56,8 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         logger.LogInformation("Fetching all orders");
         var ordersDictionary = new Dictionary<Guid, Order>();
 
-        await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
+
+        await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDto?, OrderItemDto, Order>(
             Constants.GetAllOrdersQuery,
             (orderListDto, customerDto, paymentDao, orderItemDto) =>
             {
@@ -73,10 +69,11 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 else
                 {
                     order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
-                        new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created, orderListDto.Updated);
+                        new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created,
+                        orderListDto.Updated);
 
                     if (paymentDao is not null)
-                        order.PaymentId = new PaymentId(paymentDao.Id, paymentDao.OrderId);
+                        order.PaymentId = new PaymentId(paymentDao.Id);
 
                     order.LoadItems(orderItemDto.ProductId, orderItemDto.ProductName, orderItemDto.UnitPrice,
                         orderItemDto.Quantity);
@@ -99,9 +96,9 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         logger.LogInformation("Getting order {OrderId} from database", orderId);
         var ordersDictionary = new Dictionary<Guid, Order>();
 
-        await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDAO?, OrderItemDto, Order>(
+        await dbConnection.QueryAsync<OrderListDto, Guid?, CustomerDto, OrderItemDto, Order>(
             Constants.GetOrderByIdQuery,
-            (orderListDto, customerDto, paymentDao, orderItemDto) =>
+            (orderListDto, paymentId, customerDto, orderItemDto) =>
             {
                 if (ordersDictionary.TryGetValue(orderListDto.Id, out var order))
                 {
@@ -111,10 +108,11 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 else
                 {
                     order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
-                        new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created, orderListDto.Updated);
+                        new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created,
+                        orderListDto.Updated);
 
-                    if (paymentDao is not null)
-                        order.PaymentId = new PaymentId(paymentDao.Id, paymentDao.OrderId);
+                    if (paymentId is not null)
+                        order.PaymentId = new PaymentId(paymentId.Value);
 
                     order.LoadItems(orderItemDto.ProductId, orderItemDto.ProductName, orderItemDto.UnitPrice,
                         orderItemDto.Quantity);
@@ -126,7 +124,6 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
             param: new { OrderId = orderId },
             splitOn: "Id, ProductId"
         );
-
 
         logger.LogInformation("Order {OrderId} retrieved", orderId);
         return ordersDictionary.Any() ? ordersDictionary.First().Value : null;
@@ -147,7 +144,35 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 }) == 1;
 
             logger.LogInformation(
-                updated ? "Order {orderId} status updated to {OrderStatus}" : "Order {orderId} status not updated to {OrderStatus}", order.Id, order.Status);
+                updated
+                    ? "Order {orderId} status updated to {OrderStatus}"
+                    : "Order {orderId} status not updated to {OrderStatus}", order.Id, order.Status);
+            return updated;
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error when trying to update Order {OrderId}. Details {@Exception}", order.Id, e);
+            return false;
+        }
+    }
+
+    public async Task<bool> UpdateOrderPaymentAsync(Order order)
+    {
+        logger.LogInformation("Updating order {OrderId} Payment {PaymentId}", order.Id, order.PaymentId.Value);
+        try
+        {
+            var updated = await dbConnection.ExecuteAsync(
+                Constants.UpdateOrderPaymentIdQuery,
+                new
+                {
+                    PaymentId = order.PaymentId.Value,
+                    order.Updated,
+                    order.Id
+                }) == 1;
+
+            logger.LogInformation(
+                updated ? "Order {OrderId} payment updated to {PaymentId}" : "Order {OrderId} payment not updated",
+                order.Id, order.PaymentId);
             return true;
         }
         catch (Exception e)

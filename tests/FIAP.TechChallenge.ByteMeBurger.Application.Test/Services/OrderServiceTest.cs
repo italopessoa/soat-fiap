@@ -34,7 +34,7 @@ public class OrderServiceTest
         _mockOrderRepository = new Mock<IOrderRepository>();
 
         _target = new OrderService(_mockCreateOrderUseCase.Object, _mockGetOrderDetailsUseCase.Object,
-            _mockOrderGetAllUseCase.Object, _mockOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object);
+            _mockOrderGetAllUseCase.Object, _mockOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object, null);
     }
 
     [Fact]

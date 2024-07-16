@@ -94,6 +94,17 @@ public class Order : Entity<Guid>, IAggregateRoot
         _orderItems.Add(new OrderItem(Id, productId, productName, unitPrice, quantity));
     }
 
+    public void SetPayment(PaymentId paymentId)
+    {
+        if (PaymentId is not null)
+        {
+            throw new DomainException("Order already has a payment intent.");
+        }
+
+        PaymentId = paymentId;
+        Update();
+    }
+
     public void ConfirmPayment()
     {
         if (Status != OrderStatus.PaymentPending)

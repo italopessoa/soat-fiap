@@ -6,4 +6,4 @@
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 
-public record PaymentViewModel(string PaymentId, string QrCode);
+public record PaymentViewModel(Guid PaymentId, string QrCode);

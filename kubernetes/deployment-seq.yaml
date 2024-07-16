@@ -1,0 +1,44 @@
+# Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-seq
+  labels:
+    app: seq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seq
+  template:
+    metadata:
+      name: pod-seq
+      labels:
+        app: seq
+    spec:
+      containers:
+        - name: seq-container
+          image: datalust/seq:latest
+          ports:
+            - containerPort: 80
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /data
+              name: seq-persistent-storage
+            - mountPath: /data/Dashboards/Custom
+              name: dashboards-volume
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+      volumes:
+        - name: seq-persistent-storage
+          persistentVolumeClaim:
+            claimName: pvc-seq
+        - name: dashboards-volume
+          hostPath:
+            path: /home/docker/seq

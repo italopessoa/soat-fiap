@@ -4,8 +4,6 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree.
 
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 
 public class OrderListDto
@@ -15,4 +13,5 @@ public class OrderListDto
     public DateTime Created { get; set; }
     public DateTime? Updated { get; set; }
     public string TrackingCode { get; set; }
+    public Guid? PaymentId { get; set; }
 }

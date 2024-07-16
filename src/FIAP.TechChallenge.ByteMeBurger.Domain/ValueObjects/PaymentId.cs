@@ -6,4 +6,4 @@
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-public record PaymentId(string Code, Guid OrderId);
+public record PaymentId(Guid Value);
