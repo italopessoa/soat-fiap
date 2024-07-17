@@ -6,6 +6,7 @@
 
 using System.Data;
 using Dapper;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
@@ -22,13 +23,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Test.Repository;
 [TestSubject(typeof(ProductRepositoryDapper))]
 public class ProductRepositoryDapperTest
 {
-    private readonly Mock<IDbConnection> _mockConnection;
+    private readonly Mock<IDbConnection> _mockDbConnection;
     private readonly ProductRepositoryDapper _target;
 
     public ProductRepositoryDapperTest()
     {
-        _mockConnection = new Mock<IDbConnection>();
-        _target = new ProductRepositoryDapper(_mockConnection.Object, Mock.Of<ILogger<ProductRepositoryDapper>>());
+        Mock<IDbContext> mockDbContext = new();
+        _mockDbConnection = new Mock<IDbConnection>();
+        _mockDbConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
+        mockDbContext.Setup(s => s.CreateConnection())
+            .Returns(_mockDbConnection.Object);
+        _target = new ProductRepositoryDapper(mockDbContext.Object, Mock.Of<ILogger<ProductRepositoryDapper>>());
     }
 
     [Fact]
@@ -41,7 +46,7 @@ public class ProductRepositoryDapperTest
         const string sql =
             "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
 
-        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
+        _mockDbConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
             .ReturnsAsync(1);
 
         // Act
@@ -52,7 +57,7 @@ public class ProductRepositoryDapperTest
         {
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(product, options => options.ComparingByMembers<Product>());
-            _mockConnection.Verify();
+            _mockDbConnection.Verify();
         }
     }
 
@@ -61,7 +66,7 @@ public class ProductRepositoryDapperTest
     {
         // Arrange
         var productId = Guid.NewGuid();
-        _mockConnection
+        _mockDbConnection
             .SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
             .ReturnsAsync(1);
 
@@ -77,7 +82,7 @@ public class ProductRepositoryDapperTest
     {
         // Arrange
         var productId = Guid.NewGuid();
-        _mockConnection
+        _mockDbConnection
             .SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
             .ReturnsAsync(0);
 
@@ -103,7 +108,7 @@ public class ProductRepositoryDapperTest
             CreationDate = DateTime.UtcNow
         };
 
-        _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
+        _mockDbConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync([product]);
 
         // Act
@@ -138,7 +143,7 @@ public class ProductRepositoryDapperTest
             Images = "image1|image 2"
         };
 
-        _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
+        _mockDbConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync([product]);
 
         // Act
@@ -178,7 +183,7 @@ public class ProductRepositoryDapperTest
             Images = string.Join("|", product.Images)
         };
 
-        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
+        _mockDbConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
             .ReturnsAsync(1);
 
         // Act
@@ -188,7 +193,7 @@ public class ProductRepositoryDapperTest
         using (new AssertionScope())
         {
             result.Should().BeTrue();
-            _mockConnection.Verify();
+            _mockDbConnection.Verify();
         }
     }
 }

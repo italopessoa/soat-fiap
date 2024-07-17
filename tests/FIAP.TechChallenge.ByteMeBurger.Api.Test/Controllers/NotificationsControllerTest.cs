@@ -65,7 +65,7 @@ public class NotificationsControllerTest
             .Verifiable();
 
         // Act
-        var response = await _target.Post(@event);
+        var response = await _target.Post(@event, string.Empty, string.Empty);
 
         // Assert
         using (new AssertionScope())
@@ -85,7 +85,7 @@ public class NotificationsControllerTest
             .Verifiable();
 
         // Act
-        var response = await _target.Post(@event);
+        var response = await _target.Post(@event, string.Empty, string.Empty);
 
         // Assert
         using (new AssertionScope())

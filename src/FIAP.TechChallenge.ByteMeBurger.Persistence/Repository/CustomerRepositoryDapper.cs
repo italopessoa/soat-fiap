@@ -6,6 +6,7 @@
 
 using System.Data;
 using Dapper;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
@@ -13,13 +14,16 @@ using Microsoft.Extensions.Logging;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
-public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<CustomerRepositoryDapper> logger)
+public class CustomerRepositoryDapper(IDbContext context, ILogger<CustomerRepositoryDapper> logger)
     : ICustomerRepository
 {
+
+    private readonly IDbConnection _dbConnection = context.CreateConnection();
+
     public async Task<Customer?> FindByCpfAsync(string cpf)
     {
         logger.LogInformation("Finding customer by CPF: {Cpf}", cpf);
-        var customerDto = await dbConnection.QuerySingleOrDefaultAsync<CustomerDto>(
+        var customerDto = await _dbConnection.QuerySingleOrDefaultAsync<CustomerDto>(
             Constants.GetCustomerByCpfQuery,
             new { Cpf = cpf });
 
@@ -35,7 +39,7 @@ public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<Custom
     {
         logger.LogInformation("Creating customer with CPF: {Cpf}", customer.Cpf);
         var param = (CustomerDto)customer;
-        var rowsAffected = await dbConnection.ExecuteAsync(
+        var rowsAffected = await _dbConnection.ExecuteAsync(
             Constants.InsertCustomerQuery,
             param);
 

@@ -7,7 +7,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -18,19 +17,16 @@ public class PaymentService : IPaymentService
     private readonly ICreatePaymentUseCase _createOrderPaymentUseCase;
     private readonly IUpdatePaymentStatusUseCase _updatePaymentStatusUseCase;
     private readonly IPaymentRepository _paymentRepository;
-    private readonly IUpdateOrderPaymentUseCase _updateOrderPaymentUseCase;
     private readonly IPaymentGatewayFactoryMethod _paymentGatewayFactory;
 
     public PaymentService(ICreatePaymentUseCase createOrderPaymentUseCase,
         IUpdatePaymentStatusUseCase updatePaymentStatusUseCase,
         IPaymentRepository paymentRepository,
-        IUpdateOrderPaymentUseCase updateOrderPaymentUseCase,
         IPaymentGatewayFactoryMethod paymentGatewayFactory)
     {
         _createOrderPaymentUseCase = createOrderPaymentUseCase;
         _updatePaymentStatusUseCase = updatePaymentStatusUseCase;
         _paymentRepository = paymentRepository;
-        _updateOrderPaymentUseCase = updateOrderPaymentUseCase;
         _paymentGatewayFactory = paymentGatewayFactory;
     }
 
@@ -41,8 +37,6 @@ public class PaymentService : IPaymentService
             return null;
 
         await _paymentRepository.SaveAsync(payment);
-        DomainEventTrigger.RaisePaymentCreated(new PaymentCreated(payment));
-        await _updateOrderPaymentUseCase.Execute(payment.OrderId, payment.Id);
         return payment;
     }
 

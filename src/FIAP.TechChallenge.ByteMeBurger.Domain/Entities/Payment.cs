@@ -40,4 +40,6 @@ public class Payment : Entity<PaymentId>, IAggregateRoot
         Created = DateTime.UtcNow;
         PaymentType = paymentType;
     }
+
+    public bool IsApproved() => Status == PaymentStatus.Approved;
 }

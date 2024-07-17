@@ -13,9 +13,6 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-
-// using ILogger = Microsoft.DotNet.Scaffolding.Shared.ILogger;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
@@ -33,7 +30,8 @@ public class Program
                     .MinimumLevel.Debug()
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                    .ReadFrom.Configuration(context.Configuration));
+                    .ReadFrom.Configuration(context.Configuration)
+                    .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName));
 
             // Add services to the container.
             builder.Services.AddAuthorization();

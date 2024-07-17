@@ -5,6 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
@@ -32,6 +33,8 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
             throw new DomainException("There's already a Payment for the order.");
 
         var paymentGateway = _paymentGatewayFactory.Create(paymentType);
-        return await paymentGateway.CreatePaymentAsync(order);
+        var payment = await paymentGateway.CreatePaymentAsync(order);
+        DomainEventTrigger.RaisePaymentCreated(new PaymentCreated(payment));
+        return payment;
     }
 }

@@ -6,6 +6,7 @@
 
 using System.Data;
 using Dapper;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
@@ -27,8 +28,13 @@ public class OrderRepositoryDapperTest
 
     public OrderRepositoryDapperTest()
     {
+        Mock<IDbContext> mockDbContext = new();
         _mockConnection = new Mock<IDbConnection>();
-        _target = new OrderRepositoryDapper(_mockConnection.Object, Mock.Of<ILogger<OrderRepositoryDapper>>());
+        _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
+        mockDbContext.Setup(s => s.CreateConnection())
+            .Returns(_mockConnection.Object);
+
+        _target = new OrderRepositoryDapper(mockDbContext.Object, Mock.Of<ILogger<OrderRepositoryDapper>>());
     }
 
     [Fact(Skip = "I'll double check it later")]
@@ -68,8 +74,6 @@ public class OrderRepositoryDapperTest
         var order = new Order(Guid.NewGuid());
         order.AddOrderItem(Guid.NewGuid(), "banana", 10, 1);
         order.SetTrackingCode(new OrderTrackingCode("code"));
-
-        _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
 
         _mockConnection.SetupDapperAsync(c =>
                 c.ExecuteAsync(

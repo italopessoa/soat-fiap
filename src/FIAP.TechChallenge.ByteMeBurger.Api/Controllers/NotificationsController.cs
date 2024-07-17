@@ -36,7 +36,9 @@ public class NotificationsController : ControllerBase
     /// <returns></returns>
     [TypeFilter(typeof(MercadoPagoMessageAuthorizationFilter))]
     [HttpPost("mercadopago")]
-    public async Task<IActionResult> Post([FromBody] MercadoPagoWebhookEvent @event)
+    public async Task<IActionResult> Post([FromBody] MercadoPagoWebhookEvent @event,
+        [FromHeader(Name = "x-signature")] string xSignature,
+        [FromHeader(Name = "x-request-id")] string xRequestId)
     {
         _logger.LogInformation("Received MercadoPago webhook event {@Payload}", @event);
         if (@event.Action == "payment.updated" && await CheckIfPaymentExists(@event.Data.Id, PaymentType.MercadoPago))

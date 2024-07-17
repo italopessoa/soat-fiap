@@ -6,6 +6,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.Extensions.Caching.Hybrid;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
@@ -18,11 +20,16 @@ public class DomainEventsHandler : IDisposable
 {
     private readonly ILogger<DomainEventsHandler> _logger;
     private readonly HybridCache _cache;
+    private readonly IOrderService _orderService;
 
-    public DomainEventsHandler(ILogger<DomainEventsHandler> logger, HybridCache cache)
+    public DomainEventsHandler(ILogger<DomainEventsHandler> logger, HybridCache cache, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _cache = cache;
+        using (var scope = serviceProvider.CreateScope())
+        {
+            _orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+        }
 
         DomainEventTrigger.ProductCreated += OnProductCreated;
         DomainEventTrigger.ProductDeleted += OnProductDeleted;
@@ -42,20 +49,30 @@ public class DomainEventsHandler : IDisposable
 
     private void OnOrderStatusChanged(object? sender, OrderStatusChanged e)
     {
-        _logger.LogInformation("Order: {OrderId} status changed from '{oldStatus}' to '{newStatus}'", e.Payload.OrderId,
-            e.Payload.OldStatus, e.Payload.NewStatus);
+        _logger.LogInformation("New {EventName} event from '{OldStatus}' to '{NewStatus}': OrderId {OrderId}",
+            nameof(OrderStatusChanged),
+            e.Payload.OldStatus, e.Payload.NewStatus, e.Payload.OrderId);
     }
 
-    private void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
+    private async void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
     {
         _logger.LogInformation("Order: {OrderId} payment confirmed", e.Payload);
         InvalidateOrderCache(e.Payload.OrderId);
+        try
+        {
+            await _orderService.UpdateStatusAsync(e.Payload.OrderId, OrderStatus.Received);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Error updating order status {OrderId}", e.Payload.OrderId);
+            throw;
+        }
     }
 
     private void OnOrderCreated(object? sender, OrderCreated e)
     {
         InvalidateOrderCache(e.Payload.Id);
-        _logger.LogInformation("New Order created: {OrderId}", e.Payload.Id);
+        _logger.LogInformation("New {EventName} event: OrderId {OrderId}", nameof(OrderCreated), e.Payload.Id);
     }
 
     private void OnProductUpdated(object? sender, ProductUpdated e)
@@ -74,10 +91,20 @@ public class DomainEventsHandler : IDisposable
         _logger.LogInformation("Product created: {@Product}", e.Payload);
     }
 
-    private void OnPaymentCreated(object? sender, PaymentCreated e)
+    private async void OnPaymentCreated(object? sender, PaymentCreated e)
     {
         _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.OrderId,
             e.Payload.Id.Value);
+
+        try
+        {
+            await _orderService.UpdateOrderPaymentAsync(e.Payload.OrderId, e.Payload.Id);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Error updating order payment {OrderId}", e.Payload.OrderId);
+            throw;
+        }
     }
 
     private void InvalidateOrderCache(Guid orderId)

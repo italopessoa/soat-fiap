@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Dapper;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -16,17 +17,20 @@ using Microsoft.Extensions.Logging;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
-public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepositoryDapper> logger)
+public class OrderRepositoryDapper(IDbContext context, ILogger<OrderRepositoryDapper> logger)
     : IOrderRepository
 {
+
+    private readonly IDbConnection _dbConnection = context.CreateConnection();
+
     public async Task<Order> CreateAsync(Order order)
     {
         logger.LogInformation("Persisting order {OrderId}", order.Id);
-        var transaction = dbConnection.BeginTransaction();
+        var transaction = _dbConnection.BeginTransaction();
         {
             try
             {
-                await dbConnection.ExecuteAsync(
+                await _dbConnection.ExecuteAsync(
                     Constants.InsertOrderQuery,
                     new
                     {
@@ -36,7 +40,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                         order.Created,
                         TrackingCode = order.TrackingCode.Value
                     });
-                await dbConnection.ExecuteAsync(Constants.InsertOrderItemsQuery, order.OrderItems);
+                await _dbConnection.ExecuteAsync(Constants.InsertOrderItemsQuery, order.OrderItems);
 
                 transaction.Commit();
                 logger.LogInformation("Order {OrderId} persisted", order.Id);
@@ -57,7 +61,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         var ordersDictionary = new Dictionary<Guid, Order>();
 
 
-        await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDto?, OrderItemDto, Order>(
+        await _dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDto?, OrderItemDto, Order>(
             Constants.GetAllOrdersQuery,
             (orderListDto, customerDto, paymentDao, orderItemDto) =>
             {
@@ -96,7 +100,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         logger.LogInformation("Getting order {OrderId} from database", orderId);
         var ordersDictionary = new Dictionary<Guid, Order>();
 
-        await dbConnection.QueryAsync<OrderListDto, Guid?, CustomerDto, OrderItemDto, Order>(
+        await _dbConnection.QueryAsync<OrderListDto, Guid?, CustomerDto, OrderItemDto, Order>(
             Constants.GetOrderByIdQuery,
             (orderListDto, paymentId, customerDto, orderItemDto) =>
             {
@@ -131,10 +135,10 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 
     public async Task<bool> UpdateOrderStatusAsync(Order order)
     {
-        logger.LogInformation("Updating order {orderId} status to {OrderStatus}", order.Id, order.Status);
+        logger.LogInformation("Updating order {OrderId} status to {OrderStatus}", order.Id, order.Status);
         try
         {
-            var updated = await dbConnection.ExecuteAsync(
+            var updated = await _dbConnection.ExecuteAsync(
                 Constants.UpdateOrderStatusQuery,
                 new
                 {
@@ -161,7 +165,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         logger.LogInformation("Updating order {OrderId} Payment {PaymentId}", order.Id, order.PaymentId.Value);
         try
         {
-            var updated = await dbConnection.ExecuteAsync(
+            var updated = await _dbConnection.ExecuteAsync(
                 Constants.UpdateOrderPaymentIdQuery,
                 new
                 {
@@ -172,7 +176,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 
             logger.LogInformation(
                 updated ? "Order {OrderId} payment updated to {PaymentId}" : "Order {OrderId} payment not updated",
-                order.Id, order.PaymentId);
+                order.Id, order.PaymentId.Value);
             return true;
         }
         catch (Exception e)
