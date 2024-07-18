@@ -6,7 +6,12 @@
 This repository contains the source code for the ByteMeBurger API, part of the FIAP Tech Challenge. The API is designed to manage a burger restaurant's operations, including order placement, customer registration, and product management. The recent updates introduce a new endpoint for customer registration and enhance various aspects of the application, such as error handling, data models, and service configurations.
 
 ## Tech challenge deliverables
-You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki)
+- You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki)
+- [Business requirements](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Business-Requirements-Document)
+- [Infrastructure](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Kubernetes-Infrastructure-Requirements)
+- [Testing locally](#running-with-kubernetes-locally)
+   -  to get some help with application flow testing, click [here](#testing)
+     
 ## Getting Started
 
 ### Prerequisites
@@ -44,7 +49,7 @@ You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat
 6. If you want to quickly seed the database with fake data and test some of the endpoints use the [FIAP_TechChallenge_ByteMeBurger-endpoints.http](FIAP_TechChallenge_ByteMeBurger-endpoints.http) file
 
 
-7. Logs should (not guaranteed) be available in here [http://localhost:8081](http://localhost:8081)
+7. Logs should (not guaranteed) be available here [http://localhost:8081](http://localhost:8081)
 
 
 8. Stop the services using Docker:
@@ -105,5 +110,9 @@ minikube tunnel
 ```bash
 whcli forward --token=f513d4a6-4dbd-4e32-93f5-b35376f33c89 --target=http://localhost/api/notifications/mercadopago
 ```
+
+#### Testing
+You can use the [postman collection](/postman) for testing
+
 ### Cleanup
-Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1)script
+Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1) script
