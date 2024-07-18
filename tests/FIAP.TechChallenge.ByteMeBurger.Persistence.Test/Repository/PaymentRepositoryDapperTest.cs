@@ -23,12 +23,8 @@ public class PaymentRepositoryDapperTest
 
     public PaymentRepositoryDapperTest()
     {
-        Mock<IDbContext> mockDbContext = new();
         _mockConnection = new Mock<IDbConnection>();
-        _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
-        mockDbContext.Setup(s => s.CreateConnection())
-            .Returns(_mockConnection.Object);
-        _target = new PaymentRepositoryDapper(mockDbContext.Object, Mock.Of<ILogger<PaymentRepositoryDapper>>());
+        _target = new PaymentRepositoryDapper(_mockConnection.Object, Mock.Of<ILogger<PaymentRepositoryDapper>>());
     }
 
     [Fact]
@@ -36,6 +32,8 @@ public class PaymentRepositoryDapperTest
     {
         // Arrange
         var expectedPayment = new Fixture().Create<Payment>();
+
+        _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
 
         _mockConnection.SetupDapperAsync(c =>
                 c.ExecuteAsync(Constants.InsertPaymentQuery,

@@ -17,17 +17,13 @@ namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Test.Repository;
 [TestSubject(typeof(ProductRepositoryDapper))]
 public class ProductRepositoryDapperTest
 {
-    private readonly Mock<IDbConnection> _mockDbConnection;
+    private readonly Mock<IDbConnection> _mockConnection;
     private readonly ProductRepositoryDapper _target;
 
     public ProductRepositoryDapperTest()
     {
-        Mock<IDbContext> mockDbContext = new();
-        _mockDbConnection = new Mock<IDbConnection>();
-        _mockDbConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
-        mockDbContext.Setup(s => s.CreateConnection())
-            .Returns(_mockDbConnection.Object);
-        _target = new ProductRepositoryDapper(mockDbContext.Object, Mock.Of<ILogger<ProductRepositoryDapper>>());
+        _mockConnection = new Mock<IDbConnection>();
+        _target = new ProductRepositoryDapper(_mockConnection.Object, Mock.Of<ILogger<ProductRepositoryDapper>>());
     }
 
     [Fact]
@@ -40,7 +36,7 @@ public class ProductRepositoryDapperTest
         const string sql =
             "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
 
-        _mockDbConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
+        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
             .ReturnsAsync(1);
 
         // Act
@@ -51,7 +47,7 @@ public class ProductRepositoryDapperTest
         {
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(product, options => options.ComparingByMembers<Product>());
-            _mockDbConnection.Verify();
+            _mockConnection.Verify();
         }
     }
 
@@ -60,7 +56,7 @@ public class ProductRepositoryDapperTest
     {
         // Arrange
         var productId = Guid.NewGuid();
-        _mockDbConnection
+        _mockConnection
             .SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
             .ReturnsAsync(1);
 
@@ -76,7 +72,7 @@ public class ProductRepositoryDapperTest
     {
         // Arrange
         var productId = Guid.NewGuid();
-        _mockDbConnection
+        _mockConnection
             .SetupDapperAsync(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
             .ReturnsAsync(0);
 
@@ -102,7 +98,7 @@ public class ProductRepositoryDapperTest
             CreationDate = DateTime.UtcNow
         };
 
-        _mockDbConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
+        _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync([product]);
 
         // Act
@@ -137,7 +133,7 @@ public class ProductRepositoryDapperTest
             Images = "image1|image 2"
         };
 
-        _mockDbConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
+        _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync([product]);
 
         // Act
@@ -177,7 +173,7 @@ public class ProductRepositoryDapperTest
             Images = string.Join("|", product.Images)
         };
 
-        _mockDbConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
+        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
             .ReturnsAsync(1);
 
         // Act
@@ -187,7 +183,7 @@ public class ProductRepositoryDapperTest
         using (new AssertionScope())
         {
             result.Should().BeTrue();
-            _mockDbConnection.Verify();
+            _mockConnection.Verify();
         }
     }
 }

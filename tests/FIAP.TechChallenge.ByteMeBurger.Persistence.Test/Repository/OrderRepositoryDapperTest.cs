@@ -22,13 +22,8 @@ public class OrderRepositoryDapperTest
 
     public OrderRepositoryDapperTest()
     {
-        Mock<IDbContext> mockDbContext = new();
         _mockConnection = new Mock<IDbConnection>();
-        _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
-        mockDbContext.Setup(s => s.CreateConnection())
-            .Returns(_mockConnection.Object);
-
-        _target = new OrderRepositoryDapper(mockDbContext.Object, Mock.Of<ILogger<OrderRepositoryDapper>>());
+        _target = new OrderRepositoryDapper(_mockConnection.Object, Mock.Of<ILogger<OrderRepositoryDapper>>());
     }
 
     [Fact(Skip = "I'll double check it later")]
@@ -69,6 +64,7 @@ public class OrderRepositoryDapperTest
         order.AddOrderItem(Guid.NewGuid(), "banana", 10, 1);
         order.SetTrackingCode(new OrderTrackingCode("code"));
 
+        _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
         _mockConnection.SetupDapperAsync(c =>
                 c.ExecuteAsync(
                     "insert into Orders (Id, CustomerId, Status, Created, TrackingCode) values (@Id, @CustomerId, @Status, @Created, @TrackingCode);",

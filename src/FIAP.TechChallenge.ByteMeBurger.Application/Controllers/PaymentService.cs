@@ -12,16 +12,19 @@ public class PaymentService : IPaymentService
     private readonly IUpdatePaymentStatusUseCase _updatePaymentStatusUseCase;
     private readonly IPaymentRepository _paymentRepository;
     private readonly IPaymentGatewayFactoryMethod _paymentGatewayFactory;
+    private readonly IUpdateOrderPaymentUseCase _updateOrderPaymentUseCase;
 
     public PaymentService(ICreatePaymentUseCase createOrderPaymentUseCase,
         IUpdatePaymentStatusUseCase updatePaymentStatusUseCase,
         IPaymentRepository paymentRepository,
-        IPaymentGatewayFactoryMethod paymentGatewayFactory)
+        IPaymentGatewayFactoryMethod paymentGatewayFactory,
+        IUpdateOrderPaymentUseCase updateOrderPaymentUseCase)
     {
         _createOrderPaymentUseCase = createOrderPaymentUseCase;
         _updatePaymentStatusUseCase = updatePaymentStatusUseCase;
         _paymentRepository = paymentRepository;
         _paymentGatewayFactory = paymentGatewayFactory;
+        _updateOrderPaymentUseCase = updateOrderPaymentUseCase;
     }
 
     public async Task<Payment> CreateOrderPaymentAsync(CreateOrderPaymentRequestDto command)
@@ -31,6 +34,7 @@ public class PaymentService : IPaymentService
             return null;
 
         await _paymentRepository.SaveAsync(payment);
+        await _updateOrderPaymentUseCase.Execute(payment.OrderId, payment.Id);
         return payment;
     }
 

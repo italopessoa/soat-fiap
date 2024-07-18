@@ -11,20 +11,18 @@ using Microsoft.Extensions.Logging;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
-public class OrderRepositoryDapper(IDbContext context, ILogger<OrderRepositoryDapper> logger)
+public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepositoryDapper> logger)
     : IOrderRepository
 {
-
-    private readonly IDbConnection _dbConnection = context.CreateConnection();
 
     public async Task<Order> CreateAsync(Order order)
     {
         logger.LogInformation("Persisting order {OrderId}", order.Id);
-        var transaction = _dbConnection.BeginTransaction();
+        var transaction = dbConnection.BeginTransaction();
         {
             try
             {
-                await _dbConnection.ExecuteAsync(
+                await dbConnection.ExecuteAsync(
                     Constants.InsertOrderQuery,
                     new
                     {
@@ -34,7 +32,7 @@ public class OrderRepositoryDapper(IDbContext context, ILogger<OrderRepositoryDa
                         order.Created,
                         TrackingCode = order.TrackingCode.Value
                     });
-                await _dbConnection.ExecuteAsync(Constants.InsertOrderItemsQuery, order.OrderItems);
+                await dbConnection.ExecuteAsync(Constants.InsertOrderItemsQuery, order.OrderItems);
 
                 transaction.Commit();
                 logger.LogInformation("Order {OrderId} persisted", order.Id);
@@ -55,7 +53,7 @@ public class OrderRepositoryDapper(IDbContext context, ILogger<OrderRepositoryDa
         var ordersDictionary = new Dictionary<Guid, Order>();
 
 
-        await _dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDto?, OrderItemDto, Order>(
+        await dbConnection.QueryAsync<OrderListDto, CustomerDto, PaymentDto?, OrderItemDto, Order>(
             Constants.GetAllOrdersQuery,
             (orderListDto, customerDto, paymentDao, orderItemDto) =>
             {
@@ -94,7 +92,7 @@ public class OrderRepositoryDapper(IDbContext context, ILogger<OrderRepositoryDa
         logger.LogInformation("Getting order {OrderId} from database", orderId);
         var ordersDictionary = new Dictionary<Guid, Order>();
 
-        await _dbConnection.QueryAsync<OrderListDto, Guid?, CustomerDto, OrderItemDto, Order>(
+        await dbConnection.QueryAsync<OrderListDto, Guid?, CustomerDto, OrderItemDto, Order>(
             Constants.GetOrderByIdQuery,
             (orderListDto, paymentId, customerDto, orderItemDto) =>
             {
@@ -132,7 +130,7 @@ public class OrderRepositoryDapper(IDbContext context, ILogger<OrderRepositoryDa
         logger.LogInformation("Updating order {OrderId} status to {OrderStatus}", order.Id, order.Status);
         try
         {
-            var updated = await _dbConnection.ExecuteAsync(
+            var updated = await dbConnection.ExecuteAsync(
                 Constants.UpdateOrderStatusQuery,
                 new
                 {
@@ -159,7 +157,7 @@ public class OrderRepositoryDapper(IDbContext context, ILogger<OrderRepositoryDa
         logger.LogInformation("Updating order {OrderId} Payment {PaymentId}", order.Id, order.PaymentId.Value);
         try
         {
-            var updated = await _dbConnection.ExecuteAsync(
+            var updated = await dbConnection.ExecuteAsync(
                 Constants.UpdateOrderPaymentIdQuery,
                 new
                 {
