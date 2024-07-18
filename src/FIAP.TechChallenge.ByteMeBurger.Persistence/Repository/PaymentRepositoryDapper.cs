@@ -10,24 +10,23 @@ using Microsoft.Extensions.Logging;
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
 public class PaymentRepositoryDapper(
-    IDbContext context,
+    IDbConnection dbConnection,
     ILogger<PaymentRepositoryDapper> logger)
     : IPaymentRepository
 {
-    private readonly IDbConnection _dbConnection = context.CreateConnection();
 
     public async Task<Payment> SaveAsync(Payment payment)
     {
         logger.LogInformation("Persisting Payment {PaymentId} for Order {OrderId}", payment.Id.Value,
             payment.OrderId);
 
-        var transaction = _dbConnection.BeginTransaction();
+        var transaction = dbConnection.BeginTransaction();
         {
             try
             {
                 var paymentDao = new PaymentDto(payment.Id.Value, payment.OrderId, (int)payment.Status,
                     (int)payment.PaymentType, payment.Amount, payment.ExternalReference, payment.Created, null);
-                await _dbConnection.ExecuteAsync(Constants.InsertPaymentQuery, paymentDao);
+                await dbConnection.ExecuteAsync(Constants.InsertPaymentQuery, paymentDao);
 
                 transaction.Commit();
 
@@ -48,7 +47,7 @@ public class PaymentRepositoryDapper(
     {
         logger.LogInformation("Getting Payment {PaymentId}", paymentId.Value);
 
-        var paymentDao = await _dbConnection.QuerySingleOrDefaultAsync<PaymentDto>(
+        var paymentDao = await dbConnection.QuerySingleOrDefaultAsync<PaymentDto>(
             Constants.GetPaymentQuery,
             param: new { Id = paymentId.Value }
         );
@@ -76,7 +75,7 @@ public class PaymentRepositoryDapper(
         logger.LogInformation("Getting {PaymentType} Payment by ExternalReference {ExternalReference}",
             paymentType.ToString(), externalReference);
 
-        var paymentDao = await _dbConnection.QuerySingleOrDefaultAsync<PaymentDto>(
+        var paymentDao = await dbConnection.QuerySingleOrDefaultAsync<PaymentDto>(
             Constants.GetPaymentByExternalReferenceQuery,
             param: new
             {
@@ -108,7 +107,7 @@ public class PaymentRepositoryDapper(
     {
         logger.LogInformation("Updating Payment {PaymentId} status", payment.Id.Value);
 
-        var updated = await _dbConnection.ExecuteAsync(
+        var updated = await dbConnection.ExecuteAsync(
             Constants.UpdatePaymentStatusQuery,
             new
             {

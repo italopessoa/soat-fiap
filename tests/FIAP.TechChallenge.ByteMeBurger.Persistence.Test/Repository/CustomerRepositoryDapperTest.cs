@@ -16,18 +16,14 @@ namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Test.Repository;
 [TestSubject(typeof(CustomerRepositoryDapper))]
 public class CustomerRepositoryDapperTest
 {
-    private readonly Mock<IDbConnection> _mockDbConnection;
+    private readonly Mock<IDbConnection> _mockConnection;
     private readonly CustomerRepositoryDapper _target;
     private const string Cpf = "20697137090";
 
     public CustomerRepositoryDapperTest()
     {
-        Mock<IDbContext> mockDbContext = new();
-        _mockDbConnection = new Mock<IDbConnection>();
-        _mockDbConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
-        mockDbContext.Setup(s => s.CreateConnection())
-            .Returns(_mockDbConnection.Object);
-        _target = new CustomerRepositoryDapper(mockDbContext.Object, Mock.Of<ILogger<CustomerRepositoryDapper>>());
+        _mockConnection = new Mock<IDbConnection>();
+        _target = new CustomerRepositoryDapper(_mockConnection.Object,Mock.Of<ILogger<CustomerRepositoryDapper>>());
     }
 
     [Fact]
@@ -36,7 +32,8 @@ public class CustomerRepositoryDapperTest
         // Arrange
         var customer = new Customer(Cpf);
 
-        _mockDbConnection.SetupDapperAsync(c =>
+        _mockConnection.Setup(c => c.BeginTransaction()).Returns(Mock.Of<IDbTransaction>());
+        _mockConnection.SetupDapperAsync(c =>
                 c.ExecuteAsync("", null, null, null, null))
             .ReturnsAsync(1);
 
@@ -63,7 +60,7 @@ public class CustomerRepositoryDapperTest
             Email = "italo@gmail.com"
         };
 
-        _mockDbConnection.SetupDapperAsync(c =>
+        _mockConnection.SetupDapperAsync(c =>
                 c.QuerySingleOrDefaultAsync<CustomerDto>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync(expectedCustomer);
 
@@ -84,7 +81,7 @@ public class CustomerRepositoryDapperTest
     public async Task FindByCpf_NotFound()
     {
         // Arrange
-        _mockDbConnection.SetupDapperAsync(c =>
+        _mockConnection.SetupDapperAsync(c =>
                 c.QuerySingleOrDefaultAsync<Customer>(It.IsAny<string>(), null, null, null, null))
             .ReturnsAsync(default(Customer));
 
