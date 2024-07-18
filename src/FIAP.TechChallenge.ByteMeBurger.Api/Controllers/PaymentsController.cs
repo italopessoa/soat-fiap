@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -42,14 +36,14 @@ public class PaymentsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Payment details</returns>
     [HttpPost]
-    public async Task<ActionResult<PaymentViewModel>> Create(
+    public async Task<ActionResult<PaymentDto>> Create(
         CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
     {
         using (_logger.BeginScope("Creating payment for order {OrderId}", createPaymentRequest.OrderId))
         {
             var payment =
                 await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.ToDomain());
-            return Created("", new PaymentViewModel(payment.Id.Value, payment.QrCode));
+            return Created("", new PaymentDto(payment.Id.Value, payment.QrCode));
         }
     }
 
@@ -60,7 +54,7 @@ public class PaymentsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Payment status</returns>
     [HttpGet("{id:guid}/status")]
-    public async Task<ActionResult<PaymentStatusViewModel>> GetStatus(
+    public async Task<ActionResult<PaymentStatusDto>> GetStatus(
         Guid id, CancellationToken cancellationToken)
     {
         var payment = await _paymentService.GetPaymentAsync(new PaymentId(id));
@@ -68,6 +62,6 @@ public class PaymentsController : ControllerBase
         if (payment is null)
             return NotFound();
 
-        return Ok((PaymentStatusViewModel)(int)payment.Status);
+        return Ok((PaymentStatusDto)(int)payment.Status);
     }
 }

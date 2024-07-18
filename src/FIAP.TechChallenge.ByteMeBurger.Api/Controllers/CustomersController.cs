@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using System.ComponentModel.DataAnnotations;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
@@ -31,7 +25,7 @@ public class CustomersController(ICustomerService customerService, ILogger<Custo
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Customer</returns>
     [HttpGet]
-    public async Task<ActionResult<CustomerViewModel>> Get([FromQuery] [MaxLength(14)] string cpf,
+    public async Task<ActionResult<CustomerDto>> Get([FromQuery] [MaxLength(14)] string cpf,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting customer by CPF: {Cpf}", cpf);
@@ -53,7 +47,7 @@ public class CustomersController(ICustomerService customerService, ILogger<Custo
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Customer</returns>
     [HttpPost]
-    public async Task<ActionResult<CustomerViewModel>> Post([FromBody] CreateCustomerRequest createCustomerRequest,
+    public async Task<ActionResult<CustomerDto>> Post([FromBody] CreateCustomerRequest createCustomerRequest,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating customer with CPF: {Cpf}", createCustomerRequest.Cpf);

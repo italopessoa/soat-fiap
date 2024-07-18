@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
@@ -32,7 +26,7 @@ public class ProductsController(IProductService productService, ILogger<Products
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Product list.</returns>
     [HttpGet]
-    public async Task<ActionResult<ReadOnlyCollection<ProductViewModel>>> Get(
+    public async Task<ActionResult<ReadOnlyCollection<ProductDto>>> Get(
         [FromQuery] ProductCategory? productCategory, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting products by category: {ProductCategory}", productCategory);
@@ -80,7 +74,7 @@ public class ProductsController(IProductService productService, ILogger<Products
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Product</returns>
     [HttpPost]
-    public async Task<ActionResult<ProductViewModel>> Create(
+    public async Task<ActionResult<ProductDto>> Create(
         CreateProductRequest newProduct,
         CancellationToken cancellationToken)
     {
@@ -112,7 +106,7 @@ public class ProductsController(IProductService productService, ILogger<Products
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Updated product</returns>
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<ProductViewModel>> Update([FromRoute] Guid id,
+    public async Task<ActionResult<ProductDto>> Update([FromRoute] Guid id,
         UpdateProductRequest updateProductRequest,
         CancellationToken cancellationToken)
     {

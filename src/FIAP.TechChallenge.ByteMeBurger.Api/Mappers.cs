@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
@@ -27,28 +21,28 @@ internal static class Mappers
         return new CreateOrderPaymentRequestDto(request.OrderId, (PaymentType)request.PaymentType);
     }
 
-    internal static OrderListViewModel ToOrderListViewModel(this Order order)
+    internal static OrderListItemDto ToOrderListViewModel(this Order order)
     {
-        return new OrderListViewModel(order.Id, order.TrackingCode.Value, order.Total,
-            (OrderStatusViewModel)order.Status,
+        return new OrderListItemDto(order.Id, order.TrackingCode.Value, order.Total,
+            (OrderStatusDto)order.Status,
             order.Created,
             order.Updated);
     }
 
-    internal static IReadOnlyCollection<OrderListViewModel> ToOrderListViewModel(this ReadOnlyCollection<Order> orders)
+    internal static IReadOnlyCollection<OrderListItemDto> ToOrderListViewModel(this ReadOnlyCollection<Order> orders)
     {
         return orders.Select(o => o.ToOrderListViewModel()).ToList();
     }
 
-    internal static OrderViewModel? ToOrderViewModel(this Order? order)
+    internal static OrderDetailDto? ToOrderViewModel(this Order? order)
     {
         if (order is null) return null;
-        return new OrderViewModel
+        return new OrderDetailDto
         {
             Id = order.Id,
             TrackingCode = order.TrackingCode.Value,
             Total = order.Total,
-            Status = (OrderStatusViewModel)order.Status,
+            Status = (OrderStatusDto)order.Status,
             CreationDate = order.Created,
             LastUpdate = order.Updated,
             OrderItems = order.OrderItems.Select(o => o.ToOrderItemViewModel()).ToList(),
@@ -56,9 +50,9 @@ internal static class Mappers
         };
     }
 
-    internal static OrderItemViewModel ToOrderItemViewModel(this OrderItem orderItem)
+    internal static OrderItemDto ToOrderItemViewModel(this OrderItem orderItem)
     {
-        return new OrderItemViewModel()
+        return new OrderItemDto()
         {
             OrderId = orderItem.OrderId,
             ProductId = orderItem.ProductId,
@@ -68,9 +62,9 @@ internal static class Mappers
         };
     }
 
-    internal static CustomerViewModel ToCustomerViewModel(this Customer customer)
+    internal static CustomerDto ToCustomerViewModel(this Customer customer)
     {
-        return new CustomerViewModel
+        return new CustomerDto
         {
             Id = customer.Id,
             Cpf = customer.Cpf,
@@ -79,9 +73,9 @@ internal static class Mappers
         };
     }
 
-    internal static ProductViewModel ToProductViewModel(this Product product)
+    internal static ProductDto ToProductViewModel(this Product product)
     {
-        return new ProductViewModel
+        return new ProductDto
         {
             Id = product.Id,
             Name = product.Name,

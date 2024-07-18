@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
@@ -53,7 +47,7 @@ public class PaymentsControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<CreatedResult>();
-            var paymentViewModel = response.Result.As<CreatedResult>().Value.As<PaymentViewModel>();
+            var paymentViewModel = response.Result.As<CreatedResult>().Value.As<PaymentDto>();
 
             paymentViewModel.PaymentId.Should().Be(payment.Id.Value);
             paymentViewModel.QrCode.Should().Be(payment.QrCode);
@@ -79,9 +73,9 @@ public class PaymentsControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<OkObjectResult>();
-            var status = response.Result.As<OkObjectResult>().Value.As<PaymentStatusViewModel>();
+            var status = response.Result.As<OkObjectResult>().Value.As<PaymentStatusDto>();
 
-            status.Should().Be(PaymentStatusViewModel.Approved);
+            status.Should().Be(PaymentStatusDto.Approved);
         }
     }
 }
