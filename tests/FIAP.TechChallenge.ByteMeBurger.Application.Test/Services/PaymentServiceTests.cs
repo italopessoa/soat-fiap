@@ -1,12 +1,5 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
@@ -19,7 +12,6 @@ public class PaymentServiceTests
     private readonly Mock<IPaymentRepository> _mockPaymentRepository;
     private readonly Mock<IUpdatePaymentStatusUseCase> _mockUpdatePaymentStatusUseCase;
     private readonly Mock<IPaymentGateway> _mockPaymentGateway;
-    private readonly Mock<IUpdateOrderPaymentUseCase> _mockUpdateOrderPaymentUseCase;
     private readonly PaymentService _target;
 
     public PaymentServiceTests()
@@ -28,14 +20,13 @@ public class PaymentServiceTests
         _mockPaymentRepository = new Mock<IPaymentRepository>();
         _mockUpdatePaymentStatusUseCase = new Mock<IUpdatePaymentStatusUseCase>();
         _mockPaymentGateway = new Mock<IPaymentGateway>();
-        _mockUpdateOrderPaymentUseCase = new Mock<IUpdateOrderPaymentUseCase>();
         Mock<IPaymentGatewayFactoryMethod> paymentGatewayFactory = new();
 
         paymentGatewayFactory.Setup(g => g.Create(It.IsAny<PaymentType>()))
             .Returns(_mockPaymentGateway.Object);
 
         _target = new PaymentService(_mockCreatePaymentUseCase.Object, _mockUpdatePaymentStatusUseCase.Object,
-            _mockPaymentRepository.Object, _mockUpdateOrderPaymentUseCase.Object, paymentGatewayFactory.Object);
+            _mockPaymentRepository.Object, paymentGatewayFactory.Object);
     }
 
     [Fact]

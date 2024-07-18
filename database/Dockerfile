@@ -1,10 +1,4 @@
-﻿# Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree.
-
-# Use the official MySQL image as a base
+﻿# Use the official MySQL image as a base
 FROM mysql:8.3.0
 
 # Add our init.sql script to the Docker image

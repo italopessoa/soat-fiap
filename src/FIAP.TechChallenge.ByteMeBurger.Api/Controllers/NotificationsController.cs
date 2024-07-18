@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -36,7 +30,9 @@ public class NotificationsController : ControllerBase
     /// <returns></returns>
     [TypeFilter(typeof(MercadoPagoMessageAuthorizationFilter))]
     [HttpPost("mercadopago")]
-    public async Task<IActionResult> Post([FromBody] MercadoPagoWebhookEvent @event)
+    public async Task<IActionResult> Post([FromBody] MercadoPagoWebhookEvent @event,
+        [FromHeader(Name = "x-signature")] string xSignature,
+        [FromHeader(Name = "x-request-id")] string xRequestId)
     {
         _logger.LogInformation("Received MercadoPago webhook event {@Payload}", @event);
         if (@event.Action == "payment.updated" && await CheckIfPaymentExists(@event.Data.Id, PaymentType.MercadoPago))

@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
@@ -54,7 +48,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Orders list</returns>
     [HttpGet]
-    public async Task<ActionResult<ReadOnlyCollection<OrderListViewModel>>> Get(bool listAll,
+    public async Task<ActionResult<ReadOnlyCollection<OrderListItemDto>>> Get(bool listAll,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting all orders");
@@ -73,7 +67,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Order details</returns>
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<OrderViewModel>> Get(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<OrderDetailDto>> Get(Guid id, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting order with ID: {OrderId}", id);
         if (Guid.Empty == id)
@@ -100,7 +94,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token</param>
     [Route("{id:guid}/status")]
     [HttpPatch]
-    public async Task<ActionResult<OrderViewModel>> Patch(Guid id,
+    public async Task<ActionResult<OrderDetailDto>> Patch(Guid id,
         [FromBody] UpdateOrderStatusRequest command,
         CancellationToken cancellationToken)
     {

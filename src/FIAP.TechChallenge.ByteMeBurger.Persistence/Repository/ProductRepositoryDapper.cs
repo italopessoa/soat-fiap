@@ -1,13 +1,8 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Dapper;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -16,13 +11,15 @@ using Microsoft.Extensions.Logging;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 
-public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<ProductRepositoryDapper> logger)
+public class ProductRepositoryDapper(IDbContext context, ILogger<ProductRepositoryDapper> logger)
     : IProductRepository
 {
+    private readonly IDbConnection _dbConnection = context.CreateConnection();
+
     public async Task<Product?> FindByIdAsync(Guid id)
     {
         logger.LogInformation("Finding product {ProductId}", id);
-        var productDto = await dbConnection.QuerySingleOrDefaultAsync<ProductDto>(
+        var productDto = await _dbConnection.QuerySingleOrDefaultAsync<ProductDto>(
             "SELECT * FROM Products WHERE Id=@Id",
             param: new { Id = id });
 
@@ -38,7 +35,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     {
         logger.LogInformation("Creating product with name: {ProductName}", product.Name);
         var param = (ProductDto)product;
-        var affectedRows = await dbConnection.ExecuteAsync(Constants.InsertProductQuery, param);
+        var affectedRows = await _dbConnection.ExecuteAsync(Constants.InsertProductQuery, param);
 
         if (affectedRows > 0)
         {
@@ -55,7 +52,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     public async Task<bool> DeleteAsync(Guid productId)
     {
         logger.LogInformation("Deleting product {ProductId}", productId);
-        var affectedRows = await dbConnection.ExecuteAsync(Constants.DeleteProductQuery,
+        var affectedRows = await _dbConnection.ExecuteAsync(Constants.DeleteProductQuery,
             new { Id = productId });
 
         if (affectedRows == 1)
@@ -73,7 +70,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     public async Task<ReadOnlyCollection<Product>> GetAll()
     {
         logger.LogInformation("Getting all products");
-        var productDtoList = await dbConnection.QueryAsync<ProductDto>(
+        var productDtoList = await _dbConnection.QueryAsync<ProductDto>(
             "SELECT * FROM Products");
 
         logger.LogInformation("Retrieved {Count} products", productDtoList.Count());
@@ -85,7 +82,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     public async Task<ReadOnlyCollection<Product>> FindByCategory(ProductCategory category)
     {
         logger.LogInformation("Finding products by category: {ProductCategory}", category);
-        var productDtoList = await dbConnection.QueryAsync<ProductDto>(
+        var productDtoList = await _dbConnection.QueryAsync<ProductDto>(
             "SELECT * FROM Products WHERE Category = @Category",
             param: new { Category = (int)category });
 
@@ -96,7 +93,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
     public async Task<bool> UpdateAsync(Product product)
     {
         logger.LogInformation("Updating product with ID: {ProductId}", product.Id);
-        var affectedRows = await dbConnection.ExecuteAsync(
+        var affectedRows = await _dbConnection.ExecuteAsync(
             Constants.UpdateProductQuery,
             (ProductDto)product);
 

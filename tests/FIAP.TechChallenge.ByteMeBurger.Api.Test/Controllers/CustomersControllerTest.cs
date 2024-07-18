@@ -1,9 +1,3 @@
-// Copyright (c) 2024, Italo Pessoa (https://github.com/italopessoa)
-// All rights reserved.
-//
-// This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
-
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
@@ -56,7 +50,7 @@ public class CustomersControllerTest
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        var expectedCustomer = new CustomerViewModel
+        var expectedCustomer = new CustomerDto
         {
             Id = customerId,
             Name = "customer name",
@@ -105,7 +99,7 @@ public class CustomersControllerTest
         {
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>().Value.Should()
-                .BeEquivalentTo(expectedCustomer, o => o.ComparingByMembers<CustomerViewModel>());
+                .BeEquivalentTo(expectedCustomer, o => o.ComparingByMembers<CustomerDto>());
         }
 
         _serviceMock.VerifyAll();

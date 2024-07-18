@@ -1,0 +1,27 @@
+<ArchitectureGraph>
+  <Module Identifier="B8F244B5-F703-441C-8A8A-C720F605709C" Name="FIAP.TechChallenge.ByteMeBurger.Domain" />
+  <Module Identifier="DBAD3C48-1539-4385-AC13-138C2874D7DA" Name="FIAP.TechChallenge.ByteMeBurger.Application" />
+  <Module Identifier="EDD56D7F-40E4-4422-AF23-CAF55957B40F" Name="FIAP.TechChallenge.ByteMeBurger.Api" />
+  <Module Identifier="09D890C7-7AA0-40E2-8AA6-6DD47462548D" Name="FIAP.TechChallenge.ByteMeBurger.Infrastructure" />
+  <Module Identifier="F15E9EEE-5E6F-43D4-9F43-D2133CD1C6B8" Name="FIAP.TechChallenge.ByteMeBurger.Domain.Test" />
+  <Module Identifier="E5F09758-090C-4602-A97F-EA9FF88C4E72" Name="FIAP.TechChallenge.ByteMeBurger.Application.Test" />
+  <Module Identifier="54CBE5FB-DD7F-4E56-B913-D830DAB751BE" Name="FIAP.TechChallenge.ByteMeBurger.Api.Test" />
+  <Module Identifier="68F424FA-F00C-4179-A9D5-5026D5C4930C" Name="FIAP.TechChallenge.ByteMeBurger.Infrastructure.Test" />
+  <Reference Identifier="DBAD3C48-1539-4385-AC13-138C2874D7DA/r:FIAP.TechChallenge.ByteMeBurger.Domain" SourceId="DBAD3C48-1539-4385-AC13-138C2874D7DA" Name="FIAP.TechChallenge.ByteMeBurger.Domain" TargetId="B8F244B5-F703-441C-8A8A-C720F605709C" />
+  <Reference Identifier="EDD56D7F-40E4-4422-AF23-CAF55957B40F/r:FIAP.TechChallenge.ByteMeBurger.Application" SourceId="EDD56D7F-40E4-4422-AF23-CAF55957B40F" Name="FIAP.TechChallenge.ByteMeBurger.Application" TargetId="DBAD3C48-1539-4385-AC13-138C2874D7DA" />
+  <Reference Identifier="EDD56D7F-40E4-4422-AF23-CAF55957B40F/r:FIAP.TechChallenge.ByteMeBurger.Domain" SourceId="EDD56D7F-40E4-4422-AF23-CAF55957B40F" Name="FIAP.TechChallenge.ByteMeBurger.Domain" TargetId="B8F244B5-F703-441C-8A8A-C720F605709C" />
+  <Reference Identifier="09D890C7-7AA0-40E2-8AA6-6DD47462548D/r:FIAP.TechChallenge.ByteMeBurger.Application" SourceId="09D890C7-7AA0-40E2-8AA6-6DD47462548D" Name="FIAP.TechChallenge.ByteMeBurger.Application" TargetId="DBAD3C48-1539-4385-AC13-138C2874D7DA" />
+  <Reference Identifier="09D890C7-7AA0-40E2-8AA6-6DD47462548D/r:FIAP.TechChallenge.ByteMeBurger.Domain" SourceId="09D890C7-7AA0-40E2-8AA6-6DD47462548D" Name="FIAP.TechChallenge.ByteMeBurger.Domain" TargetId="B8F244B5-F703-441C-8A8A-C720F605709C" />
+  <Reference Identifier="EDD56D7F-40E4-4422-AF23-CAF55957B40F/r:FIAP.TechChallenge.ByteMeBurger.Infrastructure" SourceId="EDD56D7F-40E4-4422-AF23-CAF55957B40F" Name="FIAP.TechChallenge.ByteMeBurger.Infrastructure" TargetId="09D890C7-7AA0-40E2-8AA6-6DD47462548D" />
+  <Reference Identifier="F15E9EEE-5E6F-43D4-9F43-D2133CD1C6B8/r:FIAP.TechChallenge.ByteMeBurger.Application" SourceId="F15E9EEE-5E6F-43D4-9F43-D2133CD1C6B8" Name="FIAP.TechChallenge.ByteMeBurger.Application" TargetId="DBAD3C48-1539-4385-AC13-138C2874D7DA" />
+  <Reference Identifier="F15E9EEE-5E6F-43D4-9F43-D2133CD1C6B8/r:FIAP.TechChallenge.ByteMeBurger.Domain" SourceId="F15E9EEE-5E6F-43D4-9F43-D2133CD1C6B8" Name="FIAP.TechChallenge.ByteMeBurger.Domain" TargetId="B8F244B5-F703-441C-8A8A-C720F605709C" />
+  <Reference Identifier="E5F09758-090C-4602-A97F-EA9FF88C4E72/r:FIAP.TechChallenge.ByteMeBurger.Application" SourceId="E5F09758-090C-4602-A97F-EA9FF88C4E72" Name="FIAP.TechChallenge.ByteMeBurger.Application" TargetId="DBAD3C48-1539-4385-AC13-138C2874D7DA" />
+  <Reference Identifier="E5F09758-090C-4602-A97F-EA9FF88C4E72/r:FIAP.TechChallenge.ByteMeBurger.Domain" SourceId="E5F09758-090C-4602-A97F-EA9FF88C4E72" Name="FIAP.TechChallenge.ByteMeBurger.Domain" TargetId="B8F244B5-F703-441C-8A8A-C720F605709C" />
+  <Reference Identifier="54CBE5FB-DD7F-4E56-B913-D830DAB751BE/r:FIAP.TechChallenge.ByteMeBurger.Api" SourceId="54CBE5FB-DD7F-4E56-B913-D830DAB751BE" Name="FIAP.TechChallenge.ByteMeBurger.Api" TargetId="EDD56D7F-40E4-4422-AF23-CAF55957B40F" />
+  <Reference Identifier="54CBE5FB-DD7F-4E56-B913-D830DAB751BE/r:FIAP.TechChallenge.ByteMeBurger.Infrastructure" SourceId="54CBE5FB-DD7F-4E56-B913-D830DAB751BE" Name="FIAP.TechChallenge.ByteMeBurger.Infrastructure" TargetId="09D890C7-7AA0-40E2-8AA6-6DD47462548D" />
+  <Reference Identifier="54CBE5FB-DD7F-4E56-B913-D830DAB751BE/r:FIAP.TechChallenge.ByteMeBurger.Application" SourceId="54CBE5FB-DD7F-4E56-B913-D830DAB751BE" Name="FIAP.TechChallenge.ByteMeBurger.Application" TargetId="DBAD3C48-1539-4385-AC13-138C2874D7DA" />
+  <Reference Identifier="54CBE5FB-DD7F-4E56-B913-D830DAB751BE/r:FIAP.TechChallenge.ByteMeBurger.Domain" SourceId="54CBE5FB-DD7F-4E56-B913-D830DAB751BE" Name="FIAP.TechChallenge.ByteMeBurger.Domain" TargetId="B8F244B5-F703-441C-8A8A-C720F605709C" />
+  <Reference Identifier="68F424FA-F00C-4179-A9D5-5026D5C4930C/r:FIAP.TechChallenge.ByteMeBurger.Infrastructure" SourceId="68F424FA-F00C-4179-A9D5-5026D5C4930C" Name="FIAP.TechChallenge.ByteMeBurger.Infrastructure" TargetId="09D890C7-7AA0-40E2-8AA6-6DD47462548D" />
+  <Reference Identifier="68F424FA-F00C-4179-A9D5-5026D5C4930C/r:FIAP.TechChallenge.ByteMeBurger.Application" SourceId="68F424FA-F00C-4179-A9D5-5026D5C4930C" Name="FIAP.TechChallenge.ByteMeBurger.Application" TargetId="DBAD3C48-1539-4385-AC13-138C2874D7DA" />
+  <Reference Identifier="68F424FA-F00C-4179-A9D5-5026D5C4930C/r:FIAP.TechChallenge.ByteMeBurger.Domain" SourceId="68F424FA-F00C-4179-A9D5-5026D5C4930C" Name="FIAP.TechChallenge.ByteMeBurger.Domain" TargetId="B8F244B5-F703-441C-8A8A-C720F605709C" />
+</ArchitectureGraph>
