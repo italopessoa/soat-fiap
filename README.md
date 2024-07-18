@@ -105,5 +105,14 @@ minikube tunnel
 ```bash
 whcli forward --token=f513d4a6-4dbd-4e32-93f5-b35376f33c89 --target=http://localhost/api/notifications/mercadopago
 ```
+
+#### Testing
+You can use the [postman collection](/postman) for testing
+
 ### Cleanup
-Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1)script
+Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1) script
+
+## Architecture Artifacts
+### Business Requirements
+[Infrastructure Diagram]()
+
