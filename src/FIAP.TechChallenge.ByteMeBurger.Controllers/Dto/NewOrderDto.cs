@@ -1,4 +1,4 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 /// <summary>
 /// Newly created order

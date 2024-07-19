@@ -3,6 +3,9 @@ using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using PaymentType = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentType;
@@ -46,7 +49,7 @@ internal static class Mappers
             CreationDate = order.Created,
             LastUpdate = order.Updated,
             OrderItems = order.OrderItems.Select(o => o.ToOrderItemViewModel()).ToList(),
-            Customer = order.Customer is null ? null : order.Customer!.ToCustomerViewModel()
+            Customer = order.Customer is null ? null : order.Customer!.FromEntityToDto()
         };
     }
 
@@ -62,27 +65,5 @@ internal static class Mappers
         };
     }
 
-    internal static CustomerDto ToCustomerViewModel(this Customer customer)
-    {
-        return new CustomerDto
-        {
-            Id = customer.Id,
-            Cpf = customer.Cpf,
-            Name = customer.Name,
-            Email = customer.Email
-        };
-    }
 
-    internal static ProductDto ToProductViewModel(this Product product)
-    {
-        return new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            Category = product.Category,
-            Price = product.Price,
-            Images = product.Images.ToArray()
-        };
-    }
 }

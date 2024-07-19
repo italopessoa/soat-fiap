@@ -1,10 +1,16 @@
 using AutoFixture;
-using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using JetBrains.Annotations;
+using Moq;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Test;
 
 [TestSubject(typeof(PaymentService))]
 public class PaymentServiceTests
@@ -61,13 +67,13 @@ public class PaymentServiceTests
             .Verifiable();
 
         // Act
-        var result = await _target.GetPaymentAsync(expectedPayment.Id);
+        var result = await _target.GetPaymentAsync(expectedPayment.Id.Value);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().Be(expectedPayment);
+            result.Should().BeEquivalentTo(expectedPayment.FromEntityToDto());
             _mockPaymentRepository.Verify();
         }
     }

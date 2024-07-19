@@ -1,10 +1,10 @@
-using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers;
 
 public class OrderService(
     ICreateOrderUseCase createOrderUseCase,
@@ -15,24 +15,26 @@ public class OrderService(
     IUpdateOrderPaymentUseCase updateOrderPaymentUseCase)
     : IOrderService
 {
-    public async Task<Order> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts)
+    public async Task<NewOrderDto> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts)
     {
         var cpf = customerCpf is not null ? new Cpf(customerCpf) : null;
         var order = await createOrderUseCase.Execute(cpf, selectedProducts);
 
         await orderRepository.CreateAsync(order);
 
-        return order;
+        return order.FromEntityToCreatedDto();
     }
 
-    public async Task<ReadOnlyCollection<Order>> GetAllAsync(bool listAll)
+    public async Task<IReadOnlyCollection<OrderListItemDto>> GetAllAsync(bool listAll)
     {
-        return await orderGetAllUseCase.Execute(listAll);
+        var orders = await orderGetAllUseCase.Execute(listAll);
+        return orders.FromDomainToDto();
     }
 
-    public async Task<Order?> GetAsync(Guid id)
+    public async Task<OrderDetailDto?> GetAsync(Guid id)
     {
-        return await getOrderDetailsUseCase.Execute(id);
+        var order = await getOrderDetailsUseCase.Execute(id);
+        return order.FromEntityToDto();
     }
 
     public async Task<bool> UpdateStatusAsync(Guid orderId, OrderStatus newStatus)

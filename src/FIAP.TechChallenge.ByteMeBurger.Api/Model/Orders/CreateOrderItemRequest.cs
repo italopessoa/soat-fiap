@@ -5,7 +5,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 /// <summary>
 /// Add Product to order
 /// </summary>
-public class CreateOrderItemDto
+public class CreateOrderItemRequest
 {
     /// <summary>
     /// Product Id

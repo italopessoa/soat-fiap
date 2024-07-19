@@ -1,6 +1,9 @@
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -39,17 +42,13 @@ public class OrdersControllerTest
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
         expectedOrder.AddOrderItem(product.Id, product.Name, product.Price, 10);
 
-        var orders = new[]
-        {
-            expectedOrder
-        };
         var expectedOrdersDto = new OrderListItemDto[]
         {
-            expectedOrder.ToOrderListViewModel()
+            expectedOrder.FromEntityToListDto()
         };
 
         _serviceMock.Setup(s => s.GetAllAsync(false))
-            .ReturnsAsync(orders.ToList().AsReadOnly);
+            .ReturnsAsync(expectedOrdersDto);
 
         // Act
         var response = await _target.Get(false, CancellationToken.None);
@@ -88,7 +87,7 @@ public class OrdersControllerTest
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))
-            .ReturnsAsync(expectedOrder);
+            .ReturnsAsync(expectedOrder.FromEntityToCreatedDto());
 
         // Act
         var response = await _target.Post(createOrderCommand, CancellationToken.None);
@@ -134,7 +133,7 @@ public class OrdersControllerTest
 
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
                 It.IsAny<List<SelectedProduct>>()))
-            .ReturnsAsync(expectedOrder);
+            .ReturnsAsync(expectedOrder.FromEntityToCreatedDto());
 
         // Act
         var response = await _target.Post(createOrderCommand, CancellationToken.None);
@@ -171,7 +170,7 @@ public class OrdersControllerTest
         var expectedOrderDto = expectedOrder.ToOrderViewModel();
 
         _serviceMock.Setup(s => s.GetAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(expectedOrder);
+            .ReturnsAsync(expectedOrder.FromEntityToDto());
 
         // Act
         var response = await _target.Get(expectedOrder.Id, CancellationToken.None);
@@ -192,7 +191,7 @@ public class OrdersControllerTest
     {
         // Arrange
         _serviceMock.Setup(s => s.GetAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(default(Order));
+            .ReturnsAsync(default(OrderDetailDto));
 
         // Act
         var response = await _target.Get(Guid.NewGuid(), CancellationToken.None);

@@ -1,4 +1,5 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Model;
@@ -35,7 +36,7 @@ public class NotificationsController : ControllerBase
         [FromHeader(Name = "x-request-id")] string xRequestId)
     {
         _logger.LogInformation("Received MercadoPago webhook event {@Payload}", @event);
-        if (@event.Action == "payment.updated" && await CheckIfPaymentExists(@event.Data.Id, PaymentType.MercadoPago))
+        if (@event.Action == "payment.updated")
         {
             Response.OnCompleted(async () =>
             {
@@ -68,13 +69,10 @@ public class NotificationsController : ControllerBase
     {
         _logger.LogInformation("Received FakePayment webhook event {ExternalReference}", externalReference);
 
-        if (await CheckIfPaymentExists(externalReference, PaymentType.Test))
+        Response.OnCompleted(async () =>
         {
-            Response.OnCompleted(async () =>
-            {
-                await _paymentService.SyncPaymentStatusWithGatewayAsync(externalReference, PaymentType.Test);
-            });
-        }
+            await _paymentService.SyncPaymentStatusWithGatewayAsync(externalReference, PaymentType.Test);
+        });
 
         return Ok();
     }

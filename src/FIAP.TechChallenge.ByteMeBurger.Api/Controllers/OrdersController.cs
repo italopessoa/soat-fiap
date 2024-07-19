@@ -1,5 +1,8 @@
 using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -36,8 +39,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
 
         logger.LogInformation("Order created with ID: {OrderId}", order.Id);
-        return CreatedAtAction(nameof(Get), new { id = order.Id },
-            new NewOrderDto(order.Id, order.TrackingCode.Value));
+        return CreatedAtAction(nameof(Get), order);
     }
 
     /// <summary>
@@ -54,7 +56,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         logger.LogInformation("Getting all orders");
 
         var ordersDto = await cache.GetOrCreateAsync($"orders-{(listAll ? "nonFilter" : "filter")}",
-            async cancel => (await orderService.GetAllAsync(listAll)).ToOrderListViewModel(), token: cancellationToken);
+            async cancel => await orderService.GetAllAsync(listAll), token: cancellationToken);
 
         logger.LogInformation("Retrieved {Count} orders", ordersDto.Count());
         return Ok(ordersDto);
@@ -74,7 +76,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
             return BadRequest("Invalid OrderId: An order ID must not be empty.");
 
         var order = await cache.GetOrCreateAsync($"order-{id}",
-            async cancel => (await orderService.GetAsync(id)).ToOrderViewModel(), token: cancellationToken);
+            async cancel => await orderService.GetAsync(id), token: cancellationToken);
 
         if (order is null)
         {

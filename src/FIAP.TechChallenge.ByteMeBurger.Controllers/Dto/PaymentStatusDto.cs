@@ -1,4 +1,4 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 /// <summary>
 /// Represents the payment status view model.
@@ -12,3 +12,4 @@ public enum PaymentStatusDto
     Paid = 4,
     Cancelled = 5
 }
+

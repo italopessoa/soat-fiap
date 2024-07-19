@@ -1,5 +1,7 @@
-using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +28,7 @@ public class ProductsController(IProductService productService, ILogger<Products
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Product list.</returns>
     [HttpGet]
-    public async Task<ActionResult<ReadOnlyCollection<ProductDto>>> Get(
+    public async Task<ActionResult<IReadOnlyCollection<ProductDto>>> Get(
         [FromQuery] ProductCategory? productCategory, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting products by category: {ProductCategory}", productCategory);
@@ -36,9 +38,7 @@ public class ProductsController(IProductService productService, ILogger<Products
 
         var products = await productsTask.WaitAsync(cancellationToken);
         logger.LogInformation("Retrieved {Count} products", products.Count);
-        return Ok(products.Select(p => p.ToProductViewModel())
-            .ToList()
-            .AsReadOnly());
+        return Ok(products);
     }
 
     /// <summary>

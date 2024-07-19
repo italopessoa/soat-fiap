@@ -1,4 +1,4 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 /// <summary>
 /// Product added to order
@@ -30,4 +30,3 @@ public class OrderItemDto
     /// </summary>
     public string ProductName { get; set; }
 }
-

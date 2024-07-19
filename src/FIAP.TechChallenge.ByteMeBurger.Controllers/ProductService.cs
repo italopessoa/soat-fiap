@@ -1,9 +1,9 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers;
 
 public class ProductService(
     IGetAllProductsUseCase getAllProductsUseCase,
@@ -12,10 +12,11 @@ public class ProductService(
     ICreateProductUseCase createProductUseCase,
     IUpdateProductUseCase updateProductUseCase) : IProductService
 {
-    public async Task<Product> CreateAsync(string name, string description, ProductCategory category, decimal price,
+    public async Task<ProductDto> CreateAsync(string name, string description, ProductCategory category, decimal price,
         IReadOnlyList<string> images)
     {
-        return await createProductUseCase.Execute(name, description, category, price, images.ToArray());
+        var product = await createProductUseCase.Execute(name, description, category, price, images.ToArray());
+        return product.FromEntityToDto();
     }
 
     public async Task<bool> DeleteAsync(Guid productId)
@@ -23,14 +24,16 @@ public class ProductService(
         return await deleteProductUseCase.Execute(productId);
     }
 
-    public async Task<IReadOnlyCollection<Product>> GetAll()
+    public async Task<IReadOnlyCollection<ProductDto>> GetAll()
     {
-        return await getAllProductsUseCase.Execute();
+        var products = await getAllProductsUseCase.Execute();
+        return products.FromEntityToDto();
     }
 
-    public async Task<IReadOnlyCollection<Product>> FindByCategory(ProductCategory category)
+    public async Task<IReadOnlyCollection<ProductDto>> FindByCategory(ProductCategory category)
     {
-        return await findProductsByCategoryUseCase.Execute(category);
+        var products = await findProductsByCategoryUseCase.Execute(category);
+        return products.FromEntityToDto();
     }
 
     public async Task<bool> UpdateAsync(Guid id, string name, string description, ProductCategory category,

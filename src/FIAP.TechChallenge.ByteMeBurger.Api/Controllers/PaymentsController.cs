@@ -1,6 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
@@ -43,7 +43,7 @@ public class PaymentsController : ControllerBase
         {
             var payment =
                 await _paymentService.CreateOrderPaymentAsync(createPaymentRequest.ToDomain());
-            return Created("", new PaymentDto(payment.Id.Value, payment.QrCode));
+            return Created("", payment);
         }
     }
 
@@ -57,7 +57,7 @@ public class PaymentsController : ControllerBase
     public async Task<ActionResult<PaymentStatusDto>> GetStatus(
         Guid id, CancellationToken cancellationToken)
     {
-        var payment = await _paymentService.GetPaymentAsync(new PaymentId(id));
+        var payment = await _paymentService.GetPaymentAsync(id);
 
         if (payment is null)
             return NotFound();

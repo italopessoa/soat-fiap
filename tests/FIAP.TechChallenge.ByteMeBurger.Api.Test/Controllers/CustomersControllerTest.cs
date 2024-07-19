@@ -1,5 +1,9 @@
+using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -30,7 +34,7 @@ public class CustomersControllerTest
     {
         // Arrange
         _serviceMock.Setup(s => s.FindByCpfAsync(It.IsAny<string>()))
-            .ReturnsAsync(default(Customer));
+            .ReturnsAsync(default(CustomerDto));
 
         // Act
         var response = await _target.Get("863.917.790-23", CancellationToken.None);
@@ -58,7 +62,7 @@ public class CustomersControllerTest
             Cpf = cpf
         };
         _serviceMock.Setup(s => s.FindByCpfAsync(It.IsAny<string>()))
-            .ReturnsAsync(new Customer(customerId, cpf, "customer name", "customer@email.com"));
+            .ReturnsAsync(new CustomerDto(customerId, cpf, "customer name", "customer@email.com"));
 
         // Act
         var response = await _target.Get("863.917.790-23", CancellationToken.None);
@@ -80,8 +84,7 @@ public class CustomersControllerTest
     public async Task Create_CpfOnly_Customer()
     {
         // Arrange
-        var newCustomer = new Customer(cpf);
-        var expectedCustomer = newCustomer.ToCustomerViewModel();
+        var newCustomer = new Fixture().Create<CustomerDto>();
         var command = new CreateCustomerRequest()
         {
             Cpf = cpf
@@ -99,7 +102,7 @@ public class CustomersControllerTest
         {
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>().Value.Should()
-                .BeEquivalentTo(expectedCustomer, o => o.ComparingByMembers<CustomerDto>());
+                .BeEquivalentTo(newCustomer, o => o.ComparingByMembers<CustomerDto>());
         }
 
         _serviceMock.VerifyAll();
@@ -110,14 +113,17 @@ public class CustomersControllerTest
     public async Task Create_Full_Customer(string name, string email)
     {
         // Arrange
-        var newCustomer = new Customer(cpf, name, email);
-        var expectedCustomer = newCustomer.ToCustomerViewModel();
         var command = new CreateCustomerRequest()
         {
             Cpf = cpf,
             Name = name,
             Email = email
         };
+        var newCustomer = new Fixture().Build<CustomerDto>()
+            .With(c => c.Cpf, command.Cpf)
+            .With(c => c.Name, command.Name)
+            .With(c => c.Email, command.Email)
+            .Create();
 
         _serviceMock.Setup(s =>
                 s.CreateAsync(
@@ -133,7 +139,7 @@ public class CustomersControllerTest
         using (new AssertionScope())
         {
             response.Result.Should().BeOfType<OkObjectResult>();
-            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedCustomer);
+            response.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(newCustomer);
         }
 
         _serviceMock.VerifyAll();
