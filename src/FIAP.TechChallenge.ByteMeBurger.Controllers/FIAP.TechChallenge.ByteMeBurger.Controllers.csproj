@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Application\FIAP.TechChallenge.ByteMeBurger.Application.csproj" />
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway.csproj" />
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="ServiceCollectionsExtensions.cs" />
+    </ItemGroup>
+
+</Project>

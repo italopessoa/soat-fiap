@@ -13,5 +13,5 @@ public class CreateOrderRequest
     /// <summary>
     /// Order items
     /// </summary>
-    public List<CreateOrderItemDto> Items { get; set; } = new();
+    public List<CreateOrderItemRequest> Items { get; set; } = new();
 }

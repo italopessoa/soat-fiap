@@ -10,6 +10,7 @@
     <ItemGroup>
         <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Application" />
         <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Api.Test" />
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Controllers.Test" />
         <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Application.Test" />
         <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Domain.Test" />
         <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Persistence.Test" />

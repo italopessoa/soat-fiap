@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Controllers\FIAP.TechChallenge.ByteMeBurger.Controllers.csproj" />
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Persistence\FIAP.TechChallenge.ByteMeBurger.Persistence.csproj" />
     </ItemGroup>

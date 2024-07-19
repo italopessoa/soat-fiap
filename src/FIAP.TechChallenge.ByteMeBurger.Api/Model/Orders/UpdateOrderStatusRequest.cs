@@ -1,3 +1,5 @@
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Microsoft.Build.Framework;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;

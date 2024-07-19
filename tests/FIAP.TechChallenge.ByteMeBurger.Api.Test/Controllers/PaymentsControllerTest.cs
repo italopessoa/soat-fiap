@@ -1,5 +1,8 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -31,7 +34,7 @@ public class PaymentsControllerTest
     {
         // Arrange
         var paymentId = new PaymentId(Guid.NewGuid());
-        var payment = new Payment(paymentId, "qrcode", 10);
+        var payment = new PaymentDto(paymentId.Value, "qrcode", PaymentStatusDto.Pending);
         _serviceMock.Setup(p => p.CreateOrderPaymentAsync(It.IsAny<CreateOrderPaymentRequestDto>()))
             .ReturnsAsync(payment);
         var paymentRequest = new CreatePaymentRequest
@@ -49,7 +52,7 @@ public class PaymentsControllerTest
             response.Result.Should().BeOfType<CreatedResult>();
             var paymentViewModel = response.Result.As<CreatedResult>().Value.As<PaymentDto>();
 
-            paymentViewModel.PaymentId.Should().Be(payment.Id.Value);
+            paymentViewModel.Id.Should().Be(paymentId.Value);
             paymentViewModel.QrCode.Should().Be(payment.QrCode);
         }
     }
@@ -59,11 +62,8 @@ public class PaymentsControllerTest
     {
         // Arrange
         var paymentId = new PaymentId(Guid.NewGuid());
-        var payment = new Payment(paymentId, "qrcode", 10, DomainPaymentType.MercadoPago)
-        {
-            Status = PaymentStatus.Approved
-        };
-        _serviceMock.Setup(p => p.GetPaymentAsync(It.IsAny<PaymentId>()))
+        var payment = new PaymentDto(paymentId.Value, "qrcode", PaymentStatusDto.Approved);
+        _serviceMock.Setup(p => p.GetPaymentAsync(It.IsAny<Guid>()))
             .ReturnsAsync(payment);
 
         // Act

@@ -1,8 +1,14 @@
-using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using Moq;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Test;
 
 public class CustomerServiceTests
 {
@@ -33,7 +39,8 @@ public class CustomerServiceTests
         using (new AssertionScope())
         {
             customer.Should().NotBeNull();
-            customer.Should().BeEquivalentTo(expectedCustomer, options => options.ComparingByMembers<Customer>());
+            customer.Should().BeEquivalentTo(expectedCustomer.FromEntityToDto(),
+                options => options.ComparingByMembers<CustomerDto>());
         }
     }
 
@@ -67,7 +74,9 @@ public class CustomerServiceTests
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(expectedCustomer, options => options.ComparingByMembers<Customer>());
+            result.Should().BeEquivalentTo(expectedCustomer.FromEntityToDto(),
+                options => options.ComparingByMembers<CustomerDto>()
+                    .Excluding(c => c.Id));
             result.Id.Should().NotBeEmpty();
         }
     }
@@ -89,7 +98,9 @@ public class CustomerServiceTests
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().Be(customer);
+            result.Should().BeEquivalentTo(customer.FromEntityToDto(), options => options
+                .ComparingByMembers<CustomerDto>()
+                .Excluding(x => x.Id));
         }
     }
 }

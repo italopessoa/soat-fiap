@@ -1,6 +1,6 @@
 using AutoFixture;
-using FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
+using FIAP.TechChallenge.ByteMeBurger.Test.Common;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Products;
 

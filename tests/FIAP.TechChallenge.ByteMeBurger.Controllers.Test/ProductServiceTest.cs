@@ -1,8 +1,16 @@
 using AutoFixture;
 using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
-using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Test.Common;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using JetBrains.Annotations;
+using Moq;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
 
@@ -36,11 +44,11 @@ public class ProductServiceTest
 
     [Theory]
     [InlineAutoData]
-    public async Task Create_Product_Success(string name, string description, ProductCategory category, decimal price,
+    public async Task Create_Product_Success(string name, string description, ProductCategoryDto category, decimal price,
         IReadOnlyList<string> images)
     {
         // Arrange
-        var expectedProduct = new Product(name, description, category, price, images);
+        var expectedProduct = new Product(name, description, (ProductCategory)category, price, images);
         expectedProduct.Create();
 
         _mockCreateProductUseCase.Setup(s => s.Execute(It.IsAny<string>(),
@@ -51,7 +59,7 @@ public class ProductServiceTest
             .ReturnsAsync(expectedProduct);
 
         // Act
-        var product = await _target.CreateAsync(name, description, category, price, images);
+        var product = await _target.CreateAsync(name, description, (ProductCategory)category, price, images);
 
         // Assert
         using (new AssertionScope())
@@ -63,8 +71,6 @@ public class ProductServiceTest
             product.Category.Should().Be(category);
             product.Price.Should().Be(price);
             product.Images.Should().BeEquivalentTo(images);
-            product.CreationDate.Should().NotBe(default);
-            product.LastUpdate.Should().BeNull();
         }
 
         _mockCreateProductUseCase.VerifyAll();
@@ -115,7 +121,7 @@ public class ProductServiceTest
         using (new AssertionScope())
         {
             products.Should().NotBeNull();
-            products.Should().BeEquivalentTo(expectedProducts);
+            products.Should().BeEquivalentTo(expectedProducts.FromEntityToDto());
             _mockGetAllProductsUseCase.VerifyAll();
         }
     }
@@ -158,7 +164,7 @@ public class ProductServiceTest
         // Assert
         using (new AssertionScope())
         {
-            products.Should().BeEquivalentTo(expectedProducts);
+            products.Should().BeEquivalentTo(expectedProducts.FromEntityToDto());
             _mockFindProductsByCategoryUseCase.VerifyAll();
         }
     }
@@ -213,18 +219,5 @@ public class ProductServiceTest
             updated.Should().BeTrue();
             _mockUpdateProductUseCase.VerifyAll();
         }
-    }
-}
-
-public class ProductGenerator : ISpecimenBuilder
-{
-    public object Create(object request, ISpecimenContext context)
-    {
-        var type = request as Type;
-        if (type != typeof(Product))
-            return new NoSpecimen();
-
-        return new Product(context.Create<string>(), context.Create<string>(), context.Create<ProductCategory>(),
-            context.Create<decimal>(), context.CreateMany<string>().ToList().AsReadOnly());
     }
 }

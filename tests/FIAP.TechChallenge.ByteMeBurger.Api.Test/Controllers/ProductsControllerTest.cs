@@ -4,9 +4,13 @@ using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Test.Common;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
@@ -36,7 +40,8 @@ public class ProductsControllerTest
         fixture.Customizations.Add(new ProductGenerator());
         var product = fixture.Create<Product>();
         _serviceMock.Setup(s => s.GetAll())
-            .ReturnsAsync([product]);
+            .ReturnsAsync(new List<ProductDto>() { product.FromEntityToDto() }
+                .AsReadOnly());
 
         // Act
         var response = await _target.Get(null, CancellationToken.None);
@@ -49,8 +54,8 @@ public class ProductsControllerTest
                 .Value.Should().BeOfType<ReadOnlyCollection<ProductDto>>()
                 .And.BeEquivalentTo(new List<ProductDto>
                 {
-                    product.ToProductViewModel()
-                }.AsReadOnly());
+                    product.FromEntityToDto()
+                });
 
             _serviceMock.Verify(s => s.GetAll(), Times.Once);
             _serviceMock.Verify(s => s.FindByCategory(It.IsAny<ProductCategory>()), Times.Never);
@@ -63,7 +68,7 @@ public class ProductsControllerTest
     {
         // Arrange
         _serviceMock.Setup(s => s.GetAll())
-            .ReturnsAsync([]);
+            .ReturnsAsync(new List<ProductDto>().AsReadOnly());
 
         // Act
         var response = await _target.Get(null, CancellationToken.None);
@@ -88,7 +93,7 @@ public class ProductsControllerTest
         // Arrange
         var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Drink, 2, []);
         _serviceMock.Setup(s => s.FindByCategory(It.IsAny<ProductCategory>()))
-            .ReturnsAsync([product]);
+            .ReturnsAsync(new List<ProductDto>() { product.FromEntityToDto() }.AsReadOnly());
 
         // Act
         var response = await _target.Get(ProductCategory.Drink, CancellationToken.None);
@@ -101,8 +106,8 @@ public class ProductsControllerTest
                 .Value.Should().BeOfType<ReadOnlyCollection<ProductDto>>()
                 .And.BeEquivalentTo(new List<ProductDto>
                 {
-                    product.ToProductViewModel()
-                }.AsReadOnly());
+                    product.FromEntityToDto()
+                });
 
             _serviceMock.Verify(s => s.GetAll(), Times.Never);
             _serviceMock.Verify(s => s.FindByCategory(It.Is<ProductCategory>(c => c == ProductCategory.Drink)),
@@ -115,9 +120,8 @@ public class ProductsControllerTest
     public async Task GetByCategory_Empty()
     {
         // Arrange
-        var product = new Product(Guid.NewGuid(), "coca", "sem acucar", ProductCategory.Drink, 2, []);
         _serviceMock.Setup(s => s.FindByCategory(It.IsAny<ProductCategory>()))
-            .ReturnsAsync([]);
+            .ReturnsAsync(Array.Empty<ProductDto>().ToList().AsReadOnly());
 
         // Act
         var response = await _target.Get(ProductCategory.Drink, CancellationToken.None);
@@ -227,7 +231,7 @@ public class ProductsControllerTest
         // Arrange
         _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<ProductCategory>(), It.IsAny<decimal>(), It.IsAny<string[]>()))
-            .ReturnsAsync(newProductCommand.ToProduct());
+            .ReturnsAsync(newProductCommand.ToProduct().FromEntityToDto());
 
         // Act
         var response = await _target.Create(newProductCommand, CancellationToken.None);
@@ -339,18 +343,5 @@ public class ProductsControllerTest
                     It.IsAny<ProductCategory>(), It.IsAny<decimal>(), It.IsAny<string[]>()), Times.Once);
             _serviceMock.VerifyAll();
         }
-    }
-}
-
-public class ProductGenerator : ISpecimenBuilder
-{
-    public object Create(object request, ISpecimenContext context)
-    {
-        var type = request as Type;
-        if (type != typeof(Product))
-            return new NoSpecimen();
-
-        return new Product(context.Create<string>(), context.Create<string>(), context.Create<ProductCategory>(),
-            context.Create<decimal>(), context.CreateMany<string>().ToList().AsReadOnly());
     }
 }

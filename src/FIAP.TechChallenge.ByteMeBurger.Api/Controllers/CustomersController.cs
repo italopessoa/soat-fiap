@@ -1,5 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +40,7 @@ public class CustomersController(ICustomerService customerService, ILogger<Custo
         }
 
         logger.LogInformation("Customer with CPF: {Cpf} found {@customer}", cpf, customer);
-        return Ok(customer.ToCustomerViewModel());
+        return Ok(customer);
     }
 
     /// <summary>
@@ -57,6 +60,6 @@ public class CustomersController(ICustomerService customerService, ILogger<Custo
             createCustomerRequest.Email);
 
         logger.LogInformation("Customer with CPF: {Cpf} created", createCustomerRequest.Cpf);
-        return Ok(customer.ToCustomerViewModel());
+        return Ok(customer);
     }
 }

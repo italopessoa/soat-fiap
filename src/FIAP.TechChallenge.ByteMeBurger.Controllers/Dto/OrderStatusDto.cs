@@ -1,6 +1,6 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
-/// <summary>
+// <summary>
 /// Orders statuses
 /// </summary>
 public enum OrderStatusDto

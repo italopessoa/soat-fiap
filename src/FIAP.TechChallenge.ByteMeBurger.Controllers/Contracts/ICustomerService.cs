@@ -1,6 +1,6 @@
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 
 public interface ICustomerService
 {
@@ -9,7 +9,7 @@ public interface ICustomerService
     /// </summary>
     /// <param name="cpf">Customer's cpf</param>
     /// <returns>Customer entity</returns>
-    Task<Customer?> FindByCpfAsync(string cpf);
+    Task<CustomerDto?> FindByCpfAsync(string cpf);
 
     /// <summary>
     /// Create new customer
@@ -18,5 +18,5 @@ public interface ICustomerService
     /// <param name="name">Name</param>
     /// <param name="email">Email</param>
     /// <returns>Customer entity</returns>
-    Task<Customer> CreateAsync(string cpf, string? name, string? email);
+    Task<CustomerDto> CreateAsync(string cpf, string? name, string? email);
 }

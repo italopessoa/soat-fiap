@@ -13,11 +13,7 @@ public class Product : Entity<Guid>, IAggregateRoot
 
     public decimal Price { get; private set; }
 
-    public IReadOnlyList<string> Images { get; private set; } = [];
-
-    public DateTime CreationDate { get; set; }
-
-    public DateTime? LastUpdate { get; set; }
+    public IReadOnlyList<string> Images { get; set; } = [];
 
     public Product()
     {
@@ -43,7 +39,7 @@ public class Product : Entity<Guid>, IAggregateRoot
 
     public void Create()
     {
-        CreationDate = DateTime.UtcNow;
+        Created = DateTime.UtcNow;
     }
 
     public void SetImages(string[] images)
@@ -59,7 +55,7 @@ public class Product : Entity<Guid>, IAggregateRoot
         Category = oldProduct.Category;
         Price = oldProduct.Price;
         Images = oldProduct.Images;
-        LastUpdate = DateTime.UtcNow;
+        Updated = DateTime.UtcNow;
     }
 
     private static void Validate(string name, string description, decimal price)

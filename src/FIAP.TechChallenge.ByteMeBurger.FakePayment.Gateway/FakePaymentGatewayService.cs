@@ -3,7 +3,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
+namespace FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway;
 
 [ExcludeFromCodeCoverage]
 public class FakePaymentGatewayService : IPaymentGateway

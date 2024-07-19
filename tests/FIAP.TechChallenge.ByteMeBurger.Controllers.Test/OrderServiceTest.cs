@@ -1,10 +1,15 @@
 using AutoFixture;
 using AutoFixture.Xunit2;
-using FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using JetBrains.Annotations;
+using Moq;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Test;
 
 [TestSubject(typeof(OrderService))]
 public class OrderServiceTest
@@ -35,7 +40,7 @@ public class OrderServiceTest
     public async Task GetAll_Success()
     {
         // Arrange
-        var expectedOrders = new Fixture().CreateMany<Order>().ToList();
+        var expectedOrders = new Fixture().CreateMany<Domain.Entities.Order>().ToList();
         _mockOrderGetAllUseCase.Setup(r => r.Execute(true))
             .ReturnsAsync(expectedOrders.AsReadOnly);
 
@@ -47,7 +52,7 @@ public class OrderServiceTest
         {
             result.Should().NotBeNull();
             result.Should().NotBeEmpty();
-            result.Should().BeEquivalentTo(expectedOrders);
+            result.Should().BeEquivalentTo(expectedOrders.FromDomainToDto());
             _mockOrderGetAllUseCase.Verify(m => m.Execute(true), Times.Once);
         }
     }
@@ -57,7 +62,7 @@ public class OrderServiceTest
     {
         // Arrange
         _mockOrderGetAllUseCase.Setup(r => r.Execute(true))
-            .ReturnsAsync(Array.Empty<Order>().AsReadOnly);
+            .ReturnsAsync(Array.Empty<Domain.Entities.Order>().AsReadOnly);
 
         // Act
         var result = await _target.GetAllAsync(true);
@@ -77,7 +82,8 @@ public class OrderServiceTest
     {
         // Arrange
         var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
-        var expectedOrder = new Order(expectedCustomer);
+        var expectedOrder = new Domain.Entities.Order(expectedCustomer);
+        expectedOrder.SetTrackingCode("trackingCode");
         selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "product name", 1, i.Quantity); });
 
         _mockCreateOrderUseCase.Setup(s => s.Execute(It.IsAny<Cpf?>(),
@@ -96,8 +102,8 @@ public class OrderServiceTest
 
             result.Should().NotBeNull();
             _mockOrderRepository.Verify(m => m.CreateAsync(
-                It.Is<Order>(o => o.Created != DateTime.MinValue
-                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
+                It.Is<Domain.Entities.Order>(o => o.Created != DateTime.MinValue
+                                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
         }
     }
 
@@ -105,7 +111,7 @@ public class OrderServiceTest
     public async Task Get_Success()
     {
         // Arrange
-        var expectedOrder = new Fixture().Create<Order>();
+        var expectedOrder = new Fixture().Create<Domain.Entities.Order>();
 
         _mockGetOrderDetailsUseCase.Setup(r => r.Execute(It.IsAny<Guid>()))
             .ReturnsAsync(expectedOrder);
@@ -117,7 +123,7 @@ public class OrderServiceTest
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Should().Be(expectedOrder);
+            result.Should().BeEquivalentTo(expectedOrder.FromEntityToDto());
             _mockGetOrderDetailsUseCase.Verify(m => m.Execute(It.IsAny<Guid>()), Times.Once);
         }
     }
@@ -127,7 +133,7 @@ public class OrderServiceTest
     {
         // Arrange
         _mockGetOrderDetailsUseCase.Setup(r => r.Execute(It.IsAny<Guid>()))
-            .ReturnsAsync((Order?)null);
+            .ReturnsAsync((Domain.Entities.Order?)null);
 
         // Act
         var result = await _target.GetAsync(Guid.NewGuid());

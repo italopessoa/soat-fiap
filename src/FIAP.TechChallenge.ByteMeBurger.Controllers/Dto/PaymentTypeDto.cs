@@ -1,4 +1,4 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 public enum PaymentTypeDto
 {

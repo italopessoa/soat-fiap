@@ -1,6 +1,4 @@
-using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
-
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 public class OrderDetailDto
 {

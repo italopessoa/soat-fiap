@@ -23,16 +23,15 @@ public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<Custom
             logger.LogInformation("Customer with CPF: {Cpf} not found", cpf);
         }
 
-        return (Customer)customerDto;
+        return customerDto.FromDtoToEntity();
     }
 
     public async Task<Customer> CreateAsync(Customer customer)
     {
         logger.LogInformation("Creating customer with CPF: {Cpf}", customer.Cpf);
-        var param = (CustomerDto)customer;
         var rowsAffected = await dbConnection.ExecuteAsync(
             Constants.InsertCustomerQuery,
-            param);
+            customer.FromEntityToDto());
 
         if (rowsAffected > 0)
         {

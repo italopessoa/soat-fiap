@@ -1,8 +1,7 @@
-using System.Collections.ObjectModel;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 
 public interface IOrderService
 {
@@ -12,7 +11,7 @@ public interface IOrderService
     /// <param name="customerCpf">Customer cpf.</param>
     /// <param name="selectedProducts">Order items</param>
     /// <returns>Order entity</returns>
-    Task<Order> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts);
+    Task<NewOrderDto> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts);
 
     /// <summary>
     /// Get all active orders
@@ -20,14 +19,14 @@ public interface IOrderService
     /// <param name="listAll">If true it will return all orders. If false it returns only orders
     /// with status (Received, In Preparation or Ready).</param>
     /// <returns>List of orders</returns>
-    Task<ReadOnlyCollection<Order>> GetAllAsync(bool listAll);
+    Task<IReadOnlyCollection<OrderListItemDto>> GetAllAsync(bool listAll);
 
     /// <summary>
     /// Get order detail
     /// </summary>
     /// <param name="id">Order Id</param>
     /// <returns>Order entity</returns>
-    Task<Order?> GetAsync(Guid id);
+    Task<OrderDetailDto?> GetAsync(Guid id);
 
     /// <summary>
     /// Update Order status

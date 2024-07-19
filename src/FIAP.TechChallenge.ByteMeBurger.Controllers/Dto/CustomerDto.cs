@@ -1,4 +1,6 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
+using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 /// <summary>
 /// Customer detail
@@ -22,4 +24,17 @@ public class CustomerDto
     /// Customer E-mail
     /// </summary>
     public string? Email { get; set; }
+
+    public CustomerDto()
+    {
+
+    }
+
+    public CustomerDto(Guid customerId, Cpf cpf, string customerName, string customerEmailCom)
+    {
+        Id = customerId;
+        Cpf = cpf;
+        Name = customerName;
+        Email = customerEmailCom;
+    }
 }

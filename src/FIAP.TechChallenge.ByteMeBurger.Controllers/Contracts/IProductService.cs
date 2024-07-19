@@ -1,7 +1,7 @@
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 
 public interface IProductService
 {
@@ -14,7 +14,7 @@ public interface IProductService
     /// <param name="price">Product price</param>
     /// <param name="images">Product images</param>
     /// <returns>Product entity.</returns>
-    Task<Product> CreateAsync(string name, string description, ProductCategory category, decimal price,
+    Task<ProductDto> CreateAsync(string name, string description, ProductCategory category, decimal price,
         IReadOnlyList<string> images);
 
     // TODO add new method use issue https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/issues/32
@@ -31,14 +31,14 @@ public interface IProductService
     /// Get all products
     /// </summary>
     /// <returns>List of products</returns>
-    Task<IReadOnlyCollection<Product>> GetAll();
+    Task<IReadOnlyCollection<ProductDto>> GetAll();
 
     /// <summary>
     /// Find products by category
     /// </summary>
     /// <param name="category">Product category <see cref="ProductCategory"/></param>
     /// <returns>Product list</returns>
-    Task<IReadOnlyCollection<Product>> FindByCategory(ProductCategory category);
+    Task<IReadOnlyCollection<ProductDto>> FindByCategory(ProductCategory category);
 
     // TODO fix it, return Product instead of boolean
     /// <summary>

@@ -1,4 +1,4 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 public record OrderListItemDto(
     Guid Id,
@@ -7,3 +7,4 @@ public record OrderListItemDto(
     OrderStatusDto Status,
     DateTime CreatedAt,
     DateTime? UpdatedAt);
+

@@ -1,10 +1,11 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Controllers;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers;
 
 public class PaymentService : IPaymentService
 {
@@ -27,7 +28,7 @@ public class PaymentService : IPaymentService
         _updateOrderPaymentUseCase = updateOrderPaymentUseCase;
     }
 
-    public async Task<Payment> CreateOrderPaymentAsync(CreateOrderPaymentRequestDto command)
+    public async Task<PaymentDto> CreateOrderPaymentAsync(CreateOrderPaymentRequestDto command)
     {
         var payment = await _createOrderPaymentUseCase.Execute(command.OrderId, command.PaymentType);
         if (payment is null)
@@ -35,22 +36,24 @@ public class PaymentService : IPaymentService
 
         await _paymentRepository.SaveAsync(payment);
         await _updateOrderPaymentUseCase.Execute(payment.OrderId, payment.Id);
-        return payment;
+        return payment.FromEntityToDto();
     }
 
-    public async Task<Payment?> GetPaymentAsync(PaymentId paymentId)
+    public async Task<PaymentDto?> GetPaymentAsync(Guid id)
     {
-        return await _paymentRepository.GetPaymentAsync(paymentId);
+        var payment = await _paymentRepository.GetPaymentAsync(new PaymentId(id));
+        return payment?.FromEntityToDto();
     }
 
-    public async Task<Payment?> GetPaymentAsync(string paymentId, PaymentType paymentType)
+    public async Task<PaymentDto?> GetPaymentAsync(string externalReference, PaymentType paymentType)
     {
-        return await _paymentRepository.GetPaymentAsync(paymentId, paymentType);
+        var payment = await _paymentRepository.GetPaymentAsync(externalReference, paymentType);
+        return payment?.FromEntityToDto();
     }
 
     public async Task<bool> SyncPaymentStatusWithGatewayAsync(string externalReference, PaymentType paymentType)
     {
-        var payment = await GetPaymentAsync(externalReference, paymentType);
+        var payment = await _paymentRepository.GetPaymentAsync(externalReference, paymentType);
         if (payment is null)
             return false;
 

@@ -1,5 +1,8 @@
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -51,7 +54,7 @@ public class NotificationsControllerTest
             .Create();
 
         _mockPaymentService.Setup(s => s.GetPaymentAsync(@event.Data.Id, PaymentType.MercadoPago))
-            .ReturnsAsync(payment)
+            .ReturnsAsync(payment.FromEntityToDto())
             .Verifiable();
 
         _mockPaymentService.Setup(s => s.SyncPaymentStatusWithGatewayAsync(@event.Data.Id, PaymentType.MercadoPago))
@@ -75,7 +78,7 @@ public class NotificationsControllerTest
         // Arrange
         var @event = new Fixture().Create<MercadoPagoWebhookEvent>();
         _mockPaymentService.Setup(s => s.GetPaymentAsync(@event.Data.Id, PaymentType.MercadoPago))
-            .ReturnsAsync((Payment?)null)
+            .ReturnsAsync((PaymentDto?)null)
             .Verifiable();
 
         // Act
@@ -96,7 +99,7 @@ public class NotificationsControllerTest
         // Arrange
         var paymentExternalReference = Guid.NewGuid().ToString();
         _mockPaymentService.Setup(s => s.GetPaymentAsync(paymentExternalReference, PaymentType.Test))
-            .ReturnsAsync((Payment?)null)
+            .ReturnsAsync((PaymentDto?)null)
             .Verifiable();
 
         // Act
@@ -118,7 +121,7 @@ public class NotificationsControllerTest
         var paymentExternalReference = Guid.NewGuid().ToString();
         var payment = new Fixture().Create<Payment>();
         _mockPaymentService.Setup(s => s.GetPaymentAsync(It.IsAny<string>(), It.IsAny<PaymentType>()))
-            .ReturnsAsync(payment)
+            .ReturnsAsync(payment.FromEntityToDto())
             .Verifiable();
 
         // Act
