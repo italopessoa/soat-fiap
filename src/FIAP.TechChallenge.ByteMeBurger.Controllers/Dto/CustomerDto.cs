@@ -33,7 +33,7 @@ public class CustomerDto
     public CustomerDto(Guid customerId, Cpf cpf, string customerName, string customerEmailCom)
     {
         Id = customerId;
-        Cpf = cpf.ToString();
+        Cpf = cpf;
         Name = customerName;
         Email = customerEmailCom;
     }

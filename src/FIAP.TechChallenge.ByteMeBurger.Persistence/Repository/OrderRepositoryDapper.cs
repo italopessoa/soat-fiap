@@ -64,7 +64,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 }
                 else
                 {
-                    order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
+                    order = new Order(orderListDto.Id, customerDto.FromDtoToEntity(), (OrderStatus)orderListDto.Status,
                         new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created,
                         orderListDto.Updated);
 
@@ -103,7 +103,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 }
                 else
                 {
-                    order = new Order(orderListDto.Id, customerDto, (OrderStatus)orderListDto.Status,
+                    order = new Order(orderListDto.Id, customerDto.FromDtoToEntity(), (OrderStatus)orderListDto.Status,
                         new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created,
                         orderListDto.Updated);
 

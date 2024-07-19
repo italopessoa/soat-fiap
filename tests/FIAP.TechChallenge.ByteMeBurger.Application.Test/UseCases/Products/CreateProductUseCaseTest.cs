@@ -32,8 +32,8 @@ public class CreateProductUseCaseTest : BaseProductsUseCaseTests
             product.Category.Should().Be(category);
             product.Price.Should().Be(price);
             product.Images.Should().BeEquivalentTo(images);
-            product.CreationDate.Should().NotBe(default);
-            product.LastUpdate.Should().BeNull();
+            product.Created.Should().NotBe(default);
+            product.Updated.Should().BeNull();
             _productRepository.VerifyAll();
         }
     }

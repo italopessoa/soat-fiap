@@ -32,11 +32,10 @@ public class ProductRepositoryDapperTest
         // Arrange
         var product = new Product("product", "description", ProductCategory.Drink, 10,
             new List<string> { "image1" });
-        var parameters = (ProductDto)product;
         const string sql =
             "INSERT INTO Products (Name, Description, Category, Price, Images) VALUES (@Name, @Description, @Category, @Price, @Images)";
 
-        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, parameters, null, null, null))
+        _mockConnection.SetupDapperAsync(c => c.ExecuteAsync(sql, product.FromEntityToDto(), null, null, null))
             .ReturnsAsync(1);
 
         // Act
@@ -95,7 +94,7 @@ public class ProductRepositoryDapperTest
             Category = (int)ProductCategory.Drink,
             Price = 10,
             Images = "image1|image 2",
-            CreationDate = DateTime.UtcNow
+            Created = DateTime.UtcNow
         };
 
         _mockConnection.SetupDapperAsync(c => c.QueryAsync<ProductDto>(It.IsAny<string>(), null, null, null, null))
@@ -111,7 +110,7 @@ public class ProductRepositoryDapperTest
             result.Should().BeEquivalentTo(product, options =>
                 options.Excluding(p => p.Images)
                     .Excluding(p => p.Category)
-                    .Excluding(p => p.CreationDate)
+                    .Excluding(p => p.Created)
                     .ComparingByMembers<Product>()
             );
             result.Images.Should().BeEquivalentTo(product.Images.Split("|"));

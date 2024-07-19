@@ -1,8 +1,8 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
@@ -13,6 +13,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Consumes("application/json")]
+[AllowAnonymous]
 public class NotificationsController : ControllerBase
 {
     private readonly IPaymentService _paymentService;
@@ -48,17 +49,6 @@ public class NotificationsController : ControllerBase
         }
 
         return Ok();
-    }
-
-    private async Task<bool> CheckIfPaymentExists(string paymentId, PaymentType paymentType)
-    {
-        var paymentExists = await _paymentService.GetPaymentAsync(paymentId, paymentType) is not null;
-        if (!paymentExists)
-        {
-            _logger.LogWarning("Payment not found {PaymentId}. Message skipped.", paymentId);
-        }
-
-        return paymentExists;
     }
 
     /// <summary>

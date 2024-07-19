@@ -1,8 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
-using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 

@@ -22,9 +22,10 @@ public class MercadoPagoService : IPaymentGateway
 
     public MercadoPagoService(IOptions<MercadoPagoOptions> mercadoPagoOptions, ILogger<MercadoPagoService> logger)
     {
-        _logger = logger;
         ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.Value.WebhookSecret,
             nameof(mercadoPagoOptions.Value.WebhookSecret));
+
+        _logger = logger;
         _mercadoPagoOptions = mercadoPagoOptions.Value;
     }
 

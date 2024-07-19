@@ -104,10 +104,10 @@ public class ProductsControllerTest
             response.Result.Should().BeOfType<OkObjectResult>();
             response.Result.As<OkObjectResult>()
                 .Value.Should().BeOfType<ReadOnlyCollection<ProductDto>>()
-                .And.BeEquivalentTo(new List<Product>
+                .And.BeEquivalentTo(new List<ProductDto>
                 {
-                    product
-                }.FromEntityToDto());
+                    product.FromEntityToDto()
+                });
 
             _serviceMock.Verify(s => s.GetAll(), Times.Never);
             _serviceMock.Verify(s => s.FindByCategory(It.Is<ProductCategory>(c => c == ProductCategory.Drink)),

@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Dapper;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -27,14 +26,13 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
             logger.LogInformation("Product {ProductId} not found", id);
         }
 
-        return productDto;
+        return productDto.FromDtoToEntity();
     }
 
     public async Task<Product> CreateAsync(Product product)
     {
         logger.LogInformation("Creating product with name: {ProductName}", product.Name);
-        var param = (ProductDto)product;
-        var affectedRows = await dbConnection.ExecuteAsync(Constants.InsertProductQuery, param);
+        var affectedRows = await dbConnection.ExecuteAsync(Constants.InsertProductQuery, product.FromEntityToDto());
 
         if (affectedRows > 0)
         {
@@ -73,7 +71,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
             "SELECT * FROM Products");
 
         logger.LogInformation("Retrieved {Count} products", productDtoList.Count());
-        return productDtoList.Select(p => (Product)p).ToList().AsReadOnly();
+        return productDtoList.Select(p => p.FromDtoToEntity()).ToList().AsReadOnly();
     }
 
     [ExcludeFromCodeCoverage(Justification =
@@ -86,7 +84,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
             param: new { Category = (int)category });
 
         logger.LogInformation("Retrieved {Count} products", productDtoList.Count());
-        return productDtoList.Select(p => (Product)p).ToList().AsReadOnly();
+        return productDtoList.Select(p => p.FromDtoToEntity()).ToList().AsReadOnly();
     }
 
     public async Task<bool> UpdateAsync(Product product)
@@ -94,7 +92,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
         logger.LogInformation("Updating product with ID: {ProductId}", product.Id);
         var affectedRows = await dbConnection.ExecuteAsync(
             Constants.UpdateProductQuery,
-            (ProductDto)product);
+            product.FromEntityToDto());
 
         if (affectedRows == 1)
         {

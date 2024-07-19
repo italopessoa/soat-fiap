@@ -8,6 +8,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Application\FIAP.TechChallenge.ByteMeBurger.Application.csproj" />
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway.csproj" />
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="ServiceCollectionsExtensions.cs" />
     </ItemGroup>
 
 </Project>

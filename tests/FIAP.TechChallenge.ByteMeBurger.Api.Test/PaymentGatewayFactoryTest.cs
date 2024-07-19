@@ -1,6 +1,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using FluentAssertions;
