@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using FIAP.TechChallenge.ByteMeBurger.DI;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Any;
@@ -85,7 +86,7 @@ public class Program
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-            builder.ConfigureApiDependencyInversion();
+            builder.Services.IoCSetup(builder.Configuration);
             builder.Services.AddExceptionHandler<DomainExceptionHandler>();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();

@@ -12,7 +12,7 @@ This repository contains the source code for the ByteMeBurger API, part of the F
    - [Infrastructure](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Kubernetes-Infrastructure-Requirements)
    - [Testing locally](#running-with-kubernetes-locally)
       -  to get some help with application flow testing, click [here](#testing)
-     
+
 ## Getting Started
 
 ### Prerequisites
@@ -37,7 +37,6 @@ This repository contains the source code for the ByteMeBurger API, part of the F
    ```bash
     docker-compose up -d
    ```
-
 
 4. Service health (check if the service is healthy before testing)
    > [http://localhost:8080/healthz](http://localhost:8080/healthz)
@@ -114,6 +113,8 @@ whcli forward --token=f513d4a6-4dbd-4e32-93f5-b35376f33c89 --target=http://local
 
 #### Testing
 You can use the [postman collection](/postman) for testing
+
+>To test mercado pago integration don't forget to add your credentials to the [secret-mercadopago](kubernetes/secret-mercadopago.yaml) file and the notification url on [configmap-api](kubernetes/configmap-api.yaml)
 
 ### Cleanup
 Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1) script

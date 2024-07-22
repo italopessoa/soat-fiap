@@ -18,6 +18,5 @@ kubectl delete -f deployment-seq.yaml
 kubectl delete -f pvc-db.yaml
 kubectl delete -f pv-db.yaml
 
-kubectl delete -f deployment-seq.yaml
 kubectl delete -f pvc-seq.yaml
 kubectl delete -f pv-seq.yaml

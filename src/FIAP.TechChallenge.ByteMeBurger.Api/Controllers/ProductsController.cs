@@ -27,11 +27,11 @@ public class ProductsController(IProductService productService, ILogger<Products
     /// <returns>Product list.</returns>
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<ProductDto>>> Get(
-        [FromQuery] ProductCategory? productCategory, CancellationToken cancellationToken)
+        [FromQuery] ProductCategoryDto? productCategory, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting products by category: {ProductCategory}", productCategory);
         var productsTask = productCategory.HasValue
-            ? productService.FindByCategory(productCategory!.Value)
+            ? productService.FindByCategory((ProductCategory)productCategory.Value)
             : productService.GetAll();
 
         var products = await productsTask.WaitAsync(cancellationToken);
@@ -83,7 +83,7 @@ public class ProductsController(IProductService productService, ILogger<Products
         try
         {
             var product = await productService.CreateAsync(newProduct.Name, newProduct.Description,
-                newProduct.Category,
+                (ProductCategory)newProduct.Category,
                 newProduct.Price, newProduct.Images);
 
             logger.LogInformation("Product with ID: {ProductId} created", product.Id);
@@ -116,7 +116,7 @@ public class ProductsController(IProductService productService, ILogger<Products
             id,
             updateProductRequest.Name,
             updateProductRequest.Description,
-            updateProductRequest.Category,
+            (ProductCategory)updateProductRequest.Category,
             updateProductRequest.Price,
             updateProductRequest.Images);
 

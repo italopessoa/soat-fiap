@@ -20,13 +20,13 @@ public class MercadoPagoService : IPaymentGateway
     private readonly MercadoPagoOptions _mercadoPagoOptions;
     private const decimal IntegrationPrice = 0.01M;
 
-    public MercadoPagoService(IOptions<MercadoPagoOptions> mercadoPagoOptions, ILogger<MercadoPagoService> logger)
+    public MercadoPagoService(MercadoPagoOptions mercadoPagoOptions, ILogger<MercadoPagoService> logger)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.Value.WebhookSecret,
-            nameof(mercadoPagoOptions.Value.WebhookSecret));
+        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.WebhookSecret,
+            nameof(mercadoPagoOptions.WebhookSecret));
 
         _logger = logger;
-        _mercadoPagoOptions = mercadoPagoOptions.Value;
+        _mercadoPagoOptions = mercadoPagoOptions;
     }
 
     public async Task<DomainPayment?> CreatePaymentAsync(Order order)

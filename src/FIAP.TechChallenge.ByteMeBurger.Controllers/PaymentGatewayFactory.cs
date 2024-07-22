@@ -3,7 +3,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers;
 
 public sealed class PaymentGatewayFactory(IServiceProvider provider) : IPaymentGatewayFactoryMethod
 {

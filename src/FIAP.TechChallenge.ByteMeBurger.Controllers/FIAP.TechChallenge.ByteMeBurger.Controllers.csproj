@@ -12,8 +12,4 @@
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="ServiceCollectionsExtensions.cs" />
-    </ItemGroup>
-
 </Project>
