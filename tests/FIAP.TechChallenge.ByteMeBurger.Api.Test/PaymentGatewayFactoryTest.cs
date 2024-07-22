@@ -22,11 +22,11 @@ public class PaymentGatewayFactoryTest
     public PaymentGatewayFactoryTest()
     {
         _serviceCollection = new ServiceCollection();
-        _serviceCollection.Configure<MercadoPagoOptions>(options =>
+        _serviceCollection.AddSingleton<MercadoPagoOptions>(_ => new MercadoPagoOptions()
         {
-            options.AccessToken = "YourAccessToken";
-            options.NotificationUrl = "YourNotificationUrl";
-            options.WebhookSecret = "YourWebhookSecret";
+            AccessToken = "YourAccessToken",
+            NotificationUrl = "YourNotificationUrl",
+            WebhookSecret = "YourWebhookSecret"
         });
 
         var mockLogger = new Mock<ILogger<MercadoPagoService>>();
