@@ -39,6 +39,7 @@ public class DomainEventsHandler : IDisposable
         _logger.LogInformation("New {EventName} event from '{OldStatus}' to '{NewStatus}': OrderId {OrderId}",
             nameof(OrderStatusChanged),
             e.Payload.OldStatus, e.Payload.NewStatus, e.Payload.OrderId);
+        InvalidateOrderCache(e.Payload.OrderId);
     }
 
     private void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
@@ -49,7 +50,7 @@ public class DomainEventsHandler : IDisposable
 
     private void OnOrderCreated(object? sender, OrderCreated e)
     {
-        InvalidateOrderCache(e.Payload.Id);
+        InvalidateOrderList();
         _logger.LogInformation("New {EventName} event: OrderId {OrderId}", nameof(OrderCreated), e.Payload.Id);
     }
 

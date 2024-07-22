@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Microsoft.Build.Framework;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
@@ -17,11 +18,5 @@ public class CreatePaymentRequest
     /// Payment type
     /// </summary>
     [Required]
-    public PaymentType PaymentType { get; set; }
-}
-
-public enum PaymentType
-{
-    Test = 0,
-    MercadoPago = 1
+    public PaymentTypeDto PaymentType { get; set; }
 }

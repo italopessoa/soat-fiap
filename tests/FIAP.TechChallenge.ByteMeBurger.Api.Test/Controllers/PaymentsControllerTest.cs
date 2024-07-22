@@ -1,10 +1,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
-using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -12,8 +9,6 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using DomainPaymentType = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentType;
-using PaymentType = FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment.PaymentType;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Test.Controllers;
 
@@ -40,7 +35,7 @@ public class PaymentsControllerTest
         var paymentRequest = new CreatePaymentRequest
         {
             OrderId = Guid.NewGuid(),
-            PaymentType = PaymentType.Test
+            PaymentType = PaymentTypeDto.Test
         };
 
         // Act

@@ -96,7 +96,7 @@ public class ProductsControllerTest
             .ReturnsAsync(new List<ProductDto>() { product.FromEntityToDto() }.AsReadOnly());
 
         // Act
-        var response = await _target.Get(ProductCategory.Drink, CancellationToken.None);
+        var response = await _target.Get(ProductCategoryDto.Drink, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())
@@ -124,7 +124,7 @@ public class ProductsControllerTest
             .ReturnsAsync(Array.Empty<ProductDto>().ToList().AsReadOnly());
 
         // Act
-        var response = await _target.Get(ProductCategory.Drink, CancellationToken.None);
+        var response = await _target.Get(ProductCategoryDto.Drink, CancellationToken.None);
 
         // Assert
         using (new AssertionScope())

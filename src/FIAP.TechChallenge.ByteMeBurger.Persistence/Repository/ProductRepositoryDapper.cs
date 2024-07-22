@@ -26,7 +26,7 @@ public class ProductRepositoryDapper(IDbConnection dbConnection, ILogger<Product
             logger.LogInformation("Product {ProductId} not found", id);
         }
 
-        return productDto.FromDtoToEntity();
+        return productDto?.FromDtoToEntity();
     }
 
     public async Task<Product> CreateAsync(Product product)
