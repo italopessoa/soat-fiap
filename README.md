@@ -10,6 +10,8 @@ This repository contains the source code for the ByteMeBurger API, part of the F
 - Phase 2 Deliverables
    - [Business requirements](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Business-Requirements-Document)
    - [Infrastructure](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Kubernetes-Infrastructure-Requirements)
+   - Diagrams
+     - [Sequence Diagram (Main Flow)](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Main-flow-sequence-Diagrams-(Phase-2))
    - [Testing locally](#running-with-kubernetes-locally)
       -  to get some help with application flow testing, click [here](#testing)
 

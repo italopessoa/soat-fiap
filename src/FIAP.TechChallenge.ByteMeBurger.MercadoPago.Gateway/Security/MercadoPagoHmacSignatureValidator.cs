@@ -18,11 +18,11 @@ public class MercadoPagoHmacSignatureValidator : IMercadoPagoHmacSignatureValida
     private const string XSignatureHeaderName = "x-signature";
     private const string XRequestIdHeaderName = "x-request-id";
 
-    public MercadoPagoHmacSignatureValidator(IOptions<MercadoPagoOptions> mercadoPagoOptions)
+    public MercadoPagoHmacSignatureValidator(MercadoPagoOptions mercadoPagoOptions)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.Value.WebhookSecret,
-            nameof(mercadoPagoOptions.Value.WebhookSecret));
-        _mercadoPagoOptions = mercadoPagoOptions.Value;
+        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.WebhookSecret,
+            nameof(mercadoPagoOptions.WebhookSecret));
+        _mercadoPagoOptions = mercadoPagoOptions;
     }
 
     public bool TryToValidate(AuthorizationFilterContext context, out string reasonToFail)

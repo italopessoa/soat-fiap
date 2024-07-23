@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test.Security;
@@ -17,17 +16,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test.Security;
 [TestSubject(typeof(MercadoPagoHmacSignatureValidator))]
 public class MercadoPagoHmacSignatureValidatorTest
 {
-    private readonly IOptions<MercadoPagoOptions> _options = Options.Create(new MercadoPagoOptions
+    private readonly MercadoPagoOptions _options = new()
     {
         WebhookSecret = "test_secret"
-    });
+    };
 
     [Fact]
     public void Validate_Constructor()
     {
         // Arrange
-        var validator = () => new MercadoPagoHmacSignatureValidator(Options.Create(
-            new MercadoPagoOptions()));
+        var validator = () => new MercadoPagoHmacSignatureValidator(
+            new MercadoPagoOptions());
 
         // Act& Assert
         using (new AssertionScope())
