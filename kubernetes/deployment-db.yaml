@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: mysql-container
-          image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/db:latest
+          image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/db:sha-f838ba8
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql-persistent-storage
