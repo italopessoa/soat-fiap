@@ -57,6 +57,8 @@ public class MercadoPagoService : IPaymentGateway
                 PaymentType = PaymentType.MercadoPago,
                 QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode,
                 ExternalReference = mercadoPagoPayment.Id.ToString(),
+                OrderId = order.Id,
+                Amount = paymentCreateRequest.TransactionAmount.Value
             };
         }
         catch (Exception e)

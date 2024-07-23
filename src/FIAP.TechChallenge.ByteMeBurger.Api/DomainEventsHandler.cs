@@ -72,8 +72,8 @@ public class DomainEventsHandler : IDisposable
 
     private void OnPaymentCreated(object? sender, PaymentCreated e)
     {
-        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.OrderId,
-            e.Payload.Id.Value);
+        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.Id.Value,
+            e.Payload.OrderId);
     }
 
     private void InvalidateOrderCache(Guid orderId)

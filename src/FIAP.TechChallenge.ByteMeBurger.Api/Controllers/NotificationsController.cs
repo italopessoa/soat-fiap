@@ -19,6 +19,11 @@ public class NotificationsController : ControllerBase
     private readonly IPaymentService _paymentService;
     private readonly ILogger<NotificationsController> _logger;
 
+    /// <summary>
+    /// Receive payment providers notifications
+    /// </summary>
+    /// <param name="paymentService"></param>
+    /// <param name="logger"></param>
     public NotificationsController(IPaymentService paymentService, ILogger<NotificationsController> logger)
     {
         _paymentService = paymentService;
