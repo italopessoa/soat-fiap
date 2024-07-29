@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api-container
-          image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:sha-f838ba8
+          image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:sha-b83177c
           ports:
             - name: liveness-port
               containerPort: 8080

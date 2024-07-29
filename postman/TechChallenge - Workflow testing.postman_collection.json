@@ -32,7 +32,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"Hamburguer\",\n  \"description\": \"sanduiche de presunto\",\n  \"category\": \"Meal\",\n  \"price\": 10,\n  \"images\": [\n    \"img1\",\n    \"img2\"\n  ]\n}",
+					"raw": "{\n  \"name\": \"Hamburguer\",\n  \"description\": \"sanduiche de presunto\",\n  \"category\": \"Meal\",\n  \"price\": 12,\n  \"images\": [\n    \"img1\",\n    \"img2\"\n  ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -308,7 +308,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"cpf\": \"{{cpf}}\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"{{mealId}}\",\r\n      \"quantity\": \"1\"\r\n    }\r\n  ]\r\n}",
+					"raw": "{\r\n  \"cpf\": \"{{cpf}}\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"{{mealId}}\",\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -354,7 +354,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"{{mealId}}\",\r\n      \"quantity\": \"1\"\r\n    },\r\n    {\r\n      \"productId\": \"{{dessertId}}\",\r\n      \"quantity\": \"1\"\r\n    },\r\n    {\r\n      \"productId\": \"{{sidesId}}\",\r\n      \"quantity\": \"1\"\r\n    },\r\n    {\r\n      \"productId\": \"{{drinkId}}\",\r\n      \"quantity\": \"1\"\r\n    }\r\n  ]\r\n}",
+					"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"{{mealId}}\",\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": \"{{dessertId}}\",\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": \"{{drinkId}}\",\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": \"{{sideId}}\",\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -459,10 +459,10 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Returns 201 Created status\", () => {\r",
-							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.have.status(201);\r",
 							"\r",
 							"    var responseBody = pm.response.json();\r",
-							"    pm.environment.set(\"paymentId\", responseBody.paymentId);\r",
+							"    pm.environment.set(\"paymentId\", responseBody.id);\r",
 							"})"
 						],
 						"type": "text/javascript",
@@ -559,7 +559,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Returns 200 OK status\", () => {\r",
-							"    pm.response.to.have.status(201);\r",
+							"    pm.response.to.have.status(200);\r",
 							"})"
 						],
 						"type": "text/javascript",
@@ -594,10 +594,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Returns 200 OK status\", () => {\r",
-							"    pm.response.to.have.status(201);\r",
-							"\r",
-							"    var responseBody = pm.response.json();\r",
-							"     pm.environment.set(\"paymentId\", responseBody.paymentId);\r",
+							"    pm.response.to.have.status(200);\r",
 							"})"
 						],
 						"type": "text/javascript",
@@ -610,7 +607,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{{paymentId}}",
+					"raw": "\"{{paymentId}}\"",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -629,6 +626,49 @@
 					]
 				},
 				"description": "\n# Create a New Order\n\nThis endpoint allows you to create a new order by sending a POST request to the specified URL.\n\n### Request Body\n- `cpf` (string, required): The CPF (Cadastro de Pessoas Físicas) of the customer.\n- `items` (array, required): An array containing the details of the items in the order.\n  - `productId` (string, required): The ID of the product being ordered.\n  - `quantity` (string, required): The quantity of the product being ordered.\n\n### Example\n```json\n{\n  \"cpf\": \"masked\",\n  \"items\": [\n    {\n      \"productId\": \"masked\",\n      \"quantity\": \"masked\"\n    }\n  ]\n}\n```\n\n### Response\nThe response will include the details of the newly created order.\n\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order - Start preparing",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 204 NoContent status\", () => {\r",
+							"    pm.response.to.have.status(204)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"InPreparation\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Orders/{{orderId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Orders",
+						"{{orderId}}",
+						"status"
+					]
+				}
 			},
 			"response": []
 		},
