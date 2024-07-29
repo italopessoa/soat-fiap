@@ -67,6 +67,10 @@ This repository contains the source code for the ByteMeBurger API, part of the F
 - Docker with Minikube configured
 - [webhook.site](https://webhook.site) token
 
+
+<details>
+<summary>Follow this if you want to build images locally</summary>
+
 To Use local docker images in minikube, you can use the following commands to [Push directly to the in-cluster Docker daemon (docker-env)](https://minikube.sigs.k8s.io/docs/handbook/pushing/#Windows)
 
 ```bash
@@ -95,6 +99,7 @@ docker image push techchallenge/api:latest
 ```yaml
     image: techchallenge/api:latest
 ```
+</details>
 
 ### Setup kubernetes
 Run [deploy.ps1](kubernetes/deploy.ps1) script to deploy the application to minikube
