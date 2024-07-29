@@ -14,6 +14,7 @@ This repository contains the source code for the ByteMeBurger API, part of the F
      - [Sequence Diagram (Main Flow)](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Main-flow-sequence-Diagrams-(Phase-2))
    - [Testing locally](#running-with-kubernetes-locally)
       -  to get some help with application flow testing, click [here](#testing)
+   - [Video](https://www.youtube.com/watch?v=34ffDcUoUTg)
 
 ## Getting Started
 
