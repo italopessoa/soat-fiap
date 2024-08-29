@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.DI;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -29,6 +30,7 @@ public class Program
                     .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName));
 
             // Add services to the container.
+            builder.Services.ConfigureJwt(builder.Configuration);
             builder.Services.AddAuthorization();
             builder.Services.AddSingleton<DomainEventsHandler>();
             builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
@@ -44,6 +46,7 @@ public class Program
                             .AllowAnyMethod();
                     });
             });
+
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
@@ -80,6 +83,12 @@ public class Program
                 c.IncludeXmlComments(xmlPath);
             });
 
+            var jwtOptions = builder.Configuration
+                .GetSection("JwtOptions")
+                .Get<JwtOptions>();
+            // Console.WriteLine(CreateToken(null));
+            builder.Services.AddSingleton(jwtOptions);
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -113,6 +122,7 @@ public class Program
 
             app.UseHttpsRedirection();
             app.UseCors("AllowSpecificOrigins");
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
@@ -134,4 +144,26 @@ public class Program
         builder.Services.AddHealthChecks()
             .AddMySql(configuration.GetConnectionString("MySql")!);
     }
+
+    // static string CreateToken(User user)
+    // {
+    //     var tokenHandler = new JwtSecurityTokenHandler();
+    //     var key = Encoding.ASCII.GetBytes("PkOhRwy6UtniEMo7lLWp3bADctYgnDHCTvH+2YkDeGg=");
+    //     var tokenDescriptor = new SecurityTokenDescriptor
+    //     {
+    //         Subject = new ClaimsIdentity(new Claim[]
+    //         {
+    //             new Claim(ClaimTypes.NameIdentifier, "user.UserID"),
+    //             new Claim(ClaimTypes.Role, "user.Role.ToString()"),
+    //             // Add more claims as needed
+    //         }),
+    //         Expires = DateTime.UtcNow.AddHours(1),
+    //         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+    //         Issuer = "italo.com", // Add this line
+    //         Audience = "italo.com"
+    //     };
+    //
+    //     var token = tokenHandler.CreateToken(tokenDescriptor);
+    //     return tokenHandler.WriteToken(token);
+    // }
 }

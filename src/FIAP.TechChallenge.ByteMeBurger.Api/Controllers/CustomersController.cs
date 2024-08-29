@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
-using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
@@ -13,6 +12,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 /// </summary>
 /// <param name="customerService">Customer service (port implementation).</param>
 /// <param name="logger">Logger</param>
+[Authorize]
 [Route("api/[controller]")]
 [Produces("application/json")]
 [Consumes("application/json")]
