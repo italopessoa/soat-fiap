@@ -14,19 +14,29 @@ public static class ServiceExtensions
 {
     public static void ConfigurePersistenceApp(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IDbConnection>(_ =>
+        if (configuration.GetConnectionString("MySql") is null)
         {
-            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
-            var providerFactory = DbProviderFactories.GetFactory("MySql.Data.MySqlClient");
-            var conn = providerFactory.CreateConnection();
-            conn.ConnectionString = configuration.GetConnectionString("MySql");
-            conn.Open();
-            return conn;
-        });
+            services.AddScoped<IOrderRepository, InMemoryOrderRepository>()
+                .AddScoped<ICustomerRepository>(_ => new InMemoryCustomerRepository([]))
+                .AddScoped<IProductRepository>(_ => new InMemoryProductRepository([]))
+                .AddScoped<IPaymentRepository, InMemoryPaymentRepository>();
+        }
+        else
+        {
+            services.AddScoped<IDbConnection>(_ =>
+            {
+                DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+                var providerFactory = DbProviderFactories.GetFactory("MySql.Data.MySqlClient");
+                var conn = providerFactory.CreateConnection();
+                conn.ConnectionString = configuration.GetConnectionString("MySql");
+                conn.Open();
+                return conn;
+            });
 
-        services.AddScoped<IOrderRepository, OrderRepositoryDapper>()
-            .AddScoped<ICustomerRepository, CustomerRepositoryDapper>()
-            .AddScoped<IProductRepository, ProductRepositoryDapper>()
-            .AddScoped<IPaymentRepository, PaymentRepositoryDapper>();
+            services.AddScoped<IOrderRepository, OrderRepositoryDapper>()
+                .AddScoped<ICustomerRepository, CustomerRepositoryDapper>()
+                .AddScoped<IProductRepository, ProductRepositoryDapper>()
+                .AddScoped<IPaymentRepository, PaymentRepositoryDapper>();
+        }
     }
 }

@@ -12,7 +12,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 /// </summary>
 /// <param name="customerService">Customer service (port implementation).</param>
 /// <param name="logger">Logger</param>
-[Authorize]
 [Route("api/[controller]")]
 [Produces("application/json")]
 [Consumes("application/json")]
@@ -28,6 +27,7 @@ public class CustomersController(ICustomerService customerService, ILogger<Custo
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Customer</returns>
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<CustomerDto>> Get([FromQuery] [MaxLength(14)] string cpf,
         CancellationToken cancellationToken)
     {

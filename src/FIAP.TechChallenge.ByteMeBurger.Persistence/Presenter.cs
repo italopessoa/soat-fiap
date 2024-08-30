@@ -6,12 +6,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Persistence;
 
 public static class Presenter
 {
-    // public static Customer? FromDtoToEntity(this CustomerDto customerDto)
-    // {
-    //     if (customerDto is null) return null;
-    //     return new Customer(customerDto.Id, customerDto.Cpf, customerDto.Name, customerDto.Email);
-    // }
-
     public static Product? FromDtoToEntity(this ProductDto dto)
     {
         var images = dto.Images?.Split("|") ?? Array.Empty<string>();

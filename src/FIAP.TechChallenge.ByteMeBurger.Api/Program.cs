@@ -86,7 +86,6 @@ public class Program
             var jwtOptions = builder.Configuration
                 .GetSection("JwtOptions")
                 .Get<JwtOptions>();
-            // Console.WriteLine(CreateToken(null));
             builder.Services.AddSingleton(jwtOptions);
 
             builder.Services.AddControllers()
@@ -141,8 +140,8 @@ public class Program
 
     private static void AddHealthChecks(WebApplicationBuilder builder, IConfiguration configuration)
     {
-        builder.Services.AddHealthChecks()
-            .AddMySql(configuration.GetConnectionString("MySql")!);
+        builder.Services.AddHealthChecks();
+        // .AddMySql(configuration.GetConnectionString("MySql")!);
     }
 
     // static string CreateToken(User user)
