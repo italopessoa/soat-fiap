@@ -12,4 +12,8 @@
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Controllers.Test" />
+    </ItemGroup>
+
 </Project>

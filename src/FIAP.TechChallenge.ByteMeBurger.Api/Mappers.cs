@@ -64,6 +64,4 @@ internal static class Mappers
             ProductName = orderItem.ProductName
         };
     }
-
-
 }

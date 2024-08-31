@@ -9,28 +9,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 public class CreateOrderUseCase : ICreateOrderUseCase
 {
     private readonly IProductRepository _productRepository;
-    private readonly ICustomerRepository _customerRepository;
     private readonly IOrderTrackingCodeService _orderTrackingCodeService;
 
     public CreateOrderUseCase(IProductRepository productRepository,
-        ICustomerRepository customerRepository,
         IOrderTrackingCodeService orderTrackingCodeService)
     {
         _productRepository = productRepository;
-        _customerRepository = customerRepository;
         _orderTrackingCodeService = orderTrackingCodeService;
     }
 
-    public async Task<Order> Execute(Cpf? customerCpf, List<SelectedProduct> selectedProducts)
+    public async Task<Order> Execute(Customer? customer, List<SelectedProduct> selectedProducts)
     {
-        var customer = default(Customer);
-        if (customerCpf is not null)
-        {
-            customer = await _customerRepository.FindByCpfAsync(customerCpf);
-            if (customer == null)
-                throw new EntityNotFoundException("Customer not found.");
-        }
-
         var products = new Dictionary<Product, int>();
         foreach (var item in selectedProducts)
         {

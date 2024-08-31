@@ -15,10 +15,9 @@ public class OrderService(
     IUpdateOrderPaymentUseCase updateOrderPaymentUseCase)
     : IOrderService
 {
-    public async Task<NewOrderDto> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts)
+    public async Task<NewOrderDto> CreateAsync(CustomerDto? customer, List<SelectedProduct> selectedProducts)
     {
-        var cpf = customerCpf is not null ? new Cpf(customerCpf) : null;
-        var order = await createOrderUseCase.Execute(cpf, selectedProducts);
+        var order = await createOrderUseCase.Execute(customer.ToDomain(), selectedProducts);
 
         await orderRepository.CreateAsync(order);
         return order.FromEntityToCreatedDto();
