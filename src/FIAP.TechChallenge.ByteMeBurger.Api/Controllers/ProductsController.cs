@@ -2,6 +2,7 @@ using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
@@ -16,6 +17,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Produces("application/json")]
 [Consumes("application/json")]
+[Authorize]
 public class ProductsController(IProductService productService, ILogger<ProductsController> logger)
     : ControllerBase
 {

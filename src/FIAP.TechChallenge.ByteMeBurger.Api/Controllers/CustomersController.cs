@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
-using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
@@ -28,6 +27,7 @@ public class CustomersController(ICustomerService customerService, ILogger<Custo
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Customer</returns>
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<CustomerDto>> Get([FromQuery] [MaxLength(14)] string cpf,
         CancellationToken cancellationToken)
     {

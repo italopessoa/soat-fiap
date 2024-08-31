@@ -77,6 +77,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway", "src\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway.csproj", "{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs", "src\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.csproj", "{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test.csproj", "{93545102-0476-48CB-8074-5C71AC81E040}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +107,8 @@ Global
 		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{3EF147B0-B21A-4D6F-940F-CD211D795C92} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{207C0604-793B-4829-A407-6385E2457A03} = {63B625A6-D80F-4C6B-86C4-BEA9F690D4C6}
+		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
+		{93545102-0476-48CB-8074-5C71AC81E040} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B8F244B5-F703-441C-8A8A-C720F605709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -165,5 +171,13 @@ Global
 		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93545102-0476-48CB-8074-5C71AC81E040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93545102-0476-48CB-8074-5C71AC81E040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93545102-0476-48CB-8074-5C71AC81E040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93545102-0476-48CB-8074-5C71AC81E040}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

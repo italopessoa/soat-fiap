@@ -21,7 +21,6 @@ public class OrderService(
         var order = await createOrderUseCase.Execute(cpf, selectedProducts);
 
         await orderRepository.CreateAsync(order);
-
         return order.FromEntityToCreatedDto();
     }
 

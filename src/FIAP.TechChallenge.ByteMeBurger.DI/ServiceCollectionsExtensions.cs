@@ -5,6 +5,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.Persistence;
+using FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ public static class ServiceCollectionsExtensions
         ConfigHybridCache(serviceCollection, configuration);
         serviceCollection.AddUseCases();
         serviceCollection.AddControllers();
+        serviceCollection.ConfigureAnalyticsService();
     }
 
     private static void ConfigHybridCache(IServiceCollection services, IConfiguration configuration)
