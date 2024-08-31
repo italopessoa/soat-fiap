@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
@@ -36,7 +37,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     {
         logger.LogInformation("Creating order for customer with CPF: {Cpf}", newOrder.Cpf);
         var orderItems = newOrder.Items.Select(i => new SelectedProduct(i.ProductId, i.Quantity));
-        var order = await orderService.CreateAsync(newOrder.Cpf, orderItems.ToList());
+        var order = await orderService.CreateAsync(HttpContext.GetCustomerFromClaims(), orderItems.ToList());
 
         logger.LogInformation("Order created with ID: {OrderId}", order.Id);
         return CreatedAtAction(nameof(Get), order);

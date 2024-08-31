@@ -14,15 +14,14 @@ public class CreateOrderUseCaseTest
     private readonly ICreateOrderUseCase _useCase;
     private readonly Mock<IOrderTrackingCodeService> _createOrderCodeService;
     private readonly Cpf _validCpf = new("863.917.790-23");
-    private readonly OrderTrackingCode _trackingCode = new OrderTrackingCode("code");
+    private readonly OrderTrackingCode _trackingCode = new ("code");
 
     public CreateOrderUseCaseTest()
     {
         _customerRepository = new Mock<ICustomerRepository>();
         _productRepository = new Mock<IProductRepository>();
         _createOrderCodeService = new Mock<IOrderTrackingCodeService>();
-        _useCase = new CreateOrderUseCase(_productRepository.Object,
-            _customerRepository.Object, _createOrderCodeService.Object);
+        _useCase = new CreateOrderUseCase(_productRepository.Object, _createOrderCodeService.Object);
     }
 
     [Theory]
@@ -49,20 +48,17 @@ public class CreateOrderUseCaseTest
             .Verifiable();
 
         // Act
-        var result = await _useCase.Execute(_validCpf, [selectedProduct]);
+        var result = await _useCase.Execute(expectedCustomer, [selectedProduct]);
 
         // Assert
         using (new AssertionScope())
         {
-            _customerRepository.Verify(m => m.FindByCpfAsync(
-                It.IsAny<string>()), Times.Once);
-
             _productRepository.Verify(m => m.FindByIdAsync(
                 It.IsAny<Guid>()), Times.AtLeastOnce);
         }
     }
 
-    [Theory]
+    [Theory(Skip = "user info comes from bearer token")]
     [InlineAutoData]
     public async Task Checkout_CustomerNotFound_Error(List<SelectedProduct> selectedProducts)
     {
@@ -77,7 +73,7 @@ public class CreateOrderUseCaseTest
             .ReturnsAsync(default(Customer));
 
         // Act
-        var func = async () => await _useCase.Execute(_validCpf, selectedProducts);
+        var func = async () => await _useCase.Execute(expectedCustomer, selectedProducts);
 
         // Assert
         using (new AssertionScope())
@@ -114,7 +110,7 @@ public class CreateOrderUseCaseTest
             .ReturnsAsync(default(Product));
 
         // Act
-        var func = async () => await _useCase.Execute(_validCpf, selectedProducts);
+        var func = async () => await _useCase.Execute(expectedCustomer, selectedProducts);
 
         // Assert
         using (new AssertionScope())
@@ -124,9 +120,6 @@ public class CreateOrderUseCaseTest
                 .Message
                 .Should()
                 .Be($"Product '{selectedProducts.First().ProductId}' not found.");
-
-            _customerRepository.Verify(m => m.FindByCpfAsync(
-                It.IsAny<string>()), Times.Once);
 
             _productRepository.Verify(m => m.FindByIdAsync(
                 It.IsAny<Guid>()), Times.Once);
