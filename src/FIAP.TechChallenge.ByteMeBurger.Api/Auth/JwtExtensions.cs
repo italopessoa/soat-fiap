@@ -35,7 +35,7 @@ public static class JwtExtensions
                     ValidAudience = jwtOptions.Audience,
                     ValidateAudience = true,
                     ValidateIssuer = true,
-                    ValidateLifetime = false,
+                    ValidateLifetime = true,
                     LogValidationExceptions = true,
                     IssuerSigningKey =
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey))

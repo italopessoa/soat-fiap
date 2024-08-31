@@ -13,7 +13,7 @@ on:
       name:
         description: "Why?"
         default: "Testing"
-        
+
   push:
     branches: [ "main" ]
   pull_request:
@@ -52,3 +52,14 @@ jobs:
         path: code-coverage-results.md
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+  sonarcloud:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v3.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
