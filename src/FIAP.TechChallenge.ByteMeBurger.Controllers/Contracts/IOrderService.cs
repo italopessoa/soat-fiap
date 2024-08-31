@@ -8,10 +8,10 @@ public interface IOrderService
     /// <summary>
     /// Create new order
     /// </summary>
-    /// <param name="customerCpf">Customer cpf.</param>
+    /// <param name="customer">Customer.</param>
     /// <param name="selectedProducts">Order items</param>
     /// <returns>Order entity</returns>
-    Task<NewOrderDto> CreateAsync(string? customerCpf, List<SelectedProduct> selectedProducts);
+    Task<NewOrderDto> CreateAsync(CustomerDto? customer, List<SelectedProduct> selectedProducts);
 
     /// <summary>
     /// Get all active orders

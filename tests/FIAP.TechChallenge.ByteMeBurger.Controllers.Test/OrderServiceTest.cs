@@ -1,6 +1,7 @@
 using AutoFixture;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
@@ -81,23 +82,23 @@ public class OrderServiceTest
     public async Task Create_Success(List<SelectedProduct> selectedProducts)
     {
         // Arrange
-        var expectedCustomer = new Customer(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
-        var expectedOrder = new Domain.Entities.Order(expectedCustomer);
+        var customerDto = new CustomerDto(Guid.NewGuid(), _validCpf, "customer", "customer@email.com");
+        var expectedOrder = new Order(customerDto.ToDomain());
         expectedOrder.SetTrackingCode("trackingCode");
         selectedProducts.ForEach(i => { expectedOrder.AddOrderItem(i.ProductId, "product name", 1, i.Quantity); });
 
-        _mockCreateOrderUseCase.Setup(s => s.Execute(It.IsAny<Cpf?>(),
+        _mockCreateOrderUseCase.Setup(s => s.Execute(It.IsAny<Customer?>(),
                 It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder);
 
         // Act
-        var result = await _target.CreateAsync(_validCpf, selectedProducts);
+        var result = await _target.CreateAsync(customerDto, selectedProducts);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            _mockCreateOrderUseCase.Verify(s => s.Execute(It.IsAny<Cpf?>(),
+            _mockCreateOrderUseCase.Verify(s => s.Execute(It.IsAny<Customer?>(),
                 It.IsAny<List<SelectedProduct>>()), Times.Once);
 
             result.Should().NotBeNull();

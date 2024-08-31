@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
@@ -5,14 +6,12 @@ using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -28,7 +27,8 @@ public class OrdersControllerTest
     public OrdersControllerTest()
     {
         _serviceMock = new Mock<IOrderService>();
-        _target = new OrdersController(_serviceMock.Object, Mock.Of<ILogger<OrdersController>>(), new MockHybridCache());
+        _target = new OrdersController(_serviceMock.Object, Mock.Of<ILogger<OrdersController>>(),
+            new MockHybridCache());
     }
 
     [Fact]
@@ -85,9 +85,14 @@ public class OrdersControllerTest
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
 
-        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<CustomerDto?>(),
                 It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder.FromEntityToCreatedDto());
+
+        _target.ControllerContext = new ControllerContext()
+        {
+            HttpContext = HttpContextMock.Create(fixture.Create<CustomerDto>()).Object
+        };
 
         // Act
         var response = await _target.Post(createOrderCommand, CancellationToken.None);
@@ -103,7 +108,7 @@ public class OrdersControllerTest
                     options => options.ExcludingMissingMembers());
 
             _serviceMock.Verify(
-                s => s.CreateAsync(It.IsAny<string?>(),
+                s => s.CreateAsync(It.IsAny<CustomerDto?>(),
                     It.IsAny<List<SelectedProduct>>()),
                 Times.Once);
 
@@ -131,9 +136,14 @@ public class OrdersControllerTest
         expectedOrder.AddOrderItem(chosenProduct.Id, chosenProduct.Name, chosenProduct.Price, 10);
         expectedOrder.SetTrackingCode(new OrderTrackingCode("code"));
 
-        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<string?>(),
+        _serviceMock.Setup(s => s.CreateAsync(It.IsAny<CustomerDto?>(),
                 It.IsAny<List<SelectedProduct>>()))
             .ReturnsAsync(expectedOrder.FromEntityToCreatedDto());
+
+        _target.ControllerContext = new ControllerContext()
+        {
+            HttpContext = HttpContextMock.Create().Object
+        };
 
         // Act
         var response = await _target.Post(createOrderCommand, CancellationToken.None);
@@ -149,7 +159,7 @@ public class OrdersControllerTest
                     options => options.ExcludingMissingMembers());
 
             _serviceMock.Verify(
-                s => s.CreateAsync(It.IsAny<string?>(),
+                s => s.CreateAsync(It.IsAny<CustomerDto?>(),
                     It.IsAny<List<SelectedProduct>>()),
                 Times.Once);
 
@@ -245,5 +255,51 @@ public class OrdersControllerTest
             else
                 response.Result.Should().BeOfType<BadRequestObjectResult>();
         }
+    }
+}
+
+static class HttpContextMock
+{
+    public static Mock<HttpContext> Create()
+    {
+        var context = new Mock<HttpContext>();
+        var request = new Mock<HttpRequest>();
+        var response = new Mock<HttpResponse>();
+        var user = new Mock<ClaimsPrincipal>();
+        var identity = new Mock<ClaimsIdentity>();
+
+        context.Setup(ctx => ctx.Request).Returns(request.Object);
+        context.Setup(ctx => ctx.Response).Returns(response.Object);
+        context.Setup(ctx => ctx.User).Returns(user.Object);
+
+        user.Setup(u => u.Identity).Returns(identity.Object);
+        identity.Setup(i => i.IsAuthenticated).Returns(true);
+
+        return context;
+    }
+
+    public static Mock<HttpContext> Create(CustomerDto customer)
+    {
+        var context = new Mock<HttpContext>();
+        var request = new Mock<HttpRequest>();
+        var response = new Mock<HttpResponse>();
+        var user = new Mock<ClaimsPrincipal>();
+        var identity = new Mock<ClaimsIdentity>();
+        identity.Setup(s => s.Claims).Returns(
+        [
+            new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
+            new Claim(ClaimTypes.Name, customer.Name),
+            new Claim(ClaimTypes.Email, customer.Email),
+            new Claim("cpf", customer.Cpf)
+        ]);
+
+        context.Setup(ctx => ctx.Request).Returns(request.Object);
+        context.Setup(ctx => ctx.Response).Returns(response.Object);
+        context.Setup(ctx => ctx.User).Returns(user.Object);
+
+        user.Setup(u => u.Identity).Returns(identity.Object);
+        identity.Setup(i => i.IsAuthenticated).Returns(true);
+
+        return context;
     }
 }
