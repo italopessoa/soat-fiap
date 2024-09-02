@@ -51,8 +51,7 @@ jobs:
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
   sonarcloud:
-    needs: [build] 
-    if: github.event_name == 'pull_request'
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
