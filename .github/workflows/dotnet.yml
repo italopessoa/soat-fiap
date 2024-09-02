@@ -5,9 +5,9 @@
 name: Build and Test
 
 on:
-  schedule:
+  #schedule:
     # every day at 2:00am UTC
-    - cron: "0 2 * * *"
+  #  - cron: "0 2 * * *"
   workflow_dispatch:
     inputs:
       name:
@@ -15,9 +15,7 @@ on:
         default: "Testing"
 
   push:
-    branches: [ "main" ]
   pull_request:
-    types: [opened, reopened]
 
 jobs:
   build:
@@ -53,6 +51,7 @@ jobs:
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
   sonarcloud:
+    needs: [build] 
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -64,6 +63,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build-docker-image:
-    needs: build
+    needs: [build, sonarcloud]
     if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/publish-api.yaml
