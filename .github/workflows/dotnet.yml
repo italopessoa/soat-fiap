@@ -64,4 +64,4 @@ jobs:
   build-docker-image:
     needs: [build, sonarcloud]
     if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/publish-api.yaml
+    uses: soat-fiap/FIAP.TechChallenge.ByteMeBurger/.github/actions/publish-api@main
