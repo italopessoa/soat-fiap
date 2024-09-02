@@ -66,4 +66,4 @@ jobs:
   build-docker-image:
     needs: build
     if: github.ref == 'refs/heads/main'
-    uses: publish-api.yaml
+    uses: ./.github/workflows/publish-api.yaml
