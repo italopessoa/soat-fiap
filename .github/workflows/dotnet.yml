@@ -56,8 +56,10 @@ jobs:
         path: code-coverage-results.md
     - name: Write to Job Summary
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+
   sonarcloud:
     needs: [build]
+    if: github.event_name != 'pull_request' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -67,8 +69,9 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v3.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   build-docker-image:
-    needs: [build, sonarcloud]
+    needs: [sonarcloud]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -127,3 +130,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=
+
+  create-infrastructure:
+    if: github.ref == 'refs/heads/main'
+    needs: [build-docker-image]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Terraform goes here
+        run: echo WRAU!
