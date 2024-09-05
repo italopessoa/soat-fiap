@@ -14,6 +14,5 @@ kubectl apply -f svc-mysql.yaml
 kubectl apply -f deployment-db.yaml
 kubectl apply -f deployment-api.yaml
 kubectl apply -f deployment-seq.yaml
-kubectl apply -f svc-api.yaml
 kubectl apply -f hpa-api.yaml
 kubectl apply -f svc-seq.yaml
