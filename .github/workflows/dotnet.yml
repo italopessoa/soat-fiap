@@ -134,11 +134,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: OUTPUT
         run: |
           cat <<EOF > teste
           api_docker_image = "${{ fromJson(steps.meta.outputs.json).tags[0] }}"
+            api_docker_image = "$(echo $DOCKER_METADATA_OUTPUT_TAGS | jq -r '.[0]')"
           EOF
+
 
   create-infrastructure:
     if: github.ref == 'refs/heads/main'
@@ -164,7 +169,13 @@ jobs:
       - name: Create .auto.tfvars file
         run: |
           cat <<EOF > eks.auto.tfvars
-          user_pool_name = "${{ vars.BMB_USER_POOL_NAME }}"
+          eks_cluster_name = "quixada"
+          apgw_name = "authenticator"
+          mercadopago_webhook_secret = "your_mercadopago_webhook_secret"
+          mercadopago_accesstoken = "your_mercadopago_accesstoken"
+          jwt_signing_key = "your_jwt_signing_key"
+          jwt_issuer = "https://localhost:7004"
+          jwt_aud = "your_jwt_aud"
           EOF
 
       - name: Upload Configuration
