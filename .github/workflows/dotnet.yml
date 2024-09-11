@@ -137,7 +137,7 @@ jobs:
       - name: OUTPUT
         run: |
           cat <<EOF > teste
-          cluster_name = "${{ env.DOCKER_METADATA_OUTPUT_TAGS }}"
+          api_docker_image = "${{ steps.meta.outputs.tags[0] }}"
           EOF
 
   create-infrastructure:
