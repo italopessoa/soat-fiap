@@ -137,8 +137,7 @@ jobs:
       - name: OUTPUT
         run: |
           cat <<EOF > teste
-          cluster_name = "${{ steps.meta.outputs }}"
-          x = "${{ steps.build-and-push.outputs }}"
+          cluster_name = "${{ env.DOCKER_METADATA_OUTPUT_TAGS }}"
           EOF
 
   create-infrastructure:
