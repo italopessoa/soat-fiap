@@ -75,7 +75,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build-docker-image:
-    needs: [sonarcloud]
+    needs: [build]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -137,7 +137,7 @@ jobs:
       - name: OUTPUT
         run: |
           cat <<EOF > teste
-          api_docker_image = "${{ steps.meta.outputs.tags[0] }}"
+          api_docker_image = "${{ fromJson(steps.meta.outputs.json).tags[0] }}"
           EOF
 
   create-infrastructure:
