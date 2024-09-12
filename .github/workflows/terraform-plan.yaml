@@ -24,7 +24,7 @@ jobs:
 
       - name: teste
         env:
-          TESTE: ${{ echo secrets.BMB_JWT_SECRET_KEY }}
+          TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }}
         run: |
           cat <<EOF > av.auto.tfvars
           eks_cluster_name = "$(echo "TESTE" | sed 's/./& /g')"
