@@ -137,11 +137,16 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
+      - name: OUTPUT2
+        run: |
+          echo env.DOCKER_METADATA_OUTPUT_TAGS
+          echo $DOCKER_METADATA_OUTPUT_TAGS
+          
       - name: OUTPUT
         run: |
           cat <<EOF > teste
           api_docker_image = "${{ fromJson(steps.meta.outputs.json).tags[0] }}"
-            api_docker_image = "$(echo $DOCKER_METADATA_OUTPUT_TAGS | jq -r '.[0]')"
+            api_docker_image = "$(echo env.DOCKER_METADATA_OUTPUT_TAGS | jq -r '.[0]')"
           EOF
 
 
