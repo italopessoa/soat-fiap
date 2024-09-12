@@ -1,7 +1,3 @@
-variable "rds" {
-  type    = string
-}
-
 variable "rds_cluster_identifier" {
   type    = string
   default = "techchallenge-mysql-default"
@@ -46,13 +42,13 @@ variable "jwt_signing_key" {
 
 variable "jwt_issuer" {
   type      = string
-  sensitive = true
+  sensitive = false
   default   = "https://localhost:7004"
 }
 
 variable "jwt_aud" {
   type      = string
-  sensitive = true
+  sensitive = false
   default   = "https://localhost:7004"
 }
 
