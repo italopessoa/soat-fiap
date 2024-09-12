@@ -25,11 +25,17 @@ jobs:
       - name: teste
         env:
           TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }}
-        run: echo "$TESTE" | sed 's/./& /g'
+        run: echo "$TESTE" | sed 's/./&/g'
+        run: |
+          cat <<EOF > a.auto.tfvars
+          r = "$TESTE"
+          x = "${{ TESTE }}"
+          x2 = "${{ env.TESTE }}"
+          EOF
 
       - name: Create .auto.tfvars file
         env:
-          TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }}
+          TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }} | 's/./&/g'
         run: |
           cat <<EOF > api.auto.tfvars
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
