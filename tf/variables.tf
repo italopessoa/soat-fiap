@@ -27,11 +27,14 @@ variable "apgw_name" {
 
 variable "mercadopago_webhook_secret" {
   type      = string
+  sensitive = true
+  default   = ""
 }
 
 variable "mercadopago_accesstoken" {
   type      = string
   sensitive = true
+  default   = ""
 }
 
 variable "jwt_signing_key" {
