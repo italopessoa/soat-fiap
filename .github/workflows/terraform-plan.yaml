@@ -24,10 +24,10 @@ jobs:
     
       - name: Create .auto.tfvars file
         env:
-          JWT_SECRET: ${{ secrets.BMB_JWT_SECRET_KEY }}
+          JWT_SECRET: ${{ var.BMB_JWT_SECRET_KEY }}
           MYSQL_USER: ${{ secrets.BMB_MYSQL_USER }}
           MYSQL_PASSWORD: ${{ secrets.BMB_MYSQL_PASSWORD }}
-          MERCADO_PAGO_WH_SECRET: ${{ secrets.BMB_MERCADO_PAGO_WH_SECRET }}
+          MERCADO_PAGO_WH_SECRET: ${{ vars.BMB_JWT_SECRET_KEY }}
           MERCADO_PAGO_ACCESS_TOKEN: ${{ secrets.BMB_MERCADO_PAGO_ACCESS_TOKEN }}
         run: |
           cat <<EOF > api.auto.tfvars
