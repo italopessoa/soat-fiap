@@ -21,33 +21,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: teste
-        env:
-          TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }}
-        run: |
-          cat <<EOF > av.auto.tfvars
-          eks_cluster_name = "$(echo "$TESTE" | sed 's/./&/g')"
-          EOF
-          echo "$(echo "$TESTE" | sed 's/./& /g')"
-          echo "teste = \"$(echo "$TESTE" | sed 's/./&/g')\"" >> av.auto.tfvars
-          cat av.auto.tfvars
-      
+    
       - name: Create .auto.tfvars file
         env:
-          TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }} | 's/./&/g'
+          JWT_SECRET: ${{ secrets.BMB_JWT_SECRET_KEY }}
+          MYSQL_USER: ${{ secrets.BMB_MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.BMB_MYSQL_PASSWORD }}
+          MERCADO_PAGO_WH_SECRET: ${{ secrets.BMB_MERCADO_PAGO_WH_SECRET }}
+          MERCADO_PAGO_ACCESS_TOKEN: ${{ secrets.BMB_MERCADO_PAGO_ACCESS_TOKEN }}
         run: |
           cat <<EOF > api.auto.tfvars
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           apgw_name ="${{ vars.BMB_AUTH_API_NAME }}"
-          mercadopago_webhook_secret = "${{ secrets.BMB_MERCADO_PAGO_WH_SECRET }}"
-          mercadopago_accesstoken = "${{ secrets.BMB_MERCADO_PAGO_ACCESS_TOKEN }}"
-          jwt_signing_key = "$TESTE"
+          mercadopago_webhook_secret = "$(echo "$MERCADO_PAGO_WH_SECRET" | sed 's/./&/g')"
+          mercadopago_accesstoken = "$(echo "$MERCADO_PAGO_ACCESS_TOKEN" | sed 's/./&/g')"
+          jwt_signing_key = "$(echo "$JWT_SECRET" | sed 's/./&/g')"
           jwt_issuer = "${{ vars.BMB_JWT_ISSUER }}"
           jwt_aud = "${{ vars.BMB_JWT_AUDIENCE }}"
           internal_elb_name = "${{ vars.BMB_INTERNAL_LB_NAME }}"
-          db_user = "${{ secrets.BMB_MYSQL_USER }}"
-          db_pwd = "${{ secrets.BMB_MYSQL_PASSWORD }}"
+          db_user = "$(echo "$MYSQL_USER" | sed 's/./&/g')"
+          db_pwd = "$(echo "$MYSQL_PASSWORD" | sed 's/./&/g')"
           rds_cluster_identifier = "${{ vars.BMB_MYSQL_CLUSTER }}"
           EOF
 
