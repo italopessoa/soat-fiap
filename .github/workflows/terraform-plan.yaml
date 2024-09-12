@@ -29,6 +29,8 @@ jobs:
           cat <<EOF > av.auto.tfvars
           eks_cluster_name = "$(echo "TESTE" | sed 's/./& /g')"
           EOF
+          echo "$(echo "TESTE" | sed 's/./& /g')"
+          echo $(echo "TESTE" | sed 's/./& /g')
       
       - name: Create .auto.tfvars file
         env:
