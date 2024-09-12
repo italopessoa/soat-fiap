@@ -83,6 +83,8 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
+    outputs:
+      API_IMAGE_TAG: ${{ fromJson(steps.meta.outputs.json).tags[0] }}
 
     steps:
       - name: Checkout repository
@@ -141,7 +143,7 @@ jobs:
         run: |
           echo env.DOCKER_METADATA_OUTPUT_TAGS
           echo $DOCKER_METADATA_OUTPUT_TAGS
-          
+
       - name: OUTPUT
         run: |
           cat <<EOF > teste
@@ -151,13 +153,15 @@ jobs:
 
 
   create-infrastructure:
-    if: github.ref == 'refs/heads/main'
     needs: [build-docker-image]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: Terraform goes here
-        run: echo WRAU!
+        env:
+          API_IMAGE_TAG: ${{needs.build-docker-image.outputs.API_IMAGE_TAG}}
+        run: |
+          echo $DOCKER_METADATA_OUTPUT_TAGS
+          echo $API_IMAGE_TAG
 
   create-app:
     if: github.ref == 'refs/heads/main'
