@@ -23,6 +23,14 @@ jobs:
         uses: actions/checkout@v4
     
       - name: Create .auto.tfvars file
+        run: |
+          cat <<EOF > eks.auto.tfvars
+          eks_vpc_name = "${{ vars.BMB_EKS_CLUSTER_VPC }}"
+          cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
+          nlb_name = "${{ vars.BMB_INTERNAL_LB_NAME }}"
+          EOF
+          
+      - name: Create .auto.tfvars file
         env:
           JWT_SECRET: ${{ vars.BMB_JWT_SECRET_KEY }}
           MYSQL_USER: ${{ secrets.BMB_MYSQL_USER }}
@@ -34,8 +42,8 @@ jobs:
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           apgw_name = "$(echo "$MERCADO_PAGO_WH_SECRET" | sed 's/./&/g')"
           mercadopago_webhook_secret = "italo"
-          mercadopago_accesstoken = "$(echo "$MERCADO_PAGO_ACCESS_TOKEN" | sed 's/./&/g')"
-          jwt_signing_key = "$(echo "$JWT_SECRET" | sed 's/./&/g')"
+          mercadopago_accesstoken = "mercadopago_accesstoken"
+          jwt_signing_key = "jwt_signing_key"
           jwt_issuer = "${{ vars.BMB_JWT_ISSUER }}"
           jwt_aud = "${{ vars.BMB_JWT_AUDIENCE }}"
           internal_elb_name = "${{ vars.BMB_INTERNAL_LB_NAME }}"
