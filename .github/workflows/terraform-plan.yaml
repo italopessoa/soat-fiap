@@ -27,10 +27,10 @@ jobs:
           TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }}
         run: |
           cat <<EOF > av.auto.tfvars
-          eks_cluster_name = "$(echo "TESTE" | sed 's/./& /g')"
+          eks_cluster_name = "$(echo "$TESTE" | sed 's/./&/g')"
           EOF
           echo "$(echo "$TESTE" | sed 's/./& /g')"
-          echo "teste = \"$(echo "$TEST" | sed 's/./&/g')\"" >> av.auto.tfvars
+          echo "teste = \"$(echo "$TESTE" | sed 's/./&/g')\"" >> av.auto.tfvars
           cat av.auto.tfvars
       
       - name: Create .auto.tfvars file
