@@ -31,7 +31,7 @@ jobs:
           MERCADO_PAGO_ACCESS_TOKEN: ${{ secrets.BMB_MERCADO_PAGO_ACCESS_TOKEN }}
         run: |
           cat <<EOF > api.auto.tfvars
-          x = "utalo"
+          rds = "utalo"
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           apgw_name = "$(echo "$MERCADO_PAGO_WH_SECRET" | sed 's/./&/g')"
           mercadopago_webhook_secret = "italo"
