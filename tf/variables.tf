@@ -1,6 +1,6 @@
 variable "rds_cluster_identifier" {
   type    = string
-  default = "techchallenge-mysql"
+  default = "techchallenge-mysql-default"
 }
 
 variable "profile" {
