@@ -23,9 +23,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create .auto.tfvars file
+        env:
+          API_IMAGE_TAG: ${{ needs.build-docker-image.outputs.API_IMAGE_TAG }}
         run: |
-          cat <<EOF > eks.auto.tfvars
-          user_pool_name = "${{ vars.BMB_USER_POOL_NAME }}"
+          cat <<EOF > api.auto.tfvars
+          eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
+          apgw_name ="${{ vars.BMB_AUTH_API_NAME }}"
+          mercadopago_webhook_secret = "${{ secrets.BMB_MERCADO_PAGO_WH_SECRET }}"
+          mercadopago_accesstoken = "${{ secrets.BMB_MERCADO_PAGO_ACCESS_TOKEN }}"
+          jwt_signing_key = "${{ secrets.BMB_JWT_SECRET_KEY }}"
+          jwt_issuer = "${{ vars.BMB_JWT_ISSUER }}"
+          jwt_aud = "${{ vars.BMB_JWT_AUDIENCE }}"
+          api_docker_image = "${{ env.API_IMAGE_TAG }}"
+          internal_elb_name = "${{ vars.BMB_INTERNAL_LB_NAME }}"
+          db_user = "${{ vars.BMB_MYSQL_USER }}"
+          db_pwd = "${{ secrets.BMB_MYSQL_PASSWORD }}"
           EOF
 
       - name: Upload Configuration
