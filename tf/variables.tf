@@ -65,7 +65,7 @@ variable "internal_elb_name" {
 
 variable "db_user" {
   type      = string
-  sensitive = false
+  sensitive = true
   default   = "db_user"
 }
 
