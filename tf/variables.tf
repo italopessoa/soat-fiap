@@ -27,7 +27,6 @@ variable "apgw_name" {
 
 variable "mercadopago_webhook_secret" {
   type      = string
-  sensitive = true
 }
 
 variable "mercadopago_accesstoken" {
