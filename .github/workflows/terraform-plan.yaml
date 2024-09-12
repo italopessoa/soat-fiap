@@ -30,7 +30,7 @@ jobs:
           MERCADO_PAGO_WH_SECRET: ${{ vars.BMB_JWT_SECRET_KEY }}
           MERCADO_PAGO_ACCESS_TOKEN: ${{ secrets.BMB_MERCADO_PAGO_ACCESS_TOKEN }}
         run: |
-          cat <<EOF > api.auto.tfvars
+          cat <<EOF > tf/api.auto.tfvars
           rds = "utalo"
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           apgw_name = "$(echo "$MERCADO_PAGO_WH_SECRET" | sed 's/./&/g')"
@@ -44,7 +44,7 @@ jobs:
           db_pwd = "$(echo "$MYSQL_PASSWORD" | sed 's/./&/g')"
           rds_cluster_identifier = "${{ vars.BMB_MYSQL_CLUSTER }}"
           EOF
-          cat api.auto.tfvars
+          cat tf/api.auto.tfvars
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.1
