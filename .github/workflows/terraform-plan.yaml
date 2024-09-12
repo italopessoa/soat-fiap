@@ -24,8 +24,7 @@ jobs:
 
       - name: teste
         env:
-          TESTE: ${{ secrets.BMB_JWT_SECRET_KEY }}
-        run: echo "$TESTE" | sed 's/./&/g'
+          TESTE: ${{ echo secrets.BMB_JWT_SECRET_KEY | sed 's/./&/g' }}
         run: |
           cat <<EOF > a.auto.tfvars
           r = "$TESTE"
