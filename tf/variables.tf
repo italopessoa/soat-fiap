@@ -40,6 +40,7 @@ variable "mercadopago_accesstoken" {
 variable "jwt_signing_key" {
   type      = string
   sensitive = true
+  default   = ""
 }
 
 variable "jwt_issuer" {
