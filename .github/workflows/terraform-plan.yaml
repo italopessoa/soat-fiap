@@ -33,7 +33,7 @@ jobs:
           cat <<EOF > api.auto.tfvars
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           apgw_name = "$(echo "$MERCADO_PAGO_WH_SECRET" | sed 's/./&/g')"
-          mercadopago_webhook_secret = "$(echo "$MERCADO_PAGO_WH_SECRET" | sed 's/./&/g')"
+          mercadopago_webhook_secret = "italo"
           mercadopago_accesstoken = "$(echo "$MERCADO_PAGO_ACCESS_TOKEN" | sed 's/./&/g')"
           jwt_signing_key = "$(echo "$JWT_SECRET" | sed 's/./&/g')"
           jwt_issuer = "${{ vars.BMB_JWT_ISSUER }}"
