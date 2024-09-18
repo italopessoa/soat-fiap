@@ -18,7 +18,6 @@ public interface IProductService
         IReadOnlyList<string> images);
 
     // TODO add new method use issue https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/issues/32
-    // Task<Product?> GetAsync(Guid id);
 
     /// <summary>
     /// Delete product

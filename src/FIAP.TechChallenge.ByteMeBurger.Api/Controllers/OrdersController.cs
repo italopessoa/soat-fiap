@@ -59,7 +59,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         var ordersDto = await cache.GetOrCreateAsync($"orders-{(listAll ? "nonFilter" : "filter")}",
             async cancel => await orderService.GetAllAsync(listAll), token: cancellationToken);
 
-        logger.LogInformation("Retrieved {Count} orders", ordersDto.Count());
+        logger.LogInformation("Retrieved {Count} orders", ordersDto.Count);
         return Ok(ordersDto);
     }
 
