@@ -15,6 +15,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 /// </summary>
 /// <param name="orderService">Orders service</param>
 /// <param name="logger">Logger</param>
+/// <param name="cache">Cache object</param>
 [Route("api/[controller]")]
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]

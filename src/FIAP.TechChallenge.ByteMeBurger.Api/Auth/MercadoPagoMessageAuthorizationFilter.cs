@@ -38,11 +38,11 @@ public class MercadoPagoMessageAuthorizationFilter : IAuthorizationFilter
             }
 
             context.Result = new UnauthorizedResult();
-            _logger.LogWarning($"{reasonToFail} {{@Query}}, {{Body}}", context.HttpContext.Request.Query, context.HttpContext.Request.Body);
+            _logger.LogWarning("Webhook request not authorized: {@ReasonToFail} {@Query}, {Body}", reasonToFail, context.HttpContext.Request.Query, context.HttpContext.Request.Body);
         }
         catch (Exception e)
         {
-            _logger.LogError("Webhook message not authorized. Error {@Error}, {@Query}, {Body}", e, context.HttpContext.Request.Query, context.HttpContext.Request.Body);
+            _logger.LogError(e,"Webhook message not authorized. {@Query}, {Body}", context.HttpContext.Request.Query, context.HttpContext.Request.Body);
             context.Result = new UnauthorizedResult();
         }
     }

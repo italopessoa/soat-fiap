@@ -8,9 +8,9 @@ public class PaymentDto
 
     public Guid OrderId { get; set; }
 
-    public string ExternalReference { get; set; }
+    public string ExternalReference { get; set; } = string.Empty;
 
-    public string QrCode { get; set; }
+    public string QrCode { get; set; } = string.Empty;
 
     public decimal Amount { get; set; }
 

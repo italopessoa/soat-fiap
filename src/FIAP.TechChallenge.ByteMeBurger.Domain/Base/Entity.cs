@@ -17,7 +17,7 @@ public abstract class Entity<TId>
     {
         if (obj is Entity<TId> otherObject)
         {
-            return Id != null && Id.Equals(otherObject.Id);
+            return !EqualityComparer<TId>.Default.Equals(Id, default(TId)) && Id!.Equals(otherObject.Id);
         }
 
         return false;

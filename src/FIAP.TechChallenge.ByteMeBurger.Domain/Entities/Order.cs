@@ -63,7 +63,7 @@ public class Order : Entity<Guid>, IAggregateRoot
         TrackingCode = trackingCode;
         Created = DateTime.UtcNow;
 
-        if (!selectedProducts.Any())
+        if (selectedProducts.Count == 0)
         {
             throw new DomainException("An Order must have at least one item");
         }

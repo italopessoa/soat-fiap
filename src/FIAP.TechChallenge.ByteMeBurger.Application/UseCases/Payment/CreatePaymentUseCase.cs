@@ -28,7 +28,10 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
 
         var paymentGateway = _paymentGatewayFactory.Create(paymentType);
         var payment = await paymentGateway.CreatePaymentAsync(order);
-        DomainEventTrigger.RaisePaymentCreated(new PaymentCreated(payment));
+        if (payment != null)
+        {
+            DomainEventTrigger.RaisePaymentCreated(new PaymentCreated(payment));
+        }
         return payment;
     }
 }

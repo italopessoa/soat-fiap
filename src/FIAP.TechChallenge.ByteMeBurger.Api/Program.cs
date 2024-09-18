@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 

@@ -34,6 +34,8 @@ public class NotificationsController : ControllerBase
     /// Mercado Pago Integration endpoint
     /// </summary>
     /// <param name="event"></param>
+    /// <param name="xSignature">Mercado Pago x-signature header</param>
+    /// <param name="xRequestId">Mercado Pagox-request-id header</param>
     /// <returns></returns>
     [TypeFilter(typeof(MercadoPagoMessageAuthorizationFilter))]
     [HttpPost("mercadopago")]

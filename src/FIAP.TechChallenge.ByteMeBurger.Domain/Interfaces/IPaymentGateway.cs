@@ -5,7 +5,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 public interface IPaymentGateway
 {
-    Task<Payment?> CreatePaymentAsync(Order order);
+    Task<Payment> CreatePaymentAsync(Order order);
 
     Task<PaymentStatus?> GetPaymentStatusAsync(string paymentId);
 }

@@ -4,7 +4,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
-public class Customer : Entity<Guid>, IAggregateRoot
+public partial class Customer : Entity<Guid>, IAggregateRoot
 {
     public Cpf Cpf { get; private set; }
 
@@ -53,10 +53,10 @@ public class Customer : Entity<Guid>, IAggregateRoot
     private static string ValidateEmail(string? email)
     {
         AssertionConcern.AssertArgumentNotEmpty(email, nameof(email));
-        if (!Regex.IsMatch(email, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"))
+        if (!EmailRegex().IsMatch(email!))
             throw new DomainException($"Invalid email format '{email}'");
 
-        return email;
+        return email!;
     }
 
     public void ChangeName(string name)
@@ -75,4 +75,7 @@ public class Customer : Entity<Guid>, IAggregateRoot
         AssertionConcern.AssertArgumentNotEmpty(Name, nameof(Name));
         ValidateEmail(Email);
     }
+
+    [GeneratedRegex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")]
+    private static partial Regex EmailRegex();
 }

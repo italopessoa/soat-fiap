@@ -18,15 +18,14 @@ internal class AccessTokenAuthEventsHandler : JwtBearerEvents
 
     private Task MessageReceivedHandler(MessageReceivedContext context)
     {
-        if (context.Request.Headers.TryGetValue("AccessToken", out var headerValue))
+        if (context.Request.Headers.TryGetValue("AccessToken", out var headerValue) &&
+            !string.IsNullOrWhiteSpace(headerValue))
         {
-            string token = headerValue;
-            if (!string.IsNullOrEmpty(token) && token.StartsWith(BearerPrefix))
+            var accessToken = headerValue.ToString();
+            if (accessToken.StartsWith(BearerPrefix))
             {
-                token = token.Substring(BearerPrefix.Length);
+                context.Token = accessToken[BearerPrefix.Length..];
             }
-
-            context.Token = token;
         }
 
         return Task.CompletedTask;

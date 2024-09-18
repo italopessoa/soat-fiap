@@ -13,6 +13,11 @@ public class DomainEventsHandler : IDisposable
     private readonly ILogger<DomainEventsHandler> _logger;
     private readonly HybridCache _cache;
 
+    /// <summary>
+    /// Simple event handler class
+    /// </summary>
+    /// <param name="logger">Logger</param>
+    /// <param name="cache">Cache</param>
     public DomainEventsHandler(ILogger<DomainEventsHandler> logger, HybridCache cache)
     {
         _logger = logger;
@@ -88,6 +93,9 @@ public class DomainEventsHandler : IDisposable
         _cache.RemoveAsync("orders-nonFilter").ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Dispose
+    /// </summary>
     public void Dispose()
     {
         DomainEventTrigger.ProductCreated -= OnProductCreated;

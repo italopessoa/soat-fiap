@@ -11,7 +11,7 @@ public class CustomerService(
     public async Task<CustomerDto?> FindByCpfAsync(string cpf)
     {
         var customer = await findCustomerByCpfUseCase.Execute(cpf);
-        return customer.FromEntityToDto();
+        return customer?.FromEntityToDto();
     }
 
     public async Task<CustomerDto> CreateAsync(string cpf, string? name, string? email)
