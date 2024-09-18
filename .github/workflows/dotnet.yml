@@ -35,6 +35,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -49,11 +52,12 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage --settings tests/coverage.runsettings
     
-    - name: Sonarcloud
+    - name: SonarCloud
       if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
       uses: sonarsource/sonarcloud-github-action@v3.0.0
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
