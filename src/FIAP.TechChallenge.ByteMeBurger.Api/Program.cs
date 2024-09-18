@@ -140,29 +140,7 @@ public class Program
 
     private static void AddHealthChecks(WebApplicationBuilder builder, IConfiguration configuration)
     {
-        builder.Services.AddHealthChecks();
-        // .AddMySql(configuration.GetConnectionString("MySql")!);
+        builder.Services.AddHealthChecks()
+            .AddMySql(configuration.GetConnectionString("MySql")!);
     }
-
-    // static string CreateToken(User user)
-    // {
-    //     var tokenHandler = new JwtSecurityTokenHandler();
-    //     var key = Encoding.ASCII.GetBytes("PkOhRwy6UtniEMo7lLWp3bADctYgnDHCTvH+2YkDeGg=");
-    //     var tokenDescriptor = new SecurityTokenDescriptor
-    //     {
-    //         Subject = new ClaimsIdentity(new Claim[]
-    //         {
-    //             new Claim(ClaimTypes.NameIdentifier, "user.UserID"),
-    //             new Claim(ClaimTypes.Role, "user.Role.ToString()"),
-    //             // Add more claims as needed
-    //         }),
-    //         Expires = DateTime.UtcNow.AddHours(1),
-    //         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-    //         Issuer = "italo.com", // Add this line
-    //         Audience = "italo.com"
-    //     };
-    //
-    //     var token = tokenHandler.CreateToken(tokenDescriptor);
-    //     return tokenHandler.WriteToken(token);
-    // }
 }

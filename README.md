@@ -126,3 +126,5 @@ You can use the [postman collection](/postman) for testing
 
 ### Cleanup
 Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1) script
+
+test ruules

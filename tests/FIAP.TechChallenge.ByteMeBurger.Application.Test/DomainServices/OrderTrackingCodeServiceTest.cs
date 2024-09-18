@@ -46,7 +46,6 @@ public class OrderTrackingCodeServiceTest
         for (var i = 0; i < 10; i++)
         {
             list.Add(_orderTrackingCodeService.GetNext());
-            Thread.Sleep(20);
         }
 
         // Assert
