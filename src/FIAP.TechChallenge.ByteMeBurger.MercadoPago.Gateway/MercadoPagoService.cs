@@ -7,7 +7,6 @@ using MercadoPago.Client;
 using MercadoPago.Client.Common;
 using MercadoPago.Client.Payment;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using DomainPayment = FIAP.TechChallenge.ByteMeBurger.Domain.Entities.Payment;
 using DomainPaymentStatus = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentStatus;
 
@@ -63,8 +62,8 @@ public class MercadoPagoService : IPaymentGateway
         }
         catch (Exception e)
         {
-            _logger.LogError("Error when trying to create new payment on MercadoPago for Order {OrderId}. {@Error}",
-                order.Id, e);
+            _logger.LogError(e, "Error when trying to create new payment on MercadoPago for Order {OrderId}.",
+                order.Id);
             return null;
         }
     }
