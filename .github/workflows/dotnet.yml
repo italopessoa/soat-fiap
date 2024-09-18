@@ -15,6 +15,7 @@ on:
         default: "Testing"
 
   push:
+    branches: [ main ]
   pull_request:
     
 env:
