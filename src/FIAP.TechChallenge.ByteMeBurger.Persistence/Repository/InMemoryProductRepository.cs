@@ -25,7 +25,7 @@ public class InMemoryProductRepository(IReadOnlyList<Product> products) : IProdu
     public Task<Product> CreateAsync(Product product)
     {
         _products.Add(product);
-        return Task.FromResult(_products.Last());
+        return Task.FromResult(_products.ElementAt(_products.Count - 1));
     }
 
     public Task<bool> DeleteAsync(Guid productId)

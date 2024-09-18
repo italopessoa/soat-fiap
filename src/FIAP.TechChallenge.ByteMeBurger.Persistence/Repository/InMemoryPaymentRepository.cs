@@ -18,14 +18,14 @@ public class InMemoryPaymentRepository : IPaymentRepository
 
     public Task<Payment?> GetPaymentAsync(PaymentId paymentId)
     {
-        var payment = _payments.FirstOrDefault(p => p.Id == paymentId);
+        var payment = _payments.First(p => p.Id == paymentId) ?? default;
         return Task.FromResult(payment);
     }
 
     public Task<Payment?> GetPaymentAsync(string externalReference, PaymentType paymentType)
     {
-        var payment = _payments.FirstOrDefault(p => p.ExternalReference == externalReference && p.PaymentType == paymentType);
-        return Task.FromResult(payment);
+        var payment = _payments.First(p => p.ExternalReference == externalReference && p.PaymentType == paymentType);
+        return Task.FromResult(payment ?? default);
     }
 
     public Task<bool> UpdatePaymentStatusAsync(Payment payment)

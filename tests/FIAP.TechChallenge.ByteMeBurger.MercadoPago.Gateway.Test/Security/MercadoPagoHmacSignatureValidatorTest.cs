@@ -28,11 +28,11 @@ public class MercadoPagoHmacSignatureValidatorTest
         var validator = () => new MercadoPagoHmacSignatureValidator(
             new MercadoPagoOptions());
 
-        // Act& Assert
+        // Act & Assert
         using (new AssertionScope())
         {
             validator.Should().ThrowExactly<ArgumentNullException>().And.ParamName.Should()
-                .Be(nameof(MercadoPagoOptions.WebhookSecret));
+                .Be("mercadoPagoOptions.WebhookSecret");
         }
     }
 

@@ -32,7 +32,7 @@ public static class ServiceCollectionsExtensions
         services.AddHybridCache(options =>
             options.DefaultEntryOptions = new HybridCacheEntryOptions()
             {
-                Expiration = hybridCacheSettings.Expiration,
+                Expiration = hybridCacheSettings!.Expiration,
                 LocalCacheExpiration = hybridCacheSettings.LocalCacheExpiration,
                 Flags = hybridCacheSettings.Flags,
             }

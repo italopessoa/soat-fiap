@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 

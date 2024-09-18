@@ -21,14 +21,13 @@ public class MercadoPagoService : IPaymentGateway
 
     public MercadoPagoService(MercadoPagoOptions mercadoPagoOptions, ILogger<MercadoPagoService> logger)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.WebhookSecret,
-            nameof(mercadoPagoOptions.WebhookSecret));
+        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.WebhookSecret);
 
         _logger = logger;
         _mercadoPagoOptions = mercadoPagoOptions;
     }
 
-    public async Task<DomainPayment?> CreatePaymentAsync(Order order)
+    public async Task<Payment> CreatePaymentAsync(Order order)
     {
         var requestOptions = new RequestOptions()
         {

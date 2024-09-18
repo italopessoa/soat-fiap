@@ -5,14 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
+/// <summary>
+/// DomainExceptionHandler
+/// </summary>
+/// <param name="logger">Logger</param>
 [ExcludeFromCodeCoverage]
 public class DomainExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
+    /// <summary>
+    /// Handler domain exceptions
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="exception"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
     {
-        logger.LogWarning(
-            exception, "Exception occurred: {Message}", exception.Message);
+        logger.LogWarning(exception, "Exception occurred: {Message}", exception.Message);
 
         if (exception is not DomainException)
             return false;

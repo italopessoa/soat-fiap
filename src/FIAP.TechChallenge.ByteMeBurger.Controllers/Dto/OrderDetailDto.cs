@@ -8,7 +8,7 @@ public class OrderDetailDto
 
     public string? TrackingCode { get; set; }
 
-    public List<OrderItemDto> OrderItems { get; set; }
+    public List<OrderItemDto> OrderItems { get; set; } = [];
 
     public decimal Total { get; set; }
 

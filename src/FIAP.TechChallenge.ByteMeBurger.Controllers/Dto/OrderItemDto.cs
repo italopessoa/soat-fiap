@@ -28,5 +28,5 @@ public class OrderItemDto
     /// <summary>
     /// Product name
     /// </summary>
-    public string ProductName { get; set; }
+    public string ProductName { get; set; } = string.Empty;
 }

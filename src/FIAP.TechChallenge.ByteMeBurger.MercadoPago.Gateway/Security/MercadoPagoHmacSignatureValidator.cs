@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 using System.Text;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Security;
@@ -20,8 +19,7 @@ public class MercadoPagoHmacSignatureValidator : IMercadoPagoHmacSignatureValida
 
     public MercadoPagoHmacSignatureValidator(MercadoPagoOptions mercadoPagoOptions)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.WebhookSecret,
-            nameof(mercadoPagoOptions.WebhookSecret));
+        ArgumentException.ThrowIfNullOrWhiteSpace(mercadoPagoOptions.WebhookSecret);
         _mercadoPagoOptions = mercadoPagoOptions;
     }
 
@@ -78,7 +76,7 @@ public class MercadoPagoHmacSignatureValidator : IMercadoPagoHmacSignatureValida
         }
     }
 
-    private bool TryValidateRequestParams(AuthorizationFilterContext context, out StringValues dataId,
+    private static bool TryValidateRequestParams(AuthorizationFilterContext context, out StringValues dataId,
         out StringValues signature, out StringValues xRequestIdHeader, out string reasonToFail)
     {
         signature = default;
