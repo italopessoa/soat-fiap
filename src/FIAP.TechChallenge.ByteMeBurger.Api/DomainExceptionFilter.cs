@@ -11,11 +11,19 @@ public class DomainExceptionFilter : IExceptionFilter
 {
     private readonly ILogger<DomainExceptionFilter> _logger;
 
+    /// <summary>
+    /// DomainExceptionFilter
+    /// </summary>
+    /// <param name="logger">Logger</param>
     public DomainExceptionFilter(ILogger<DomainExceptionFilter> logger)
     {
         _logger = logger;
     }
 
+    /// <summary>
+    /// On Exception handler
+    /// </summary>
+    /// <param name="context"></param>
     public void OnException(ExceptionContext context)
     {
         if (context.Exception is not DomainException) return;

@@ -11,7 +11,7 @@ public class InMemoryCustomerRepository(IReadOnlyCollection<Customer> customersS
 
     public Task<Customer?> FindByCpfAsync(string cpf)
     {
-        return Task.FromResult(_customers.FirstOrDefault(c => c.Cpf == cpf));
+        return Task.FromResult(_customers.First(c => c.Cpf == cpf) ?? default);
     }
 
     public Task<Customer> CreateAsync(Customer customer)

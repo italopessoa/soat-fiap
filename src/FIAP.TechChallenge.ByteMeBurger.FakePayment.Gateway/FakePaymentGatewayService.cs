@@ -8,10 +8,10 @@ namespace FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway;
 [ExcludeFromCodeCoverage]
 public class FakePaymentGatewayService : IPaymentGateway
 {
-    public Task<Payment?> CreatePaymentAsync(Order order)
+    public Task<Payment> CreatePaymentAsync(Order order)
     {
         var id = Guid.NewGuid();
-        var payment = new Payment
+        return Task.FromResult(new Payment
         {
             Id = new PaymentId(id),
             OrderId = order.Id,
@@ -21,8 +21,7 @@ public class FakePaymentGatewayService : IPaymentGateway
             Status = PaymentStatus.Pending,
             QrCode = "https://fake.qrcode.com",
             ExternalReference = id.ToString()
-        };
-        return Task.FromResult(payment);
+        });
     }
 
     public Task<PaymentStatus?> GetPaymentStatusAsync(string paymentId)
