@@ -22,10 +22,7 @@ internal class AccessTokenAuthEventsHandler : JwtBearerEvents
             !string.IsNullOrWhiteSpace(headerValue))
         {
             var accessToken = headerValue.ToString();
-            if (accessToken.StartsWith(BearerPrefix))
-            {
-                context.Token = accessToken[BearerPrefix.Length..];
-            }
+            context.Token = accessToken.StartsWith(BearerPrefix) ? accessToken[BearerPrefix.Length..] : accessToken;
         }
 
         return Task.CompletedTask;
