@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using Microsoft.Extensions.Caching.Hybrid;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
@@ -12,16 +13,19 @@ public class DomainEventsHandler : IDisposable
 {
     private readonly ILogger<DomainEventsHandler> _logger;
     private readonly HybridCache _cache;
+    private readonly IAnalyticsPublisher _publisher;
 
     /// <summary>
     /// Simple event handler class
     /// </summary>
     /// <param name="logger">Logger</param>
     /// <param name="cache">Cache</param>
-    public DomainEventsHandler(ILogger<DomainEventsHandler> logger, HybridCache cache)
+    /// <param name="publisher">Events publisher</param>
+    public DomainEventsHandler(ILogger<DomainEventsHandler> logger, HybridCache cache, IAnalyticsPublisher publisher)
     {
         _logger = logger;
         _cache = cache;
+        _publisher = publisher;
 
         DomainEventTrigger.ProductCreated += OnProductCreated;
         DomainEventTrigger.ProductDeleted += OnProductDeleted;
@@ -56,6 +60,7 @@ public class DomainEventsHandler : IDisposable
     private void OnOrderCreated(object? sender, OrderCreated e)
     {
         InvalidateOrderList();
+        _publisher.PublishAsync(e).ConfigureAwait(false);
         _logger.LogInformation("New {EventName} event: OrderId {OrderId}", nameof(OrderCreated), e.Payload.Id);
     }
 
