@@ -980,7 +980,16 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					""
+					"const profile = pm.environment.get(\"profile\");\r",
+					"if(profile) {\r",
+					"    console.log(`Adding ${profile} cpf to request header`);\r",
+					"    pm.request.headers.add({\r",
+					"    key: \"cpf\",\r",
+					"    value: pm.environment.get(`${profile}_cpf`),\r",
+					"    });\r",
+					"} else {\r",
+					"    console.warn(\"making anonymous request\");\r",
+					"}"
 				]
 			}
 		},
