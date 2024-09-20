@@ -2,8 +2,13 @@
 
 [![CI](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/actions/workflows/dotnet.yml)
 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=soat-fiap_FIAP.TechChallenge.ByteMeBurger&metric=coverage)](https://sonarcloud.io/summary/new_code?id=soat-fiap_FIAP.TechChallenge.ByteMeBurger)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=soat-fiap_FIAP.TechChallenge.ByteMeBurger&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=soat-fiap_FIAP.TechChallenge.ByteMeBurger)
+
 ## Description
 This repository contains the source code for the ByteMeBurger API, part of the FIAP Tech Challenge. The API is designed to manage a burger restaurant's operations, including order placement, customer registration, and product management. The recent updates introduce a new endpoint for customer registration and enhance various aspects of the application, such as error handling, data models, and service configurations.
+
+Endpoints are protected since JWT token is now required. Since this application will run on EKS Cluster inside a private VPC, Customers enpoint will be deprecated or splited into a different service. Customers information can be extracted from token, since it's generated and validated internally.
 
 ## Tech challenge deliverables
 - You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki)
@@ -17,6 +22,11 @@ This repository contains the source code for the ByteMeBurger API, part of the F
    - [Video](https://www.youtube.com/watch?v=34ffDcUoUTg)
 
 ## Getting Started
+
+### Dependencies
+
+- [VPC](https://github.com/soat-fiap/bmb.infra)
+- [Database](https://github.com/soat-fiap/bmb.database)
 
 ### Prerequisites
 - Docker
@@ -127,4 +137,7 @@ You can use the [postman collection](/postman) for testing
 ### Cleanup
 Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1) script
 
-test ruules
+
+## This repo on the infrastructure
+
+![Architecture Diagram](aws-infra-phase-3.png)
