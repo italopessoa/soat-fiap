@@ -14,7 +14,7 @@ public static class ServiceExtensions
 {
     public static void ConfigurePersistenceApp(this IServiceCollection services, IConfiguration configuration)
     {
-        if (configuration.GetConnectionString("MySql") is null)
+        if (string.IsNullOrWhiteSpace(configuration.GetConnectionString("MySql")))
         {
             services.AddScoped<IOrderRepository, InMemoryOrderRepository>()
                 .AddScoped<ICustomerRepository>(_ => new InMemoryCustomerRepository([]))

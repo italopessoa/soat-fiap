@@ -57,7 +57,6 @@ variable "api_docker_image" {
   default = "ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:sha-b83177c"
 }
 
-
 variable "internal_elb_name" {
   type    = string
   default = "api_internal_elb"
@@ -73,4 +72,16 @@ variable "db_pwd" {
   type      = string
   sensitive = true
   default   = "db_password"
+}
+
+variable "access_key_id" {
+  type    = string
+  nullable = false
+  sensitive = true
+}
+
+variable "secret_access_key" {
+  type    = string
+  nullable = false
+  sensitive = true
 }

@@ -81,6 +81,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test.csproj", "{93545102-0476-48CB-8074-5C71AC81E040}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "terraform", "terraform", "{B2898AA3-86A6-4AF1-B27F-A3706B2B0557}"
+	ProjectSection(SolutionItems) = preProject
+		tf\main.tf = tf\main.tf
+		tf\output.tf = tf\output.tf
+		tf\providers.tf = tf\providers.tf
+		tf\variables.tf = tf\variables.tf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +117,7 @@ Global
 		{207C0604-793B-4829-A407-6385E2457A03} = {63B625A6-D80F-4C6B-86C4-BEA9F690D4C6}
 		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{93545102-0476-48CB-8074-5C71AC81E040} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
+		{B2898AA3-86A6-4AF1-B27F-A3706B2B0557} = {2F192BA8-59FC-4B0C-B59D-511EFA89F428}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B8F244B5-F703-441C-8A8A-C720F605709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

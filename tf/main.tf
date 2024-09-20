@@ -20,6 +20,17 @@ data "aws_eks_cluster" "techchallenge_cluster" {
 # }
 
 ##############################
+# SQS
+##############################
+
+resource "aws_sqs_queue" "bmb-events" {
+  name                       = "bmb-events"
+  delay_seconds              = 0
+  visibility_timeout_seconds = 30
+  receive_wait_time_seconds  = 0
+}
+
+##############################
 # DATABASE
 ##############################
 
@@ -32,6 +43,7 @@ locals {
   jwt_issuer        = var.jwt_issuer
   jwt_aud           = var.jwt_aud
   docker_image      = var.api_docker_image
+  events_queue_name = aws_sqs_queue.bmb-events.name
 }
 
 
@@ -40,7 +52,6 @@ locals {
 ##############################
 
 resource "kubernetes_config_map_v1" "config_map_api" {
-
   metadata {
     name = "configmap-api"
     labels = {
@@ -67,6 +78,11 @@ resource "kubernetes_config_map_v1" "config_map_api" {
     "JwtOptions__SigningKey"               = var.jwt_signing_key
     "JwtOptions__ExpirationSeconds"        = 3600
     "JwtOptions__UseAccessToken"           = true
+    "SqsSettings__QueueName"               = local.events_queue_name
+    "SqsSettings__Enabled"                 = true
+    "SqsSettings__Region"                  = "us-east-1"
+    "SqsSettings__ClientId"                = var.access_key_id
+    "SqsSettings__ClientSecret"            = var.secret_access_key
   }
 }
 
@@ -230,13 +246,13 @@ resource "kubernetes_service" "svc_seq" {
     labels = {
       "terraform" = true
     }
-    annotations = {
-      "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
-      "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal"
-    }
+#     annotations = {
+#       "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
+#       "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal"
+#     }
   }
   spec {
-    type = "LoadBalancer"
+    type = "NodePort"
     port {
       port      = 80
       node_port = 30008

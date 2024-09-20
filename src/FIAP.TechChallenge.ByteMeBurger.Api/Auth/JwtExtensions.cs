@@ -52,12 +52,12 @@ public static class JwtExtensions
     public static CustomerDto? GetCustomerFromClaims(this HttpContext context)
     {
         if (Guid.TryParse(
-                context.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.ToString(),
+                context.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value,
                 out var customerId))
         {
-            var email = context.User.Claims.First(claim => claim.Type == ClaimTypes.Email).ToString();
-            var name = context.User.Claims.First(claim => claim.Type == ClaimTypes.Name).ToString();
-            var cpf = context.User.Claims.First(claim => claim.Type == "cpf").ToString();
+            var email = context.User.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+            var name = context.User.Claims.First(claim => claim.Type is ClaimTypes.Name or "name" ).Value;
+            var cpf = context.User.Claims.First(claim => claim.Type == "cpf").Value;
 
             return new CustomerDto(customerId, cpf, name, email);
         }
