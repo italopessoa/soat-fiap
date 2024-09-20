@@ -1,10 +1,12 @@
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Persistence;
 
+[ExcludeFromCodeCoverage]
 public class MySqlDbContext : IDbContext, IDisposable
 {
     private readonly IConfiguration _configuration;

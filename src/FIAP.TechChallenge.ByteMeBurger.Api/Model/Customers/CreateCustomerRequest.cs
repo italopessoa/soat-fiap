@@ -23,5 +23,5 @@ public record CreateCustomerRequest
     /// </summary>
     [Required]
     [MaxLength(14)]
-    public string Cpf { get; set; } = null!;
+    public string Cpf { get; set; } = string.Empty;
 }

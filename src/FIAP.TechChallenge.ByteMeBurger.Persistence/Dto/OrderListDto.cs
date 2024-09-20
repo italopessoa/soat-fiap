@@ -6,6 +6,6 @@ public class OrderListDto
     public int Status { get; set; }
     public DateTime Created { get; set; }
     public DateTime? Updated { get; set; }
-    public string TrackingCode { get; set; } = null!;
+    public string TrackingCode { get; set; } = string.Empty;
     public Guid? PaymentId { get; set; }
 }

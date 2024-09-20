@@ -146,8 +146,6 @@ public class MercadoPagoService : IPaymentGateway
             Description = $"Payment for Order {order.TrackingCode.Value}",
             ExternalReference = order.TrackingCode.Value,
             Installments = 1,
-            // TODO: removed since while the application is deployed the API gateway is unknown
-            // NotificationUrl = _mercadoPagoOptions.NotificationUrl ?? string.Empty,
             Payer = payer,
             PaymentMethodId = "pix",
             StatementDescriptor = "tech challenge restaurant order",

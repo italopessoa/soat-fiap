@@ -101,9 +101,26 @@ resource "kubernetes_secret" "secret_mercadopago" {
   type = "Opaque"
 }
 
+resource "kubernetes_limit_range" "storage_limit_range" {
+  metadata {
+    name      = "storage-limit-range"
+    namespace = "default"
+  }
+  spec {
+    limit {
+      type = "Container"
+      max = {
+        ephemeral_storage = "10Mi"
+        memory            = "300Mi"
+      }
+    }
+  }
+}
+
 ####################################
 # API
 ####################################
+
 
 resource "kubernetes_service" "bmb-api-svc" {
   metadata {
@@ -152,9 +169,10 @@ resource "kubernetes_deployment" "deployment_api" {
         }
       }
       spec {
+        automount_service_account_token = false
         container {
-          name  = "api-container"
-          image = local.docker_image
+          name                            = "api-container"
+          image                           = local.docker_image
           port {
             name           = "liveness-port"
             container_port = 8080
@@ -246,10 +264,10 @@ resource "kubernetes_service" "svc_seq" {
     labels = {
       "terraform" = true
     }
-#     annotations = {
-#       "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
-#       "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal"
-#     }
+    #     annotations = {
+    #       "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
+    #       "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal"
+    #     }
   }
   spec {
     type = "NodePort"
@@ -287,9 +305,10 @@ resource "kubernetes_deployment" "deployment_seq" {
         }
       }
       spec {
+        automount_service_account_token = false
         container {
-          name  = "seq-container"
-          image = "datalust/seq:latest"
+          name                            = "seq-container"
+          image                           = "datalust/seq:latest"
           port {
             container_port = 80
           }
