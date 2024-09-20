@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionsExtensions
 {
     public static void AddUseCases(this IServiceCollection serviceCollection)
