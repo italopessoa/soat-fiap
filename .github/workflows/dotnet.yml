@@ -119,7 +119,7 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"soat-fiap_FIAP.TechChallenge.ByteMeBurger" /o:"soat-fiap" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.scanner.scanAll=false
           dotnet build --no-incremental
-          .\.sonar\scanner\dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
+          .\.sonar\scanner\dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml" --exclude-by-attribute "GeneratedCodeAttribute,ExcludeFromCodeCoverageAttribute"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
 
