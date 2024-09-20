@@ -67,7 +67,7 @@ public class MercadoPagoService : IPaymentGateway
         }
     }
 
-    private PaymentCreateRequest GetPaymentCreateRequest(Order order)
+    private static PaymentCreateRequest GetPaymentCreateRequest(Order order)
     {
         var paymentPayerRequest = order.Customer is null
             ? new PaymentPayerRequest

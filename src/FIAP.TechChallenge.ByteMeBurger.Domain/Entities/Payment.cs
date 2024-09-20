@@ -5,9 +5,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 
 public class Payment : Entity<PaymentId>, IAggregateRoot
 {
-    [Obsolete]
-    public string Type { get; set; }
-
     public PaymentType PaymentType { get; set; } = PaymentType.Test;
 
     public Guid OrderId { get; set; }
