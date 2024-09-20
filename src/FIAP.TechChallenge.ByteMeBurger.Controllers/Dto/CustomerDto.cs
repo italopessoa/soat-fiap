@@ -12,7 +12,7 @@ public class CustomerDto
     /// <summary>
     /// Customer CPF
     /// </summary>
-    public string Cpf { get; set; }
+    public string Cpf { get; set; } = null!;
 
     /// <summary>
     /// Customer name

@@ -4,9 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
+/// <summary>
+/// Global exception handler
+/// </summary>
+/// <param name="logger"></param>
 [ExcludeFromCodeCoverage]
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="httpContext">Http Context</param>
+    /// <param name="exception">Exception</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns></returns>
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
     {

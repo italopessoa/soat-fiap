@@ -12,6 +12,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 /// </summary>
 /// <param name="customerService">Customer service (port implementation).</param>
 /// <param name="logger">Logger</param>
+[Obsolete("To be migrated to different project")]
 [Route("api/[controller]")]
 [Produces("application/json")]
 [Consumes("application/json")]

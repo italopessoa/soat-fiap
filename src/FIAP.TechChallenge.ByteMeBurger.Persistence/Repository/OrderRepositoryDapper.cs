@@ -14,7 +14,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepositoryDapper> logger)
     : IOrderRepository
 {
-
     public async Task<Order> CreateAsync(Order order)
     {
         logger.LogInformation("Persisting order {OrderId}", order.Id);
@@ -122,7 +121,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         );
 
         logger.LogInformation("Order {OrderId} retrieved", orderId);
-        return ordersDictionary.Any() ? ordersDictionary.First().Value : null;
+        return ordersDictionary.Count > 0 ? ordersDictionary.First().Value : null;
     }
 
     public async Task<bool> UpdateOrderStatusAsync(Order order)
@@ -147,7 +146,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         }
         catch (Exception e)
         {
-            logger.LogError("Error when trying to update Order {OrderId}. Details {@Exception}", order.Id, e);
+            logger.LogError(e, "Error when trying to update Order {OrderId}.", order.Id);
             return false;
         }
     }
@@ -173,7 +172,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
         }
         catch (Exception e)
         {
-            logger.LogError("Error when trying to update Order {OrderId}. Details {@Exception}", order.Id, e);
+            logger.LogError(e, "Error when trying to update Order {OrderId}.", order.Id);
             return false;
         }
     }
