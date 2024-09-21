@@ -39,7 +39,10 @@ public class CreateProductRequest
     /// </summary>
     public string[] Images { get; set; } = Array.Empty<string>();
 
-    // TODO make this internal
-    public Product ToProduct() =>
+    /// <summary>
+    /// Convert to Domain
+    /// </summary>
+    /// <returns></returns>
+    internal Product ToProduct() =>
         new Product(Guid.NewGuid(), Name, Description, (ProductCategory)Category, Price, Images);
 }

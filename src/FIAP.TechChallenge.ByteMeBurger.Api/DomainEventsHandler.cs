@@ -111,5 +111,6 @@ public class DomainEventsHandler : IDisposable
         DomainEventTrigger.OrderStatusChanged -= OnOrderStatusChanged;
         DomainEventTrigger.CustomerRegistered -= OnCustomerRegistered;
         DomainEventTrigger.PaymentCreated -= OnPaymentCreated;
+        GC.SuppressFinalize(this);
     }
 }

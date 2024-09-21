@@ -288,8 +288,8 @@ static class HttpContextMock
         identity.Setup(s => s.Claims).Returns(
         [
             new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
-            new Claim(ClaimTypes.Name, customer.Name),
-            new Claim(ClaimTypes.Email, customer.Email),
+            new Claim(ClaimTypes.Name, customer!.Name),
+            new Claim(ClaimTypes.Email, customer!.Email),
             new Claim("cpf", customer.Cpf)
         ]);
 

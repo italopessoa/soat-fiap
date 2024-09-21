@@ -4,10 +4,10 @@ namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Model;
 
 public class MercadoPagoWebhookEvent
 {
-    public string Action { get; set; } = null!;
+    public string Action { get; set; } = string.Empty;
 
     [JsonPropertyName("api_version")]
-    public string ApiVersion { get; set; }
+    public string ApiVersion { get; set; } = string.Empty;
 
     public MercadoPagoWebhookData Data { get; set; }
 
@@ -19,7 +19,7 @@ public class MercadoPagoWebhookEvent
     [JsonPropertyName("live_mode")]
     public bool LiveMode { get; set; }
 
-    public string Type { get; set; }
+    public string Type { get; set; } = string.Empty;
 
     [JsonPropertyName("user_id")]
     public long UserId { get; set; }
@@ -27,5 +27,5 @@ public class MercadoPagoWebhookEvent
 
 public class MercadoPagoWebhookData
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 }

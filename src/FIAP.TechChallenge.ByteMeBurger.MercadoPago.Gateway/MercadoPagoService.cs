@@ -54,9 +54,9 @@ public class MercadoPagoService : IPaymentGateway
                 Id = new PaymentId(Guid.NewGuid()),
                 PaymentType = PaymentType.MercadoPago,
                 QrCode = mercadoPagoPayment.PointOfInteraction.TransactionData.QrCode,
-                ExternalReference = mercadoPagoPayment.Id.ToString(),
+                ExternalReference = mercadoPagoPayment!.Id.ToString(),
                 OrderId = order.Id,
-                Amount = paymentCreateRequest.TransactionAmount.Value
+                Amount = paymentCreateRequest!.TransactionAmount.Value
             };
         }
         catch (Exception e)
@@ -67,7 +67,7 @@ public class MercadoPagoService : IPaymentGateway
         }
     }
 
-    private PaymentCreateRequest GetPaymentCreateRequest(Order order)
+    private static PaymentCreateRequest GetPaymentCreateRequest(Order order)
     {
         var paymentPayerRequest = order.Customer is null
             ? new PaymentPayerRequest
@@ -110,7 +110,7 @@ public class MercadoPagoService : IPaymentGateway
     private static PaymentPayerRequest MapPaymentPayerRequest(Order order)
         => new()
         {
-            Email = order.Customer.Email,
+            Email = order!.Customer.Email,
             FirstName = order.Customer.Name,
             LastName = "User",
             Identification = new IdentificationRequest
@@ -139,15 +139,13 @@ public class MercadoPagoService : IPaymentGateway
             }
         );
 
-    private PaymentCreateRequest MapPaymentCreateRequest(Order order, PaymentPayerRequest payer,
+    private static PaymentCreateRequest MapPaymentCreateRequest(Order order, PaymentPayerRequest payer,
         PaymentAdditionalInfoRequest paymentAdditionalInfoRequest, decimal amount)
         => new()
         {
             Description = $"Payment for Order {order.TrackingCode.Value}",
             ExternalReference = order.TrackingCode.Value,
             Installments = 1,
-            // TODO: removed since while the application is deployed the API gateway is unknown
-            // NotificationUrl = _mercadoPagoOptions.NotificationUrl ?? string.Empty,
             Payer = payer,
             PaymentMethodId = "pix",
             StatementDescriptor = "tech challenge restaurant order",

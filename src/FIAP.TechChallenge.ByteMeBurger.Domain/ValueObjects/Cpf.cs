@@ -31,6 +31,7 @@ public class Cpf : ValueObject
     private static string SanityseCpf(string cpf) => cpf
         .Replace(".", "")
         .Replace("-", "")
+        .Replace(Environment.NewLine, "")
         .Trim();
 
     private static string Validate(string cpf)
