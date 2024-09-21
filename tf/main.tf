@@ -101,22 +101,6 @@ resource "kubernetes_secret" "secret_mercadopago" {
   type = "Opaque"
 }
 
-resource "kubernetes_limit_range" "storage_limit_range" {
-  metadata {
-    name      = "storage-limit-range"
-    namespace = "default"
-  }
-  spec {
-    limit {
-      type = "Container"
-      max = {
-        ephemeral_storage = "10Mi"
-        memory            = "300Mi"
-      }
-    }
-  }
-}
-
 ####################################
 # API
 ####################################
