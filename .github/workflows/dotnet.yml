@@ -215,8 +215,8 @@ jobs:
           db_user = "${{ secrets.BMB_MYSQL_USER }}"
           db_pwd = "${{ secrets.BMB_MYSQL_PASSWORD }}"
           rds_cluster_identifier = "${{ vars.BMB_MYSQL_CLUSTER }}"
-          access_key_id = "${{ secrets.AWS_ACCESS_KEY_ID }}"
-          secret_access_key = "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          access_key_id = "${{ secrets.AWS_API_ACCESS_KEY_ID }}"
+          secret_access_key = "${{ secrets.AWS_API_SECRET_ACCESS_KEY }}"
           EOF
 
       - name: Upload Configuration

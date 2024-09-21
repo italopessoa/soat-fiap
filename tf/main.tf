@@ -39,11 +39,13 @@ data "aws_rds_cluster" "example" {
 }
 
 locals {
-  connection_string = "Server=${data.aws_rds_cluster.example.endpoint};Database=${data.aws_rds_cluster.example.database_name};Uid=${var.db_user};Pwd=${var.db_pwd};Port=${data.aws_rds_cluster.example.port};"
-  jwt_issuer        = var.jwt_issuer
-  jwt_aud           = var.jwt_aud
-  docker_image      = var.api_docker_image
-  events_queue_name = aws_sqs_queue.bmb-events.name
+  connection_string           = "Server=${data.aws_rds_cluster.example.endpoint};Database=${data.aws_rds_cluster.example.database_name};Uid=${var.db_user};Pwd=${var.db_pwd};Port=${data.aws_rds_cluster.example.port};"
+  jwt_issuer                  = var.jwt_issuer
+  jwt_aud                     = var.jwt_aud
+  docker_image                = var.api_docker_image
+  events_queue_name           = aws_sqs_queue.bmb-events.name
+  cognito_user_pool_id        = ""
+  cognito_user_pool_client_id = ""
 }
 
 
@@ -83,6 +85,12 @@ resource "kubernetes_config_map_v1" "config_map_api" {
     "SqsSettings__Region"                  = "us-east-1"
     "SqsSettings__ClientId"                = var.access_key_id
     "SqsSettings__ClientSecret"            = var.secret_access_key
+    "CognitoSettings__UserPoolId"          = local.cognito_user_pool_id
+    "CognitoSettings__UserPoolClientId"    = local.cognito_user_pool_client_id
+    "CognitoSettings__Enabled"             = true
+    "CognitoSettings__Region"              = "us-east-1"
+    "CognitoSettings__ClientId"            = var.access_key_id
+    "CognitoSettings__ClientSecret"        = var.secret_access_key
   }
 }
 
