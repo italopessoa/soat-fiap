@@ -109,7 +109,7 @@ resource "kubernetes_limit_range" "storage_limit_range" {
   spec {
     limit {
       type = "Container"
-      max {
+      max = {
         ephemeral_storage = "10Mi"
         memory            = "300Mi"
       }
@@ -171,8 +171,8 @@ resource "kubernetes_deployment" "deployment_api" {
       spec {
         automount_service_account_token = false
         container {
-          name                            = "api-container"
-          image                           = local.docker_image
+          name  = "api-container"
+          image = local.docker_image
           port {
             name           = "liveness-port"
             container_port = 8080
@@ -307,8 +307,8 @@ resource "kubernetes_deployment" "deployment_seq" {
       spec {
         automount_service_account_token = false
         container {
-          name                            = "seq-container"
-          image                           = "datalust/seq:latest"
+          name  = "seq-container"
+          image = "datalust/seq:latest"
           port {
             container_port = 80
           }
