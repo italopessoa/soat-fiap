@@ -74,14 +74,19 @@ variable "db_pwd" {
   default   = "db_password"
 }
 
-variable "access_key_id" {
+variable "api_access_key_id" {
   type      = string
   nullable  = false
   sensitive = true
 }
 
-variable "secret_access_key" {
+variable "api_secret_access_key" {
   type      = string
   nullable  = false
   sensitive = true
+}
+
+variable "user_pool_name" {
+  type    = string
+  default = "bmb-users-pool-local"
 }

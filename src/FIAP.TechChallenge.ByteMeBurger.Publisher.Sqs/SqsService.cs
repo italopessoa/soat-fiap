@@ -19,6 +19,16 @@ public class SqsService(ISqsClientFactory sqsFactory, IOptions<SqsSettings> sqsS
                 var queueUrl = await client.GetQueueUrlAsync(sqsSettingsOptions.Value.QueueName);
                 var request = new SendMessageRequest
                 {
+                    MessageAttributes = new Dictionary<string, MessageAttributeValue>
+                    {
+                        {
+                            "EventType", new MessageAttributeValue
+                            {
+                                DataType = "String",
+                                StringValue = @event.GetType().Name
+                            }
+                        }
+                    },
                     MessageBody = JsonSerializer.Serialize(@event.Payload),
                     QueueUrl = queueUrl.QueueUrl
                 };

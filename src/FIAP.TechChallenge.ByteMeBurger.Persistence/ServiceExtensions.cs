@@ -16,9 +16,9 @@ public static class ServiceExtensions
     {
         if (string.IsNullOrWhiteSpace(configuration.GetConnectionString("MySql")))
         {
-            services.AddScoped<IOrderRepository, InMemoryOrderRepository>()
-                .AddScoped<IProductRepository>(_ => new InMemoryProductRepository([]))
-                .AddScoped<IPaymentRepository, InMemoryPaymentRepository>();
+            services.AddSingleton<IOrderRepository, InMemoryOrderRepository>()
+                .AddSingleton<IProductRepository>(_ => new InMemoryProductRepository([]))
+                .AddSingleton<IPaymentRepository, InMemoryPaymentRepository>();
         }
         else
         {

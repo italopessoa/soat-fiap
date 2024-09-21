@@ -51,37 +51,21 @@ public class CognitoUserManager : ICustomerRepository
 
     public async Task<Customer> CreateAsync(Customer customer)
     {
-        await RegisterUserAndAssignToGroupAsync(customer);
-        return customer;
-    }
-
-    private async Task<Guid> RegisterUserAndAssignToGroupAsync(Customer customer)
-    {
         try
         {
-            // Step 1: Sign up the user
-            var signUpResponse = await _cognitoClient.SignUpAsync(new SignUpRequest
+            var signUpResponse = await _cognitoClient.AdminCreateUserAsync(new AdminCreateUserRequest()
             {
-                ClientId = _clientId,
                 Username = customer.Cpf,
-                Password = GenerateRandomPassword(10),
+                UserPoolId = _userPoolId,
                 UserAttributes =
-                [
+                {
                     new AttributeType { Name = "email", Value = customer.Email },
                     new AttributeType { Name = "name", Value = customer.Name }
-                ],
+                }
             });
 
-            // var addToGroupRequest = new AdminAddUserToGroupRequest
-            // {
-            //     UserPoolId = _userPoolId,
-            //     Username = customer.Cpf,
-            //     GroupName = groupName
-            // };
-            //
-            // await _cognitoClient.AdminAddUserToGroupAsync(addToGroupRequest);
-
-            return Guid.Parse(signUpResponse.UserSub);
+            customer.Id = Guid.Parse(signUpResponse.User.Attributes.First(a=>a.Name is "sub").Value);
+            return customer;
         }
         catch (UsernameExistsException ex)
         {
