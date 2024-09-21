@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs;
 
+[ExcludeFromCodeCoverage]
 public class SqsSettingsSetup(IConfiguration configuration) : IConfigureOptions<SqsSettings>
 {
     public void Configure(SqsSettings options)

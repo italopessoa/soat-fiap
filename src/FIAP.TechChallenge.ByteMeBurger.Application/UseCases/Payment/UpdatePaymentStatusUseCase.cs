@@ -32,7 +32,6 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
             if (paymentStatusUpdated && payment.IsApproved())
             {
                 DomainEventTrigger.RaisePaymentConfirmed(payment);
-                // TODO change to eventual consistency. use events to update order status
                 await _updateOrderStatusUseCase.Execute(payment.OrderId, OrderStatus.Received);
             }
 

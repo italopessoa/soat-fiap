@@ -15,6 +15,7 @@ spec:
       labels:
         app: pod-mysql
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: mysql-container
           image: ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/db:sha-b83177c

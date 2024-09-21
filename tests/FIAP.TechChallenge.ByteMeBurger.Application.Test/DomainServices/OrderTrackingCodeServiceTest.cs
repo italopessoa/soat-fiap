@@ -1,12 +1,11 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.DomainServices;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.DomainServices;
 
 [TestSubject(typeof(OrderTrackingCodeService))]
 public class OrderTrackingCodeServiceTest
 {
-    private readonly IOrderTrackingCodeService _orderTrackingCodeService = new OrderTrackingCodeService();
+    private readonly OrderTrackingCodeService _orderTrackingCodeService = new ();
 
     [Fact]
     public void GetNextOrderCode_Success()

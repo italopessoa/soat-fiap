@@ -24,7 +24,7 @@ public class UpdatePaymentStatusUseCaseTest
     {
         // Arrange
         var payment = new Fixture().Create<Domain.Entities.Payment>();
-        var newStatus = PaymentStatus.Paid;
+        var newStatus = PaymentStatus.Approved;
 
         _mockPaymentRepository.Setup(p =>
                 p.UpdatePaymentStatusAsync(It.Is<Domain.Entities.Payment>(x => x.Status == newStatus)))
@@ -38,7 +38,8 @@ public class UpdatePaymentStatusUseCaseTest
         using (new AssertionScope())
         {
             result.Should().BeTrue();
-            _mockUpdateOrderStatusUseCase.Verify();
+            _mockUpdateOrderStatusUseCase.Verify(uc => uc.Execute(It.IsAny<Guid>(), It.IsAny<OrderStatus>()),
+                Times.Once);
         }
     }
 }

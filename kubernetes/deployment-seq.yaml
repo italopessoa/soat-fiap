@@ -15,6 +15,7 @@ spec:
       labels:
         app: seq
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: seq-container
           image: datalust/seq:latest
