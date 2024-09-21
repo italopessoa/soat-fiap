@@ -109,7 +109,7 @@ resource "kubernetes_limit_range" "storage_limit_range" {
   spec {
     limit {
       type = "Container"
-      max = {
+      max {
         ephemeral_storage = "10Mi"
         memory            = "300Mi"
       }
