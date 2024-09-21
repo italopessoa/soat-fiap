@@ -21,7 +21,8 @@ public class CognitoUserManagerTest
         // Arrange
         var mockFactory = new Mock<ICognitoClientFactory>();
         _cognitoClientMock = new Mock<IAmazonCognitoIdentityProvider>();
-        var settings = Options.Create(new CognitoSettings { UserPoolId = "testPoolId", UserPoolClientId = "testClientId" });
+        var settings = Options.Create(new CognitoSettings
+            { UserPoolId = "testPoolId", UserPoolClientId = "testClientId" });
 
         mockFactory.Setup(f => f.CreateClient()).Returns(_cognitoClientMock.Object);
 
@@ -82,11 +83,14 @@ public class CognitoUserManagerTest
         // Arrange
         var customer = new Customer(Guid.NewGuid(), "28642827041", "Test User", "test@example.com");
 
-        _cognitoClientMock.Setup(c => c.SignUpAsync(It.IsAny<SignUpRequest>(), default))
-            .ReturnsAsync(new SignUpResponse { UserSub = customer.Id.ToString() });
-
-        _cognitoClientMock.Setup(c => c.AdminAddUserToGroupAsync(It.IsAny<AdminAddUserToGroupRequest>(), default))
-            .Returns(Task.FromResult(Mock.Of<AdminAddUserToGroupResponse>()));
+        _cognitoClientMock.Setup(c => c.AdminCreateUserAsync(It.IsAny<AdminCreateUserRequest>(), default))
+            .ReturnsAsync(new AdminCreateUserResponse
+            {
+                User = new UserType
+                {
+                    Attributes = [new AttributeType() { Name = "sub", Value = customer.Id.ToString() }]
+                }
+            });
 
         // Act
         var result = await _userManager.CreateAsync(customer);

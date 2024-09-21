@@ -7,10 +7,10 @@ using Moq;
 namespace FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Test;
 
 [TestSubject(typeof(CognitoClientFactory))]
-public class CognitoClientFactoryTest
+public class CognitoClientFactoryTests
 {
     [Fact]
-    public void CreateClient_ShouldReturnAmazonCognitoIdentityProviderClient()
+    public void CreateClient_WithValidSettings_ShouldReturnAmazonCognitoIdentityProviderClient ()
     {
         // Arrange
         var settingsMock = new Mock<IOptions<CognitoSettings>>();

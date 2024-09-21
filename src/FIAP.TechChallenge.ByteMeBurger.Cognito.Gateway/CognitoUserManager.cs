@@ -1,4 +1,5 @@
-﻿using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+﻿using System.Security.Cryptography;
+using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
@@ -81,28 +82,41 @@ public class CognitoUserManager : ICustomerRepository
 
     private static string GenerateRandomPassword(int length)
     {
-        const string lowerChars = "abcdefghijklmnopqrstuvwxyz";
-        const string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const string digitChars = "1234567890";
-        const string specialChars = "!@#$%^&*()";
-        const string allChars = lowerChars + upperChars + digitChars + specialChars;
-
-        var random = new Random();
-        var password = new char[length];
-
-        // Ensure the password contains at least one of each required character type
-        password[0] = lowerChars[random.Next(lowerChars.Length)];
-        password[1] = upperChars[random.Next(upperChars.Length)];
-        password[2] = digitChars[random.Next(digitChars.Length)];
-        password[3] = specialChars[random.Next(specialChars.Length)];
-
-        // Fill the rest of the password with random characters
-        for (int i = 4; i < length; i++)
+        using var rng = RandomNumberGenerator.Create();
+        var characterSets = new[]
         {
-            password[i] = allChars[random.Next(allChars.Length)];
+            "abcdefghijklmnopqrstuvwxyz",
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            "1234567890",
+            "!@#$%^&*()"
+        };
+        var allChars = string.Concat(characterSets);
+        var passwordChars = new char[length];
+        // Ensure the password contains at least one character from each character set
+        for (int i = 0; i < characterSets.Length && i < length; i++)
+        {
+            passwordChars[i] = GetRandomChar(characterSets[i], rng);
         }
-
+        // Fill the rest of the password with random characters
+        for (int i = characterSets.Length; i < length; i++)
+        {
+            passwordChars[i] = GetRandomChar(allChars, rng);
+        }
         // Shuffle the password to ensure randomness
-        return new string(password.OrderBy(x => random.Next()).ToArray());
+        passwordChars = passwordChars.OrderBy(_ => GetRandomInt(rng, int.MaxValue)).ToArray();
+        return new string(passwordChars);
+    }
+    private static char GetRandomChar(string chars, RandomNumberGenerator rng)
+    {
+        var bytes = new byte[4];
+        rng.GetBytes(bytes);
+        var index = BitConverter.ToUInt32(bytes, 0) % chars.Length;
+        return chars[(int)index];
+    }
+    private static int GetRandomInt(RandomNumberGenerator rng, int max)
+    {
+        var bytes = new byte[4];
+        rng.GetBytes(bytes);
+        return (int)(BitConverter.ToUInt32(bytes, 0) % max);
     }
 }

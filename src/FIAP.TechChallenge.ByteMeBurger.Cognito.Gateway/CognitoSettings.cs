@@ -1,7 +1,7 @@
 namespace FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway;
 
 /// <summary>
-/// Sqs settings
+/// Cognito User Pool settings
 /// </summary>
 public class CognitoSettings
 {
