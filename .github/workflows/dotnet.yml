@@ -195,7 +195,7 @@ jobs:
     permissions:
       contents: read
     outputs:
-      CONFIG_VERSION: ${{ steps.plan-upload.outputs.configuration_version_id }}
+      config_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
 
     steps:
       - name: Checkout
@@ -255,6 +255,7 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.1
         id: destroy-plan
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ NEEDS.create-app.outputs.CONFIG_VERSION }}
+          workspace: ${{ vars.TF_WORKSPACE }}
+          configuration_version: ${{ needs.create-app.outputs.config_version }}
+          message: "Create Destroy run from GitHub Actions CI ${{ github.sha }}"
           is_destroy: true
