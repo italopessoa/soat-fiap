@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
@@ -17,7 +18,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Produces("application/json")]
 [Consumes("application/json")]
-[Authorize]
+[Authorize(Roles = BmbRoles.Admin)]
 public class ProductsController(IProductService productService, ILogger<ProductsController> logger)
     : ControllerBase
 {

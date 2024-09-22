@@ -16,10 +16,9 @@ public static class ServiceExtensions
     {
         if (string.IsNullOrWhiteSpace(configuration.GetConnectionString("MySql")))
         {
-            services.AddScoped<IOrderRepository, InMemoryOrderRepository>()
-                .AddScoped<ICustomerRepository>(_ => new InMemoryCustomerRepository([]))
-                .AddScoped<IProductRepository>(_ => new InMemoryProductRepository([]))
-                .AddScoped<IPaymentRepository, InMemoryPaymentRepository>();
+            services.AddSingleton<IOrderRepository, InMemoryOrderRepository>()
+                .AddSingleton<IProductRepository>(_ => new InMemoryProductRepository([]))
+                .AddSingleton<IPaymentRepository, InMemoryPaymentRepository>();
         }
         else
         {
@@ -34,7 +33,6 @@ public static class ServiceExtensions
             });
 
             services.AddScoped<IOrderRepository, OrderRepositoryDapper>()
-                .AddScoped<ICustomerRepository, CustomerRepositoryDapper>()
                 .AddScoped<IProductRepository, ProductRepositoryDapper>()
                 .AddScoped<IPaymentRepository, PaymentRepositoryDapper>();
         }

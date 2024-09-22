@@ -20,6 +20,18 @@ data "aws_eks_cluster" "techchallenge_cluster" {
 # }
 
 ##############################
+# COGNITO USER POOL
+##############################
+
+data "aws_cognito_user_pools" "user_pool" {
+  name = var.user_pool_name
+}
+
+data "aws_cognito_user_pool_clients" "api_client" {
+  user_pool_id = data.aws_cognito_user_pools.user_pool.ids[0]
+}
+
+##############################
 # SQS
 ##############################
 
@@ -39,11 +51,13 @@ data "aws_rds_cluster" "example" {
 }
 
 locals {
-  connection_string = "Server=${data.aws_rds_cluster.example.endpoint};Database=${data.aws_rds_cluster.example.database_name};Uid=${var.db_user};Pwd=${var.db_pwd};Port=${data.aws_rds_cluster.example.port};"
-  jwt_issuer        = var.jwt_issuer
-  jwt_aud           = var.jwt_aud
-  docker_image      = var.api_docker_image
-  events_queue_name = aws_sqs_queue.bmb-events.name
+  connection_string           = "Server=${data.aws_rds_cluster.example.endpoint};Database=${data.aws_rds_cluster.example.database_name};Uid=${var.db_user};Pwd=${var.db_pwd};Port=${data.aws_rds_cluster.example.port};"
+  jwt_issuer                  = var.jwt_issuer
+  jwt_aud                     = var.jwt_aud
+  docker_image                = var.api_docker_image
+  events_queue_name           = aws_sqs_queue.bmb-events.name
+  cognito_user_pool_id        = data.aws_cognito_user_pools.user_pool.ids[0]
+  cognito_user_pool_client_id = data.aws_cognito_user_pool_clients.api_client.client_ids[0]
 }
 
 
@@ -81,8 +95,14 @@ resource "kubernetes_config_map_v1" "config_map_api" {
     "SqsSettings__QueueName"               = local.events_queue_name
     "SqsSettings__Enabled"                 = true
     "SqsSettings__Region"                  = "us-east-1"
-    "SqsSettings__ClientId"                = var.access_key_id
-    "SqsSettings__ClientSecret"            = var.secret_access_key
+    "SqsSettings__ClientId"                = var.api_access_key_id
+    "SqsSettings__ClientSecret"            = var.api_secret_access_key
+    "CognitoSettings__UserPoolId"          = local.cognito_user_pool_id
+    "CognitoSettings__UserPoolClientId"    = local.cognito_user_pool_client_id
+    "CognitoSettings__Enabled"             = true
+    "CognitoSettings__Region"              = "us-east-1"
+    "CognitoSettings__ClientId"            = var.api_access_key_id
+    "CognitoSettings__ClientSecret"        = var.api_secret_access_key
   }
 }
 

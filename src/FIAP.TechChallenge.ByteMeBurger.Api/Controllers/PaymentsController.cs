@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
@@ -14,7 +15,7 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Produces("application/json")]
 [Consumes("application/json")]
-[Authorize]
+[Authorize(Roles = BmbRoles.Admin)]
 public class PaymentsController : ControllerBase
 {
     private readonly IPaymentService _paymentService;

@@ -52,6 +52,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Orders list</returns>
     [HttpGet]
+    [Authorize(Roles = $"{BmbRoles.Admin},{BmbRoles.Kitchen}")]
     public async Task<ActionResult<ReadOnlyCollection<OrderListItemDto>>> Get(bool listAll,
         CancellationToken cancellationToken)
     {
@@ -71,6 +72,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Order details</returns>
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = $"{BmbRoles.Admin},{BmbRoles.Kitchen}")]
     public async Task<ActionResult<OrderDetailDto>> Get(Guid id, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting order with ID: {OrderId}", id);
@@ -98,6 +100,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     /// <param name="cancellationToken">Cancellation token</param>
     [Route("{id:guid}/status")]
     [HttpPatch]
+    [Authorize(Roles = $"{BmbRoles.Admin}")]
     public async Task<ActionResult<OrderDetailDto>> Patch(Guid id,
         [FromBody] UpdateOrderStatusRequest command,
         CancellationToken cancellationToken)

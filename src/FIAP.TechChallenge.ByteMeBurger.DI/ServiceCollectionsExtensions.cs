@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Application;
+using FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway;
@@ -17,6 +18,7 @@ public static class ServiceCollectionsExtensions
 {
     public static void IoCSetup(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
+        serviceCollection.ConfigureCognito();
         serviceCollection.ConfigurePersistenceApp(configuration);
         ConfigurePaymentGateway(serviceCollection);
         ConfigHybridCache(serviceCollection, configuration);

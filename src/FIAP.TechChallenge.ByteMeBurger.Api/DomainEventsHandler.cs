@@ -40,7 +40,7 @@ public class DomainEventsHandler : IDisposable
     private void OnCustomerRegistered(object? sender, CustomerRegistered e)
     {
         _logger.LogInformation("New Customer registered: {@Customer}", e.Payload);
-        _logger.LogInformation("Sending email to customer: {CustomerName}", e.Payload.Name);
+        _publisher.PublishAsync(e).ConfigureAwait(false);
     }
 
     private void OnOrderStatusChanged(object? sender, OrderStatusChanged e)
@@ -78,6 +78,7 @@ public class DomainEventsHandler : IDisposable
     private void OnProductCreated(object? sender, ProductCreated e)
     {
         _logger.LogInformation("Product created: {@Product}", e.Payload);
+        _publisher.PublishAsync(e).ConfigureAwait(false);
     }
 
     private void OnPaymentCreated(object? sender, PaymentCreated e)
