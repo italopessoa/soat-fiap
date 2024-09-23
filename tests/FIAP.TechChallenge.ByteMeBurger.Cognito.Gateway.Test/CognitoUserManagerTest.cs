@@ -5,6 +5,7 @@ using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 
@@ -15,6 +16,7 @@ public class CognitoUserManagerTest
 {
     private readonly Mock<IAmazonCognitoIdentityProvider> _cognitoClientMock;
     private readonly CognitoUserManager _userManager;
+    private const string Cpf = "28642827041";
 
     public CognitoUserManagerTest()
     {
@@ -25,22 +27,22 @@ public class CognitoUserManagerTest
             { UserPoolId = "testPoolId", UserPoolClientId = "testClientId" });
 
         mockFactory.Setup(f => f.CreateClient()).Returns(_cognitoClientMock.Object);
-
-        _userManager = new CognitoUserManager(mockFactory.Object, settings);
+        _userManager = new CognitoUserManager(mockFactory.Object, Mock.Of<ILogger<CognitoUserManager>>(), settings);
     }
 
     [Fact]
     public async Task FindByCpfAsync_ShouldReturnCustomer_WhenUserExists()
     {
         // Arrange
-        var cpf = "28642827041";
+
         var response = new AdminGetUserResponse
         {
             UserAttributes =
             [
                 new AttributeType { Name = "email", Value = "test@example.com" },
                 new AttributeType { Name = "name", Value = "Test User" },
-                new AttributeType { Name = "sub", Value = Guid.NewGuid().ToString() }
+                new AttributeType { Name = "sub", Value = Guid.NewGuid().ToString() },
+                new AttributeType { Name = "username", Value = Cpf }
             ]
         };
 
@@ -48,13 +50,13 @@ public class CognitoUserManagerTest
             .ReturnsAsync(response);
 
         // Act
-        var result = await _userManager.FindByCpfAsync(cpf);
+        var result = await _userManager.FindByCpfAsync(Cpf);
 
         // Assert
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result.Cpf.Value.Should().Be(cpf);
+            result.Cpf.Value.Should().Be(Cpf);
             result.Email.Should().Be("test@example.com");
             result.Name.Should().Be("Test User");
             result.Id.Should().NotBeEmpty();
@@ -65,13 +67,11 @@ public class CognitoUserManagerTest
     public async Task FindByCpfAsync_ShouldReturnNull_WhenUserNotFound()
     {
         // Arrange
-        const string cpf = "123456789";
-
         _cognitoClientMock.Setup(c => c.AdminGetUserAsync(It.IsAny<AdminGetUserRequest>(), default))
             .ThrowsAsync(new UserNotFoundException("User not found"));
 
         // Act
-        var result = await _userManager.FindByCpfAsync(cpf);
+        var result = await _userManager.FindByCpfAsync(Cpf);
 
         // Assert
         result.Should().BeNull();
@@ -104,5 +104,71 @@ public class CognitoUserManagerTest
             result.Email.Should().Be(customer.Email);
             result.Id.Should().NotBeEmpty();
         }
+    }
+
+    [Fact]
+    public async Task FindByIdAsync_UserExists_ReturnsCustomer()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var userAttributes = new List<AttributeType>
+        {
+            new() { Name = "email", Value = "test@example.com" },
+            new() { Name = "name", Value = "Test User" },
+            new() { Name = "sub", Value = userId.ToString() }
+        };
+        var user = new UserType { Attributes = userAttributes, Username = Cpf };
+        var listUsersResponse = new ListUsersResponse { Users = new List<UserType> { user } };
+
+        _cognitoClientMock.Setup(c => c.ListUsersAsync(It.IsAny<ListUsersRequest>(), default))
+            .ReturnsAsync(listUsersResponse);
+
+        // Act
+        var result = await _userManager.FindByIdAsync(userId);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            result.Id.Should().Be(userId);
+            result.Cpf.Value.Should().Be(Cpf);
+            result.Name.Should().Be("Test User");
+            result.Email.Should().Be("test@example.com");
+        }
+    }
+
+    [Fact]
+    public async Task FindByIdAsync_UserNotFound_ReturnsNull()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var listUsersResponse = new ListUsersResponse { Users = new List<UserType>() };
+
+        _cognitoClientMock.Setup(c => c.ListUsersAsync(It.IsAny<ListUsersRequest>(), default))
+            .ReturnsAsync(listUsersResponse);
+
+        // Act
+        var result = await _userManager.FindByIdAsync(userId);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task FindByIdAsync_ExceptionThrown_LogsErrorAndThrows()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var exception = new Exception("Test exception");
+
+        _cognitoClientMock.Setup(c => c.ListUsersAsync(It.IsAny<ListUsersRequest>(), default))
+            .ThrowsAsync(exception);
+
+        // Act & Assert
+        var func = () => _userManager.FindByIdAsync(userId);
+        await func
+            .Should()
+            .ThrowAsync<Exception>()
+            .WithMessage(exception.Message);
     }
 }

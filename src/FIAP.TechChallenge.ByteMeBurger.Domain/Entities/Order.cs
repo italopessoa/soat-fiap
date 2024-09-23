@@ -99,6 +99,11 @@ public class Order : Entity<Guid>, IAggregateRoot
         Update();
     }
 
+    public void SetCustomer(Customer customer)
+    {
+        Customer = customer;
+    }
+
     public void ConfirmPayment()
     {
         if (Status != OrderStatus.PaymentPending)

@@ -19,4 +19,9 @@ public class InMemoryCustomerRepository(IReadOnlyCollection<Customer> customersS
         _customers.Add(customer);
         return Task.FromResult(customer);
     }
+
+    public Task<Customer?> FindByIdAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }
