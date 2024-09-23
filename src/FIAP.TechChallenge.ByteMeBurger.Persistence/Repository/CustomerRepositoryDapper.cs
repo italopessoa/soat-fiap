@@ -1,4 +1,5 @@
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
@@ -43,5 +44,12 @@ public class CustomerRepositoryDapper(IDbConnection dbConnection, ILogger<Custom
         }
 
         return customer;
+    }
+
+    [ExcludeFromCodeCoverage]
+    [Obsolete("will be removed soon")]
+    public Task<Customer?> FindByIdAsync(Guid id)
+    {
+        throw new NotImplementedException();
     }
 }
