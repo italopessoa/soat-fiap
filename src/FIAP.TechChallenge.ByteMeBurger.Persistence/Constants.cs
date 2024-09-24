@@ -9,15 +9,11 @@ internal static class Constants
                    o.TrackingCode,
                    o.PaymentId Id,
                    o.CustomerId as Id,
-                   c.Cpf,
-                   c.Name,
-                   c.Email,
                    oi.ProductId,
                    oi.ProductName,
                    oi.Quantity,
                    oi.UnitPrice
                 from Orders o
-                         left join Customers c on o.CustomerId = c.Id
                          inner join OrderItems oi on oi.OrderId = o.Id
                 where o.Id = @OrderId;";
 
@@ -27,9 +23,6 @@ internal static class Constants
                    o.Updated,
                    o.TrackingCode,
                    c.Id,
-                   c.Cpf,
-                   c.Name,
-                   c.Email,
                    p.Id,
                    p.OrderId,
                    oi.ProductId,
@@ -38,7 +31,6 @@ internal static class Constants
                    oi.UnitPrice
             from Orders o
                      inner join OrderItems oi on oi.OrderId = o.Id
-                     left join Customers c on c.Id = o.CustomerId
                      left join Payments p on p.OrderId = o.Id;";
 
     internal const string UpdateOrderStatusQuery =
