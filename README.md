@@ -154,7 +154,7 @@ Once you are done, you can stop the services running [rollback.ps1](kubernetes/r
 - **Endpoint:** `GET /api/customers`
    - Requires `Admin` role
 - **Endpoint:** `POST /api/customers`
-   - Requires `Customer` role
+   - Requires `Customer/Admin` role
 
 ### PaymentsController
 
