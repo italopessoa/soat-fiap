@@ -64,6 +64,13 @@ public class CognitoUserManager(
                 }
             });
 
+            await _cognitoClient.AdminAddUserToGroupAsync(new AdminAddUserToGroupRequest
+            {
+                UserPoolId = _userPoolId,
+                Username = customer.Cpf,
+                GroupName = "customer"
+            });
+
             logger.LogInformation("Customer successfully created.");
             customer.Id = Guid.Parse(signUpResponse.User.Attributes.First(a => a.Name is "sub").Value);
             return customer;
@@ -90,6 +97,8 @@ public class CognitoUserManager(
                 Filter = "sub=\"" + id + "\"",
                 UserPoolId = _userPoolId,
             });
+
+
 
             if (response.Users.Count > 0)
             {
