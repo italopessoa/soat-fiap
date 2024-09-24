@@ -22,7 +22,7 @@ internal static class Constants
                    o.Created,
                    o.Updated,
                    o.TrackingCode,
-                   c.Id,
+                   o.CustomerId as Id,
                    p.Id,
                    p.OrderId,
                    oi.ProductId,
