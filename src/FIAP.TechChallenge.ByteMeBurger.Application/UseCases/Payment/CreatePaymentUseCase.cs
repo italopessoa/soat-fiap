@@ -1,3 +1,4 @@
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
 using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
@@ -8,17 +9,17 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 public class CreatePaymentUseCase : ICreatePaymentUseCase
 {
     private readonly IPaymentGatewayFactoryMethod _paymentGatewayFactory;
-    private readonly IOrderRepository _orderRepository;
+    private readonly IGetOrderDetailsUseCase _getOrderDetailsUseCase;
 
-    public CreatePaymentUseCase(IPaymentGatewayFactoryMethod paymentGatewayFactory, IOrderRepository orderRepository)
+    public CreatePaymentUseCase(IPaymentGatewayFactoryMethod paymentGatewayFactory, IGetOrderDetailsUseCase getOrderDetailsUseCase)
     {
         _paymentGatewayFactory = paymentGatewayFactory;
-        _orderRepository = orderRepository;
+        _getOrderDetailsUseCase = getOrderDetailsUseCase;
     }
 
     public async Task<Domain.Entities.Payment?> Execute(Guid orderId, PaymentType paymentType)
     {
-        var order = await _orderRepository.GetAsync(orderId);
+        var order = await _getOrderDetailsUseCase.Execute(orderId);
 
         if (order is null)
             throw new EntityNotFoundException("Order not found.");
