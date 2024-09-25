@@ -138,6 +138,41 @@ You can use the [postman collection](/postman) for testing
 Once you are done, you can stop the services running [rollback.ps1](kubernetes/rollback.ps1) script
 
 
+## Authentication & Authorization
+
+>Since the application is running inside a private subnet and tokens are generated internally by API Gateway information on the token use used for some use cases where user information is required like Creating a new Order.
+
+### ProductsController
+
+- **Endpoint:** `GET /api/products`
+   - Requires `Admin` role
+- **Endpoint:** `DELETE /api/products/{id}`
+   - Requires `Admin` role
+
+### CustomersController
+
+- **Endpoint:** `GET /api/customers`
+   - Requires `Admin` role
+- **Endpoint:** `POST /api/customers`
+   - Requires `Customer/Admin` role
+
+### PaymentsController
+
+- **Endpoint:** `POST /api/payments`
+   - Requires `Admin` role
+
+### OrdersController
+
+- **Endpoint:** `POST /api/orders`
+   - Requires `Customer/Admin` role
+- **Endpoint:** `GET /api/orders/{id}`
+   - Requires `Admin/Kitchen` role
+
+### NotificationsController
+
+- **Endpoint:** `POST /api/notifications`
+   - No role required
+
 ## This repo on the infrastructure
 
 ![Architecture Diagram](aws-infra-phase-3.png)

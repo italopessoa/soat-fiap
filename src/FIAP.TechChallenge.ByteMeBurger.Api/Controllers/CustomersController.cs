@@ -51,7 +51,7 @@ public class CustomersController(ICustomerService customerService, ILogger<Custo
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Customer</returns>
     [HttpPost]
-    [Authorize(Roles = BmbRoles.Customer)]
+    [Authorize(Roles = $"{BmbRoles.Admin},{BmbRoles.Customer}")]
     public async Task<ActionResult<CustomerDto>> Post([FromBody] CreateCustomerRequest createCustomerRequest,
         CancellationToken cancellationToken)
     {
