@@ -1,7 +1,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Controllers;
 

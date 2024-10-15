@@ -20,4 +20,10 @@
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Bmb.Domain.Core">
+        <HintPath>..\..\..\..\..\..\fiap\projects\bmb.domain.core\src\Bmb.Domain.Core\bin\Debug\net8.0\Bmb.Domain.Core.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

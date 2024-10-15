@@ -1,7 +1,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.Base;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;

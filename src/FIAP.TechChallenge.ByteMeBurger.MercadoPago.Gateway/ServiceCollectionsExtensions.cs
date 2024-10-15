@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Security;
 using Microsoft.Extensions.Configuration;

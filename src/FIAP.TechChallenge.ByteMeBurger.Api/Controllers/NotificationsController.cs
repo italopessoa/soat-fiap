@@ -1,6 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

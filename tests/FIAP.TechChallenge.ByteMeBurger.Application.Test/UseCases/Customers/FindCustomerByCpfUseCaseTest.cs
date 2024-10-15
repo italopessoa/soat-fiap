@@ -1,5 +1,7 @@
+using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Customers;
 

@@ -1,7 +1,7 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
+using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.Events;
 using FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Factory;
 using FluentAssertions;
 using JetBrains.Annotations;

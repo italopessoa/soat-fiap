@@ -2,9 +2,9 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Dapper;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 using Microsoft.Extensions.Logging;
 

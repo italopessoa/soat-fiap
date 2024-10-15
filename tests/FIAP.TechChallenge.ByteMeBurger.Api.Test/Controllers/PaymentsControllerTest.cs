@@ -2,7 +2,7 @@ using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;

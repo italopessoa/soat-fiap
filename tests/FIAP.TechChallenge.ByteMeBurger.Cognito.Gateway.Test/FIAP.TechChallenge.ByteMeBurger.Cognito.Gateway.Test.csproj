@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway\FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.csproj" />
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Test.Common\FIAP.TechChallenge.ByteMeBurger.Test.Common.csproj" />
     </ItemGroup>
 
 </Project>

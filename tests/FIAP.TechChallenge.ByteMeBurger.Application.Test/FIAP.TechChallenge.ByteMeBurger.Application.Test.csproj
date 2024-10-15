@@ -26,7 +26,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Application\FIAP.TechChallenge.ByteMeBurger.Application.csproj" />
-      <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.Domain\FIAP.TechChallenge.ByteMeBurger.Domain.csproj" />
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Test.Common\FIAP.TechChallenge.ByteMeBurger.Test.Common.csproj" />
     </ItemGroup>
 

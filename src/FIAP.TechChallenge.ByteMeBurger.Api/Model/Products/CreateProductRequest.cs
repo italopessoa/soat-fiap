@@ -1,6 +1,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.ValueObjects;
 using Microsoft.Build.Framework;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;

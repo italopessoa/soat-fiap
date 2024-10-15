@@ -1,4 +1,4 @@
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
 

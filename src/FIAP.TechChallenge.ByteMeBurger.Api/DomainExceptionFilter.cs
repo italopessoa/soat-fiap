@@ -1,4 +1,4 @@
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
+using Bmb.Domain.Core.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

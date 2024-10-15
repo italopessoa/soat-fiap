@@ -1,6 +1,6 @@
-﻿using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+﻿using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Controllers;
 
@@ -19,7 +19,7 @@ public static class Presenter
         };
     }
 
-    public static ProductDto FromEntityToDto(this Domain.Entities.Product product)
+    public static ProductDto FromEntityToDto(this Product product)
     {
         return new ProductDto
         {

@@ -1,10 +1,10 @@
 using AutoFixture;
 using AutoFixture.Xunit2;
+using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
@@ -41,7 +41,7 @@ public class OrderServiceTest
     public async Task GetAll_Success()
     {
         // Arrange
-        var expectedOrders = new Fixture().CreateMany<Domain.Entities.Order>().ToList();
+        var expectedOrders = new Fixture().CreateMany<Order>().ToList();
         _mockOrderGetAllUseCase.Setup(r => r.Execute(true))
             .ReturnsAsync(expectedOrders.AsReadOnly);
 
@@ -63,7 +63,7 @@ public class OrderServiceTest
     {
         // Arrange
         _mockOrderGetAllUseCase.Setup(r => r.Execute(true))
-            .ReturnsAsync(Array.Empty<Domain.Entities.Order>().AsReadOnly);
+            .ReturnsAsync(Array.Empty<Order>().AsReadOnly);
 
         // Act
         var result = await _target.GetAllAsync(true);
@@ -103,7 +103,7 @@ public class OrderServiceTest
 
             result.Should().NotBeNull();
             _mockOrderRepository.Verify(m => m.CreateAsync(
-                It.Is<Domain.Entities.Order>(o => o.Created != DateTime.MinValue
+                It.Is<Order>(o => o.Created != DateTime.MinValue
                                                   && o.Status == OrderStatus.PaymentPending)), Times.Once);
         }
     }
@@ -112,7 +112,7 @@ public class OrderServiceTest
     public async Task Get_Success()
     {
         // Arrange
-        var expectedOrder = new Fixture().Create<Domain.Entities.Order>();
+        var expectedOrder = new Fixture().Create<Order>();
 
         _mockGetOrderDetailsUseCase.Setup(r => r.Execute(It.IsAny<Guid>()))
             .ReturnsAsync(expectedOrder);
@@ -134,7 +134,7 @@ public class OrderServiceTest
     {
         // Arrange
         _mockGetOrderDetailsUseCase.Setup(r => r.Execute(It.IsAny<Guid>()))
-            .ReturnsAsync((Domain.Entities.Order?)null);
+            .ReturnsAsync((Order?)null);
 
         // Act
         var result = await _target.GetAsync(Guid.NewGuid());

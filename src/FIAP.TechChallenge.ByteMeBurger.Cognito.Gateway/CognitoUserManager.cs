@@ -1,9 +1,9 @@
-﻿using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+﻿using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.Interfaces;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Factory;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
+using Bmb.Domain.Core.Base;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

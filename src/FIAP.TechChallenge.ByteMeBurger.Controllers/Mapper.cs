@@ -1,5 +1,5 @@
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using Bmb.Domain.Core.Entities;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Controllers;
 

@@ -1,7 +1,6 @@
 using System.Data;
+using Bmb.Domain.Core.Entities;
 using Dapper;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 using FluentAssertions;

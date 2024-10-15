@@ -1,3 +1,4 @@
+using Bmb.Domain.Core.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
@@ -16,7 +17,7 @@ public class CustomerService(
 
     public async Task<CustomerDto> CreateAsync(string cpf, string? name, string? email)
     {
-        var customer = new Domain.Entities.Customer(cpf);
+        var customer = new Customer(cpf);
         if (name is not null)
             customer.ChangeName(name);
 

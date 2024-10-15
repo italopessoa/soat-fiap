@@ -1,8 +1,8 @@
 using AutoFixture;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Bmb.Domain.Core.Base;
+using Bmb.Domain.Core.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders;
 

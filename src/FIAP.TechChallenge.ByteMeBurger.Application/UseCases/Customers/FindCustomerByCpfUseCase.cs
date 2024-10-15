@@ -1,5 +1,5 @@
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 

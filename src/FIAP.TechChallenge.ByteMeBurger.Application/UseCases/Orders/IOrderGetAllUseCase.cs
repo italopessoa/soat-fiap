@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using Bmb.Domain.Core.Entities;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 

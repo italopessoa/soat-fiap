@@ -1,8 +1,8 @@
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 
 public interface ICreatePaymentUseCase
 {
-    Task<Domain.Entities.Payment?> Execute(Guid orderId, PaymentType paymentType);
+    Task<Bmb.Domain.Core.Entities.Payment?> Execute(Guid orderId, PaymentType paymentType);
 }

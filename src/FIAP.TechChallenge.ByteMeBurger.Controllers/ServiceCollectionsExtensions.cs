@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FIAP.TechChallenge.ByteMeBurger.Application.DomainServices;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Bmb.Domain.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Controllers;

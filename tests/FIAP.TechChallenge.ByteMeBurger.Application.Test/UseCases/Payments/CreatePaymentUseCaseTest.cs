@@ -1,8 +1,8 @@
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Bmb.Domain.Core.Base;
+using Bmb.Domain.Core.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Payments;
 
@@ -35,7 +35,7 @@ public class CreatePaymentUseCaseTest
             .Without(o => o.PaymentId)
             .Create();
 
-        var expectedPayment = fixture.Build<Domain.Entities.Payment>()
+        var expectedPayment = fixture.Build<Bmb.Domain.Core.Entities.Payment>()
             .With(p => p.Id, new PaymentId(Guid.NewGuid()))
             .With(p => p.Status, PaymentStatus.Pending)
             .Create();
