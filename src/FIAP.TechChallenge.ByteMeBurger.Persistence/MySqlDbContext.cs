@@ -1,6 +1,6 @@
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
+using Bmb.Domain.Core.Base;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 

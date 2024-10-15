@@ -1,7 +1,7 @@
 // Global using directives
 
-global using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-global using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+global using Bmb.Domain.Core.Entities;
+global using Bmb.Domain.Core.ValueObjects;
 global using FluentAssertions;
 global using FluentAssertions.Execution;
 global using JetBrains.Annotations;

@@ -1,14 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.Entities;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Configuration;
 using MercadoPago.Client;
 using MercadoPago.Client.Common;
 using MercadoPago.Client.Payment;
 using Microsoft.Extensions.Logging;
-using DomainPayment = FIAP.TechChallenge.ByteMeBurger.Domain.Entities.Payment;
-using DomainPaymentStatus = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentStatus;
+using DomainPayment = Bmb.Domain.Core.Entities.Payment;
+using DomainPaymentStatus = Bmb.Domain.Core.ValueObjects.PaymentStatus;
 
 namespace FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 

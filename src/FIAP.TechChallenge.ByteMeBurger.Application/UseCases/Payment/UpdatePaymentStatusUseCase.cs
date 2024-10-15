@@ -1,7 +1,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.Events;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 
@@ -17,7 +17,7 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
         _updateOrderStatusUseCase = updateOrderStatusUseCase;
     }
 
-    public async Task<bool> Execute(Domain.Entities.Payment? payment, PaymentStatus status)
+    public async Task<bool> Execute(Bmb.Domain.Core.Entities.Payment? payment, PaymentStatus status)
     {
         if (payment is not null && payment.Status
                 is not PaymentStatus.Approved

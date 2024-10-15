@@ -1,14 +1,10 @@
 using System.Collections.ObjectModel;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using PaymentType = FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects.PaymentType;
+using Bmb.Domain.Core.Entities;
+using PaymentType = Bmb.Domain.Core.ValueObjects.PaymentType;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 

@@ -1,8 +1,8 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Base;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.Domain.ValueObjects;
+using Bmb.Domain.Core.Base;
+using Bmb.Domain.Core.Events;
+using Bmb.Domain.Core.Interfaces;
+using Bmb.Domain.Core.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 
@@ -17,7 +17,7 @@ public class CreatePaymentUseCase : ICreatePaymentUseCase
         _getOrderDetailsUseCase = getOrderDetailsUseCase;
     }
 
-    public async Task<Domain.Entities.Payment?> Execute(Guid orderId, PaymentType paymentType)
+    public async Task<Bmb.Domain.Core.Entities.Payment?> Execute(Guid orderId, PaymentType paymentType)
     {
         var order = await _getOrderDetailsUseCase.Execute(orderId);
 

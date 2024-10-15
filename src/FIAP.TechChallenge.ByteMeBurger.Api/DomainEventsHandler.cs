@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Events;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Bmb.Domain.Core.Events;
+using Bmb.Domain.Core.Interfaces;
 using Microsoft.Extensions.Caching.Hybrid;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;

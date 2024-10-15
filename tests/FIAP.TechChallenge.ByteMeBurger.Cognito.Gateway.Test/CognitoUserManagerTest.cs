@@ -1,7 +1,7 @@
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Factory;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Entities;
+using Bmb.Domain.Core.Entities;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;

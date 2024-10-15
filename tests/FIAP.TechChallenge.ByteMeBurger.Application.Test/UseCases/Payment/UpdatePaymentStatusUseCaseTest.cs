@@ -1,7 +1,7 @@
 using AutoFixture;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
-using FIAP.TechChallenge.ByteMeBurger.Domain.Interfaces;
+using Bmb.Domain.Core.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Payment;
 
@@ -23,11 +23,11 @@ public class UpdatePaymentStatusUseCaseTest
     public async void Execute_UpdatePaymentAndOrderStatus_Success()
     {
         // Arrange
-        var payment = new Fixture().Create<Domain.Entities.Payment>();
+        var payment = new Fixture().Create<Bmb.Domain.Core.Entities.Payment>();
         var newStatus = PaymentStatus.Approved;
 
         _mockPaymentRepository.Setup(p =>
-                p.UpdatePaymentStatusAsync(It.Is<Domain.Entities.Payment>(x => x.Status == newStatus)))
+                p.UpdatePaymentStatusAsync(It.Is<Bmb.Domain.Core.Entities.Payment>(x => x.Status == newStatus)))
             .ReturnsAsync(true)
             .Verifiable();
 
