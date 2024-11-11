@@ -53,7 +53,6 @@ public class Program
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
-            builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -88,7 +87,7 @@ public class Program
                 .GetSection("JwtOptions")
                 .Get<JwtOptions>();
             builder.Services.AddSingleton(jwtOptions);
-
+            builder.Services.AddHttpLogging(o => { });
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -114,6 +113,7 @@ public class Program
             }
 
             app.UseSerilogRequestLogging();
+            app.UseHttpLogging();
             app.UseHealthChecks("/healthz", new HealthCheckOptions
             {
                 Predicate = _ => true,

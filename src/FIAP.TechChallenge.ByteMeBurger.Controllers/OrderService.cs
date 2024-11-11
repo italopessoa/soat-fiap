@@ -11,7 +11,7 @@ public class OrderService(
     IGetOrderDetailsUseCase getOrderDetailsUseCase,
     IOrderGetAllUseCase orderGetAllUseCase,
     IOrderRepository orderRepository,
-    IUpdateOrderStatusUseCase updateOrderStatusUseCase,
+    IUseCase<UpdateOrderStatusRequest, bool> updateOrderStatusUseCase,
     IUpdateOrderPaymentUseCase updateOrderPaymentUseCase)
     : IOrderService
 {
@@ -37,7 +37,7 @@ public class OrderService(
 
     public async Task<bool> UpdateStatusAsync(Guid orderId, OrderStatus newStatus)
     {
-        return await updateOrderStatusUseCase.Execute(orderId, newStatus);
+        return await updateOrderStatusUseCase.ExecuteAsync(new UpdateOrderStatusRequest(orderId, newStatus));
     }
 
     public async Task<bool> UpdateOrderPaymentAsync(Guid orderId, PaymentId paymentId)

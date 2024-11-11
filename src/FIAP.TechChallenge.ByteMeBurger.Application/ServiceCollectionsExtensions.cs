@@ -29,7 +29,7 @@ public static class ServiceCollectionsExtensions
         serviceCollection.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>()
             .AddScoped<IOrderGetAllUseCase, OrderGetAllUseCase>()
             .AddScoped<IGetOrderDetailsUseCase, GetOrderDetailsUseCase>()
-            .AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>();
+            .AddScoped<IUseCase<UpdateOrderStatusRequest, bool>, UpdateOrderStatusUseCase>();
     }
 
     private static void AddProductUseCases(IServiceCollection serviceCollection)

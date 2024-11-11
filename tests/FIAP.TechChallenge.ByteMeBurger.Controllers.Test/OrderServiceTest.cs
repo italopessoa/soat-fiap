@@ -18,8 +18,9 @@ public class OrderServiceTest
     private readonly Mock<ICreateOrderUseCase> _mockCreateOrderUseCase;
     private readonly Mock<IGetOrderDetailsUseCase> _mockGetOrderDetailsUseCase;
     private readonly Mock<IOrderGetAllUseCase> _mockOrderGetAllUseCase;
-    private readonly Mock<IUpdateOrderStatusUseCase> _mockUpdateOrderStatusUseCase;
+    private readonly Mock<IUseCase<UpdateOrderStatusRequest, bool>> _mockUpdateOrderStatusUseCase;
     private readonly Mock<IOrderRepository> _mockOrderRepository;
+    private readonly Mock<IUpdateOrderPaymentUseCase> _mockUpdateOrderPaymentUseCase;
 
 
     private readonly OrderService _target;
@@ -30,11 +31,13 @@ public class OrderServiceTest
         _mockCreateOrderUseCase = new Mock<ICreateOrderUseCase>();
         _mockGetOrderDetailsUseCase = new Mock<IGetOrderDetailsUseCase>();
         _mockOrderGetAllUseCase = new Mock<IOrderGetAllUseCase>();
-        _mockUpdateOrderStatusUseCase = new Mock<IUpdateOrderStatusUseCase>();
+        _mockUpdateOrderStatusUseCase = new Mock<IUseCase<UpdateOrderStatusRequest, bool>>();
         _mockOrderRepository = new Mock<IOrderRepository>();
+        _mockUpdateOrderPaymentUseCase = new Mock<IUpdateOrderPaymentUseCase>();
 
         _target = new OrderService(_mockCreateOrderUseCase.Object, _mockGetOrderDetailsUseCase.Object,
-            _mockOrderGetAllUseCase.Object, _mockOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object, null);
+            _mockOrderGetAllUseCase.Object, _mockOrderRepository.Object, _mockUpdateOrderStatusUseCase.Object,
+            _mockUpdateOrderPaymentUseCase.Object);
     }
 
     [Fact]
@@ -104,7 +107,7 @@ public class OrderServiceTest
             result.Should().NotBeNull();
             _mockOrderRepository.Verify(m => m.CreateAsync(
                 It.Is<Order>(o => o.Created != DateTime.MinValue
-                                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
+                                  && o.Status == OrderStatus.PaymentPending)), Times.Once);
         }
     }
 
@@ -151,7 +154,7 @@ public class OrderServiceTest
     public async Task UpdateStatusAsync_Success()
     {
         // Arrange
-        _mockUpdateOrderStatusUseCase.Setup(r => r.Execute(It.IsAny<Guid>(), It.IsAny<OrderStatus>()))
+        _mockUpdateOrderStatusUseCase.Setup(r => r.ExecuteAsync(It.IsAny<UpdateOrderStatusRequest>()))
             .ReturnsAsync(true)
             .Verifiable();
 

@@ -1,4 +1,4 @@
-namespace FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs;
+namespace FIAP.TechChallenge.ByteMeBurger.Masstransit;
 
 /// <summary>
 /// Sqs settings

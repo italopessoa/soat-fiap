@@ -2,14 +2,14 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.Events;
-using FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Factory;
+using FIAP.TechChallenge.ByteMeBurger.Masstransit.Factory;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test;
+namespace FIAP.TechChallenge.ByteMeBurger.Masstransit.Test;
 
 [TestSubject(typeof(SqsService))]
 public class SqsServiceTests

@@ -31,10 +31,10 @@ public class DomainEventsHandler : IDisposable
         DomainEventTrigger.ProductDeleted += OnProductDeleted;
         DomainEventTrigger.ProductUpdated += OnProductUpdated;
         DomainEventTrigger.OrderCreated += OnOrderCreated;
-        DomainEventTrigger.OrderPaymentConfirmed += OnOrderPaymentConfirmed;
+        // DomainEventTrigger.OrderPaymentConfirmed += OnOrderPaymentConfirmed;
         DomainEventTrigger.OrderStatusChanged += OnOrderStatusChanged;
         DomainEventTrigger.CustomerRegistered += OnCustomerRegistered;
-        DomainEventTrigger.PaymentCreated += OnPaymentCreated;
+        // DomainEventTrigger.PaymentCreated += OnPaymentCreated;
     }
 
     private void OnCustomerRegistered(object? sender, CustomerRegistered e)
@@ -51,11 +51,11 @@ public class DomainEventsHandler : IDisposable
         InvalidateOrderCache(e.Payload.OrderId);
     }
 
-    private void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
-    {
-        _logger.LogInformation("Order: {OrderId} payment confirmed", e.Payload);
-        InvalidateOrderCache(e.Payload.OrderId);
-    }
+    // private void OnOrderPaymentConfirmed(object? sender, OrderPaymentConfirmed e)
+    // {
+    //     _logger.LogInformation("Order: {OrderId} payment confirmed", e.Payload);
+    //     InvalidateOrderCache(e.Payload.OrderId);
+    // }
 
     private void OnOrderCreated(object? sender, OrderCreated e)
     {
@@ -81,11 +81,11 @@ public class DomainEventsHandler : IDisposable
         _publisher.PublishAsync(e).ConfigureAwait(false);
     }
 
-    private void OnPaymentCreated(object? sender, PaymentCreated e)
-    {
-        _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.Id.Value,
-            e.Payload.OrderId);
-    }
+    // private void OnPaymentCreated(object? sender, PaymentCreated e)
+    // {
+    //     _logger.LogInformation("Payment {PaymentId} created for Order: {OrderId}", e.Payload.Id.Value,
+    //         e.Payload.OrderId);
+    // }
 
     private void InvalidateOrderCache(Guid orderId)
     {
@@ -108,10 +108,10 @@ public class DomainEventsHandler : IDisposable
         DomainEventTrigger.ProductDeleted -= OnProductDeleted;
         DomainEventTrigger.ProductUpdated -= OnProductUpdated;
         DomainEventTrigger.OrderCreated -= OnOrderCreated;
-        DomainEventTrigger.OrderPaymentConfirmed -= OnOrderPaymentConfirmed;
+        // DomainEventTrigger.OrderPaymentConfirmed -= OnOrderPaymentConfirmed;
         DomainEventTrigger.OrderStatusChanged -= OnOrderStatusChanged;
         DomainEventTrigger.CustomerRegistered -= OnCustomerRegistered;
-        DomainEventTrigger.PaymentCreated -= OnPaymentCreated;
+        // DomainEventTrigger.PaymentCreated -= OnPaymentCreated;
         GC.SuppressFinalize(this);
     }
 }

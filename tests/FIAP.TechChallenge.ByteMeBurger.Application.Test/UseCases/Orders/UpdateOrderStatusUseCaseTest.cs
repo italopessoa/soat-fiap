@@ -26,12 +26,13 @@ public class UpdateOrderStatusUseCaseTest
         // Arrange
         var currentOrder = new Order(Guid.NewGuid(), null, currentStatus, new OrderTrackingCode("code"),
             DateTime.UtcNow, null);
+        var request = new UpdateOrderStatusRequest(currentOrder.Id, newStatus);
         _orderRepositoryMock.Setup(r => r.GetAsync(currentOrder.Id)).ReturnsAsync(currentOrder);
         _orderRepositoryMock.Setup(r => r.UpdateOrderStatusAsync(It.IsAny<Order>()))
             .ReturnsAsync(true);
 
         // Act
-        var updated = await _useCase.Execute(currentOrder.Id, newStatus);
+        var updated = await _useCase.ExecuteAsync(request);
 
         // Assert
         using (new AssertionScope())
@@ -51,10 +52,11 @@ public class UpdateOrderStatusUseCaseTest
     {
         // Arrange
         var orderId = Guid.NewGuid();
+        var request = new UpdateOrderStatusRequest(orderId, OrderStatus.Completed);
         _orderRepositoryMock.Setup(r => r.GetAsync(orderId)).ReturnsAsync((Order)null);
 
         // Act & Assert
-        await Assert.ThrowsAsync<EntityNotFoundException>(() => _useCase.Execute(orderId, OrderStatus.Completed));
+        await Assert.ThrowsAsync<EntityNotFoundException>(() => _useCase.ExecuteAsync(request));
     }
 
     [Fact]
@@ -62,11 +64,12 @@ public class UpdateOrderStatusUseCaseTest
     {
         // Arrange
         var orderId = Guid.NewGuid();
+        var request = new UpdateOrderStatusRequest(orderId, OrderStatus.Completed);
         _orderRepositoryMock.Setup(r => r.GetAsync(orderId))
             .ReturnsAsync(new Order(Guid.NewGuid(), null, OrderStatus.Completed, new OrderTrackingCode("orderCode"),
                 DateTime.UtcNow, null));
 
         // Act & Assert
-        await Assert.ThrowsAsync<DomainException>(() => _useCase.Execute(orderId, OrderStatus.Completed));
+        await Assert.ThrowsAsync<DomainException>(() => _useCase.ExecuteAsync(request));
     }
 }

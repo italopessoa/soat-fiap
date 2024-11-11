@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Dapper;
-using Bmb.Domain.Core.Base;
 using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.Interfaces;
 using Bmb.Domain.Core.ValueObjects;
@@ -102,7 +101,8 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 }
                 else
                 {
-                    order = new Order(orderListDto.Id, new Customer(customerDto.Id), (OrderStatus)orderListDto.Status,
+                    var customer = customerDto is not null ? new Customer(customerDto.Id) : default;
+                    order = new Order(orderListDto.Id, customer, (OrderStatus)orderListDto.Status,
                         new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created,
                         orderListDto.Updated);
 
