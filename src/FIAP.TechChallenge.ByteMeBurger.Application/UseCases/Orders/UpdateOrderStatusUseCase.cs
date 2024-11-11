@@ -1,18 +1,37 @@
 using Bmb.Domain.Core.Base;
-using Bmb.Domain.Core.Events;
+using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.Interfaces;
 using Bmb.Domain.Core.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 
-public class UpdateOrderStatusUseCase(IOrderRepository repository) : IUpdateOrderStatusUseCase
+public class UpdateOrderStatusUseCase(IOrderRepository repository) : IUseCase<UpdateOrderStatusRequest, bool>
 {
-    public async Task<bool> Execute(Guid orderId, OrderStatus newStatus)
+    public async Task<bool> ExecuteAsync(UpdateOrderStatusRequest request)
     {
-        var order = await repository.GetAsync(orderId);
+        var order = await TryValidateRequest(request);
+
+        Action updateStatus = request.NewStatus switch
+        {
+            OrderStatus.Received => order.ConfirmPayment,
+            OrderStatus.InPreparation => order.InitiatePrepare,
+            OrderStatus.Ready => order.FinishPreparing,
+            OrderStatus.Completed => order.DeliverOrder,
+            _ => throw new DomainException(nameof(request.NewStatus),
+                new Exception($"Invalid Status '{request.NewStatus}'"))
+        };
+
+        updateStatus.Invoke();
+
+        return await repository.UpdateOrderStatusAsync(order);
+    }
+
+    private async Task<Order> TryValidateRequest(UpdateOrderStatusRequest request)
+    {
+        var order = await repository.GetAsync(request.OrderId);
         if (order == null)
         {
-            throw new EntityNotFoundException($"Order '{orderId}' not found.");
+            throw new EntityNotFoundException($"Order '{request.OrderId}' not found.");
         }
 
         if (order.Status == OrderStatus.Completed)
@@ -20,24 +39,6 @@ public class UpdateOrderStatusUseCase(IOrderRepository repository) : IUpdateOrde
             throw new DomainException("Order is already completed.");
         }
 
-        var oldStatus = order.Status;
-        Action updateStatus = newStatus switch
-        {
-            OrderStatus.Received => order.ConfirmPayment,
-            OrderStatus.InPreparation => order.InitiatePrepare,
-            OrderStatus.Ready => order.FinishPreparing,
-            OrderStatus.Completed => order.DeliverOrder,
-            _ => throw new DomainException(nameof(newStatus), new Exception($"Invalid Status '{newStatus}'"))
-        };
-
-        updateStatus.Invoke();
-
-        var updated = await repository.UpdateOrderStatusAsync(order);
-        if (updated)
-        {
-            DomainEventTrigger.RaiseOrderStatusChanged(order.Id, oldStatus, order.Status);
-        }
-
-        return updated;
+        return order;
     }
 }

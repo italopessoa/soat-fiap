@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test;
+namespace FIAP.TechChallenge.ByteMeBurger.Masstransit.Test;
 
 [TestSubject(typeof(SqsClientFactory))]
 public class SqsClientFactoryTests

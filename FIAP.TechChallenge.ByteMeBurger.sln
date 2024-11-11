@@ -73,9 +73,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway", "src\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway.csproj", "{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs", "src\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.csproj", "{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Masstransit", "src\FIAP.TechChallenge.ByteMeBurger.Masstransit\FIAP.TechChallenge.ByteMeBurger.Masstransit.csproj", "{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test\FIAP.TechChallenge.ByteMeBurger.Publisher.Sqs.Test.csproj", "{93545102-0476-48CB-8074-5C71AC81E040}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Masstransit.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Masstransit.Test\FIAP.TechChallenge.ByteMeBurger.Masstransit.Test.csproj", "{93545102-0476-48CB-8074-5C71AC81E040}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "terraform", "terraform", "{B2898AA3-86A6-4AF1-B27F-A3706B2B0557}"
 	ProjectSection(SolutionItems) = preProject

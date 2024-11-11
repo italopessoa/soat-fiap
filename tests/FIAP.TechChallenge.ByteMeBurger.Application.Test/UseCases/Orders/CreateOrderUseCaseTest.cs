@@ -2,6 +2,7 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using Bmb.Domain.Core.Base;
+using Bmb.Domain.Core.Events;
 using Bmb.Domain.Core.Interfaces;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders;
@@ -14,14 +15,17 @@ public class CreateOrderUseCaseTest
     private readonly ICreateOrderUseCase _useCase;
     private readonly Mock<IOrderTrackingCodeService> _createOrderCodeService;
     private readonly Cpf _validCpf = new("863.917.790-23");
-    private readonly OrderTrackingCode _trackingCode = new ("code");
+    private readonly OrderTrackingCode _trackingCode = new("code");
+    private readonly Mock<IDispatcher> _mockDispatcher;
 
     public CreateOrderUseCaseTest()
     {
         _customerRepository = new Mock<ICustomerRepository>();
         _productRepository = new Mock<IProductRepository>();
         _createOrderCodeService = new Mock<IOrderTrackingCodeService>();
-        _useCase = new CreateOrderUseCase(_productRepository.Object, _createOrderCodeService.Object);
+        _mockDispatcher = new Mock<IDispatcher>();
+        _useCase = new CreateOrderUseCase(_productRepository.Object, _createOrderCodeService.Object,
+            _mockDispatcher.Object);
     }
 
     [Theory]
@@ -43,8 +47,8 @@ public class CreateOrderUseCaseTest
                 It.IsAny<Guid>()))
             .ReturnsAsync(product);
 
-        _createOrderCodeService.Setup(s => s.GetNext())
-            .Returns(new Fixture().Create<OrderTrackingCode>())
+        _createOrderCodeService.Setup(s => s.GetNextAsync())
+            .ReturnsAsync(new Fixture().Create<OrderTrackingCode>())
             .Verifiable();
 
         // Act

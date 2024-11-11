@@ -8,9 +8,9 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Payment;
 public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
 {
     private readonly IPaymentRepository _paymentRepository;
-    private readonly IUpdateOrderStatusUseCase _updateOrderStatusUseCase;
+    private readonly IUseCase<UpdateOrderStatusRequest, bool> _updateOrderStatusUseCase;
 
-    public UpdatePaymentStatusUseCase(IUpdateOrderStatusUseCase updateOrderStatusUseCase,
+    public UpdatePaymentStatusUseCase(IUseCase<UpdateOrderStatusRequest, bool> updateOrderStatusUseCase,
         IPaymentRepository paymentRepository)
     {
         _paymentRepository = paymentRepository;
@@ -31,8 +31,8 @@ public class UpdatePaymentStatusUseCase : IUpdatePaymentStatusUseCase
 
             if (paymentStatusUpdated && payment.IsApproved())
             {
-                DomainEventTrigger.RaisePaymentConfirmed(payment);
-                await _updateOrderStatusUseCase.Execute(payment.OrderId, OrderStatus.Received);
+                // DomainEventTrigger.RaisePaymentConfirmed(payment);
+                await _updateOrderStatusUseCase.ExecuteAsync(new UpdateOrderStatusRequest(payment.OrderId, OrderStatus.Received));
             }
 
             return paymentStatusUpdated;
