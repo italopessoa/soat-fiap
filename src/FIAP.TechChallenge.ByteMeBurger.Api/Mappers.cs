@@ -1,25 +1,12 @@
 using System.Collections.ObjectModel;
-using FIAP.TechChallenge.ByteMeBurger.Api.Model.Payment;
 using FIAP.TechChallenge.ByteMeBurger.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Bmb.Domain.Core.Entities;
-using PaymentType = Bmb.Domain.Core.ValueObjects.PaymentType;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
 internal static class Mappers
 {
-    /// <summary>
-    /// Convert CreatePaymentRequest to CreateOrderPaymentRequestDto.
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    internal static CreateOrderPaymentRequestDto ToDomain(this CreatePaymentRequest request)
-    {
-        return new CreateOrderPaymentRequestDto(request.OrderId, (PaymentType)request.PaymentType);
-    }
-
     internal static OrderListItemDto ToOrderListViewModel(this Order order)
     {
         return new OrderListItemDto(order.Id, order.TrackingCode.Value, order.Total,

@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using AutoFixture;
-using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using FIAP.TechChallenge.ByteMeBurger.Api.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
@@ -8,7 +7,6 @@ using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Bmb.Domain.Core.Entities;
-using Bmb.Domain.Core.Interfaces;
 using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Test.Common;
 using FluentAssertions;

@@ -25,8 +25,4 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj" />
-    </ItemGroup>
-
 </Project>

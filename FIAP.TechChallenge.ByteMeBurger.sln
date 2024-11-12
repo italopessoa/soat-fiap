@@ -59,10 +59,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{80
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Persistence.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Persistence.Test\FIAP.TechChallenge.ByteMeBurger.Persistence.Test.csproj", "{81F17B4E-ACC8-4640-9F1A-1068600019DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway", "src\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.csproj", "{A8FC6701-D7C9-4342-B68A-4FE1538567DA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test", "tests\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test\FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway.Test.csproj", "{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.DI", "src\FIAP.TechChallenge.ByteMeBurger.DI\FIAP.TechChallenge.ByteMeBurger.DI.csproj", "{207C0604-793B-4829-A407-6385E2457A03}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Controllers", "src\FIAP.TechChallenge.ByteMeBurger.Controllers\FIAP.TechChallenge.ByteMeBurger.Controllers.csproj", "{3EF147B0-B21A-4D6F-940F-CD211D795C92}"
@@ -70,8 +66,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Controllers.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Controllers.Test\FIAP.TechChallenge.ByteMeBurger.Controllers.Test.csproj", "{C8244E3A-21AB-48FE-8CB1-CF0543B3F038}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Test.Common", "tests\FIAP.TechChallenge.ByteMeBurger.Test.Common\FIAP.TechChallenge.ByteMeBurger.Test.Common.csproj", "{69ADCE8B-AF58-4C54-B79A-547B6E2807C5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway", "src\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway\FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway.csproj", "{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Masstransit", "src\FIAP.TechChallenge.ByteMeBurger.Masstransit\FIAP.TechChallenge.ByteMeBurger.Masstransit.csproj", "{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}"
 EndProject
@@ -106,11 +100,8 @@ Global
 		{EDD56D7F-40E4-4422-AF23-CAF55957B40F} = {8000B4F6-1D23-4609-A276-5C8C37374B71}
 		{09D890C7-7AA0-40E2-8AA6-6DD47462548D} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{81F17B4E-ACC8-4640-9F1A-1068600019DE} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
-		{A8FC6701-D7C9-4342-B68A-4FE1538567DA} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
-		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 		{C8244E3A-21AB-48FE-8CB1-CF0543B3F038} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 		{69ADCE8B-AF58-4C54-B79A-547B6E2807C5} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
-		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{3EF147B0-B21A-4D6F-940F-CD211D795C92} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{207C0604-793B-4829-A407-6385E2457A03} = {63B625A6-D80F-4C6B-86C4-BEA9F690D4C6}
 		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
@@ -144,14 +135,6 @@ Global
 		{81F17B4E-ACC8-4640-9F1A-1068600019DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81F17B4E-ACC8-4640-9F1A-1068600019DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81F17B4E-ACC8-4640-9F1A-1068600019DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8FC6701-D7C9-4342-B68A-4FE1538567DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8FC6701-D7C9-4342-B68A-4FE1538567DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8FC6701-D7C9-4342-B68A-4FE1538567DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8FC6701-D7C9-4342-B68A-4FE1538567DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4A45D35-A1C8-4E65-8BAC-1670D5AEE1D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{207C0604-793B-4829-A407-6385E2457A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{207C0604-793B-4829-A407-6385E2457A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{207C0604-793B-4829-A407-6385E2457A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -168,10 +151,6 @@ Global
 		{69ADCE8B-AF58-4C54-B79A-547B6E2807C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69ADCE8B-AF58-4C54-B79A-547B6E2807C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69ADCE8B-AF58-4C54-B79A-547B6E2807C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F7DD0CF-E214-4EF2-90F8-C9A0DFDA8EDA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E8287AF-C7A6-46A6-96D8-8460642ADE4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
