@@ -5,9 +5,4 @@ output "eks_cluster" {
 
 output "userpool_id" {
   value = local.cognito_user_pool_id
-
-}
-
-output "api_client_id" {
-  value = local.cognito_user_pool_client_id
 }
