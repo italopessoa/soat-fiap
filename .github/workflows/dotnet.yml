@@ -15,7 +15,6 @@ on:
         default: "Testing"
 
   push:
-    branches: [ main ]
   pull_request:
     
 env:
@@ -74,7 +73,7 @@ jobs:
       run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
   build-and-analyze:
-    needs: [build]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     name: SonarCloud
     runs-on: windows-latest
     steps:
