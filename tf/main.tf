@@ -56,7 +56,6 @@ locals {
   jwt_aud                     = var.jwt_aud
   docker_image                = var.api_docker_image
   cognito_user_pool_id        = data.aws_cognito_user_pools.user_pool.ids[0]
-  cognito_user_pool_client_id = data.aws_cognito_user_pool_clients.api_client.client_ids[0]
   aws_access_key              = var.api_access_key_id
   aws_secret_access_key       = var.api_secret_access_key
   aws_region                  = "us-east-1"
@@ -94,11 +93,6 @@ resource "kubernetes_config_map_v1" "config_map_api" {
     "JwtOptions__ExpirationSeconds"        = 3600
     "JwtOptions__UseAccessToken"           = true
     "CognitoSettings__UserPoolId"          = local.cognito_user_pool_id
-    "CognitoSettings__UserPoolClientId"    = local.cognito_user_pool_client_id
-    "CognitoSettings__Enabled"             = true
-    "CognitoSettings__Region"              = "us-east-1"
-    "CognitoSettings__ClientId"            = var.api_access_key_id
-    "CognitoSettings__ClientSecret"        = var.api_secret_access_key
   }
 }
 
