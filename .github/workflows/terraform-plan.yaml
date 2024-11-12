@@ -27,8 +27,6 @@ jobs:
           cat <<EOF > tf/api.auto.tfvars
           eks_cluster_name = "${{ vars.BMB_EKS_CLUSTER_NAME }}"
           apgw_name = "${{ vars.BMB_JWT_ISSUER }}"
-          mercadopago_webhook_secret = "${{ secrets.BMB_MERCADO_PAGO_WH_SECRET}}"
-          mercadopago_accesstoken = "${{ secrets.BMB_MERCADO_PAGO_ACCESS_TOKEN }}"
           jwt_signing_key = "${{ secrets.BMB_JWT_SECRET_KEY }}"
           jwt_issuer = "${{ vars.BMB_JWT_ISSUER }}"
           jwt_aud = "${{ vars.BMB_JWT_AUDIENCE }}"

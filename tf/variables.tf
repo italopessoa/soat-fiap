@@ -25,16 +25,6 @@ variable "apgw_name" {
   default = "authenticator"
 }
 
-variable "mercadopago_webhook_secret" {
-  type      = string
-  sensitive = true
-}
-
-variable "mercadopago_accesstoken" {
-  type      = string
-  sensitive = true
-}
-
 variable "jwt_signing_key" {
   type      = string
   sensitive = true

@@ -55,9 +55,11 @@ locals {
   jwt_issuer                  = var.jwt_issuer
   jwt_aud                     = var.jwt_aud
   docker_image                = var.api_docker_image
-  events_queue_name           = aws_sqs_queue.bmb-events.name
   cognito_user_pool_id        = data.aws_cognito_user_pools.user_pool.ids[0]
   cognito_user_pool_client_id = data.aws_cognito_user_pool_clients.api_client.client_ids[0]
+  aws_access_key        = var.api_access_key_id
+  aws_secret_access_key = var.api_secret_access_key
+  aws_region            = "us-east-1"
 }
 
 
@@ -80,9 +82,8 @@ resource "kubernetes_config_map_v1" "config_map_api" {
     # "ConnectionStrings__MySql"             = "Server=${aws_rds_cluster.example.cluster_endpoint};Database=${aws_rds_cluster.example.database_name};Uid=techchallenge;Pwd=${aws_rds_cluster.example.master_password};Port=${aws_rds_cluster.example.port};"
     "ConnectionStrings__MySql"             = local.connection_string
     "ASPNETCORE_ENVIRONMENT"               = "Development"
-    "Serilog__WriteTo__2__Args__serverUrl" = "http://svc-seq:80"
+    "Serilog__WriteTo__2__Args__serverUrl" = "http://api-internal.fiap-log.svc.cluster.local"
     "Serilog__WriteTo__2__Args__formatter" = "Serilog.Formatting.Json.JsonFormatter, Serilog"
-    "MercadoPago__NotificationUrl"         = ""
     "Serilog__Enrich__0"                   = "FromLogContext"
     "HybridCache__Expiration"              = "01:00:00"
     "HybridCache__LocalCacheExpiration"    = "01:00:00"
@@ -92,11 +93,6 @@ resource "kubernetes_config_map_v1" "config_map_api" {
     "JwtOptions__SigningKey"               = var.jwt_signing_key
     "JwtOptions__ExpirationSeconds"        = 3600
     "JwtOptions__UseAccessToken"           = true
-    "SqsSettings__QueueName"               = local.events_queue_name
-    "SqsSettings__Enabled"                 = true
-    "SqsSettings__Region"                  = "us-east-1"
-    "SqsSettings__ClientId"                = var.api_access_key_id
-    "SqsSettings__ClientSecret"            = var.api_secret_access_key
     "CognitoSettings__UserPoolId"          = local.cognito_user_pool_id
     "CognitoSettings__UserPoolClientId"    = local.cognito_user_pool_client_id
     "CognitoSettings__Enabled"             = true
@@ -115,8 +111,9 @@ resource "kubernetes_secret" "secret_mercadopago" {
     }
   }
   data = {
-    "MercadoPago__WebhookSecret" = var.mercadopago_webhook_secret
-    "MercadoPago__AccessToken"   = var.mercadopago_accesstoken
+    "AWS_SECRET_ACCESS_KEY"      = local.aws_secret_access_key
+    "AWS_ACCESS_KEY_ID"          = local.aws_access_key
+    "AWS_REGION"                 = local.aws_region
   }
   type = "Opaque"
 }
