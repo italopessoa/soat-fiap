@@ -25,7 +25,7 @@ public class CognitoUserManagerTest
         var mockFactory = new Mock<ICognitoClientFactory>();
         _cognitoClientMock = new Mock<IAmazonCognitoIdentityProvider>();
         var settings = Options.Create(new CognitoSettings
-            { UserPoolId = "testPoolId", UserPoolClientId = "testClientId" });
+            { UserPoolId = "testPoolId" });
 
         mockFactory.Setup(f => f.CreateClient()).Returns(_cognitoClientMock.Object);
         _userManager = new CognitoUserManager(mockFactory.Object, Mock.Of<ILogger<CognitoUserManager>>(), settings);
@@ -177,16 +177,32 @@ public class CognitoUserManagerTest
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var listUsersResponse = new ListUsersResponse { Users = new List<UserType>() };
 
         _cognitoClientMock.Setup(c => c.ListUsersAsync(It.IsAny<ListUsersRequest>(), default))
-            .ReturnsAsync(listUsersResponse);
+            .ThrowsAsync(new UserNotFoundException("User not found"));
 
         // Act
         var result = await _userManager.FindByIdAsync(userId);
 
         // Assert
         result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task FindByCpfAsync_ExceptionThrown_LogsErrorAndThrows()
+    {
+        // Arrange
+        var exception = new Exception("Error fetching user");
+
+        _cognitoClientMock.Setup(c => c.AdminGetUserAsync(It.IsAny<AdminGetUserRequest>(), default))
+            .ThrowsAsync(exception);
+
+        // Act & Assert
+        var func = () => _userManager.FindByCpfAsync(Cpf);
+        await func
+            .Should()
+            .ThrowAsync<Exception>()
+            .WithMessage(exception.Message);
     }
 
     [Fact]

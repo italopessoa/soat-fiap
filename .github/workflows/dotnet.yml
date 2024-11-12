@@ -30,7 +30,7 @@ env:
 
 jobs:
   build:
-
+    if: github.ref != 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
@@ -51,7 +51,6 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage --settings tests/coverage.runsettings
-    
 
     - name: Code Coverage Summary Report
       if: false
@@ -122,12 +121,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"soat-fiap_FIAP.TechChallenge.ByteMeBurger" /o:"soat-fiap" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.inclusions=**/*.cs /d:sonar.scanner.scanAll=false
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"soat-fiap_FIAP.TechChallenge.ByteMeBurger" /o:"soat-fiap" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.inclusions=**/*.cs /d:sonar.exclusions=**/Program.cs /d:sonar.scanner.scanAll=false
           dotnet build --no-incremental
           dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
   semantic-release:
+    needs: [build-and-analyze]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     name: Create Semantic Release
     runs-on: ubuntu-latest
@@ -229,7 +229,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./src/Bmb.Payment.Api/Dockerfile
+          file: ./src/FIAP.TechChallenge.ByteMeBurger.Api/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
