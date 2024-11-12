@@ -49,7 +49,7 @@ variable "api_docker_image" {
 
 variable "internal_elb_name" {
   type    = string
-  default = "api_internal_elb"
+  default = "api-internal"
 }
 
 variable "db_user" {

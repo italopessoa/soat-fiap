@@ -1,65 +1,34 @@
 ##############################
-# EKS CLUSTER
+# NAMESPACE
 ##############################
 
-data "aws_eks_cluster" "techchallenge_cluster" {
-  name = var.eks_cluster_name
+resource "kubernetes_namespace" "orders" {
+  metadata {
+    name = "fiap-orders"
+  }
 }
 
-
-##############################
-# API GATEWAY
-##############################
-
-# data "aws_apigatewayv2_apis" "api_id" {
-#   name = var.apgw_name
-# }
-
-# data "aws_apigatewayv2_api" "example" {
-#   api_id = tolist(data.aws_apigatewayv2_apis.api_id.ids)[0]
-# }
-
-##############################
-# COGNITO USER POOL
-##############################
-
-data "aws_cognito_user_pools" "user_pool" {
-  name = var.user_pool_name
-}
-
-data "aws_cognito_user_pool_clients" "api_client" {
-  user_pool_id = data.aws_cognito_user_pools.user_pool.ids[0]
+locals {
+  connection_string     = "Server=${data.aws_rds_cluster.example.endpoint};Database=${data.aws_rds_cluster.example.database_name};Uid=${var.db_user};Pwd=${var.db_pwd};Port=${data.aws_rds_cluster.example.port};"
+  jwt_issuer            = var.jwt_issuer
+  jwt_aud               = var.jwt_aud
+  docker_image          = var.api_docker_image
+  cognito_user_pool_id  = data.aws_cognito_user_pools.user_pool.ids[0]
+  aws_access_key        = var.api_access_key_id
+  aws_secret_access_key = var.api_secret_access_key
+  aws_region            = "us-east-1"
 }
 
 ##############################
 # SQS
 ##############################
 
-resource "aws_sqs_queue" "bmb-events" {
-  name                       = "bmb-events"
-  delay_seconds              = 0
-  visibility_timeout_seconds = 30
-  receive_wait_time_seconds  = 0
-}
-
-##############################
-# DATABASE
-##############################
-
-data "aws_rds_cluster" "example" {
-  cluster_identifier = var.rds_cluster_identifier
-}
-
-locals {
-  connection_string           = "Server=${data.aws_rds_cluster.example.endpoint};Database=${data.aws_rds_cluster.example.database_name};Uid=${var.db_user};Pwd=${var.db_pwd};Port=${data.aws_rds_cluster.example.port};"
-  jwt_issuer                  = var.jwt_issuer
-  jwt_aud                     = var.jwt_aud
-  docker_image                = var.api_docker_image
-  cognito_user_pool_id        = data.aws_cognito_user_pools.user_pool.ids[0]
-  aws_access_key              = var.api_access_key_id
-  aws_secret_access_key       = var.api_secret_access_key
-  aws_region                  = "us-east-1"
-}
+# resource "aws_sqs_queue" "bmb-events" {
+#   name                       = "bmb-events"
+#   delay_seconds              = 0
+#   visibility_timeout_seconds = 30
+#   receive_wait_time_seconds  = 0
+# }
 
 
 ##############################
@@ -68,17 +37,14 @@ locals {
 
 resource "kubernetes_config_map_v1" "config_map_api" {
   metadata {
-    name = "configmap-api"
+    name      = "configmap-api"
+    namespace = kubernetes_namespace.orders.metadata.0.name
     labels = {
       "app"       = "api"
       "terraform" = true
     }
   }
   data = {
-    "MySqlSettings__Server"   = "svc-mysql"
-    "MySqlSettings__Database" = "tech_restaurante"
-    "MySqlSettings__Port"     = "3306"
-    # "ConnectionStrings__MySql"             = "Server=${aws_rds_cluster.example.cluster_endpoint};Database=${aws_rds_cluster.example.database_name};Uid=techchallenge;Pwd=${aws_rds_cluster.example.master_password};Port=${aws_rds_cluster.example.port};"
     "ConnectionStrings__MySql"             = local.connection_string
     "ASPNETCORE_ENVIRONMENT"               = "Development"
     "Serilog__WriteTo__2__Args__serverUrl" = "http://api-internal.fiap-log.svc.cluster.local"
@@ -89,7 +55,6 @@ resource "kubernetes_config_map_v1" "config_map_api" {
     "HybridCache__Flags"                   = "DisableDistributedCache"
     "JwtOptions__Issuer"                   = local.jwt_issuer
     "JwtOptions__Audience"                 = local.jwt_aud
-    "JwtOptions__SigningKey"               = var.jwt_signing_key
     "JwtOptions__ExpirationSeconds"        = 3600
     "JwtOptions__UseAccessToken"           = true
     "CognitoSettings__UserPoolId"          = local.cognito_user_pool_id
@@ -98,16 +63,18 @@ resource "kubernetes_config_map_v1" "config_map_api" {
 
 resource "kubernetes_secret" "secret_mercadopago" {
   metadata {
-    name = "secret-mercadopago"
+    name      = "secret-api"
+    namespace = kubernetes_namespace.orders.metadata.0.name
     labels = {
       app         = "api-pod"
       "terraform" = true
     }
   }
   data = {
-    "AWS_SECRET_ACCESS_KEY" = local.aws_secret_access_key
-    "AWS_ACCESS_KEY_ID"     = local.aws_access_key
-    "AWS_REGION"            = local.aws_region
+    "JwtOptions__SigningKey" = var.jwt_signing_key
+    "AWS_SECRET_ACCESS_KEY"  = local.aws_secret_access_key
+    "AWS_ACCESS_KEY_ID"      = local.aws_access_key
+    "AWS_REGION"             = local.aws_region
   }
   type = "Opaque"
 }
@@ -119,7 +86,8 @@ resource "kubernetes_secret" "secret_mercadopago" {
 
 resource "kubernetes_service" "bmb-api-svc" {
   metadata {
-    name = var.internal_elb_name
+    name      = var.internal_elb_name
+    namespace = kubernetes_namespace.orders.metadata.0.name
     annotations = {
       "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
       "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal"
@@ -142,7 +110,8 @@ resource "kubernetes_service" "bmb-api-svc" {
 resource "kubernetes_deployment" "deployment_api" {
   depends_on = [kubernetes_secret.secret_mercadopago, kubernetes_config_map_v1.config_map_api]
   metadata {
-    name = "deployment-api"
+    name      = "deployment-api"
+    namespace = kubernetes_namespace.orders.metadata.0.name
     labels = {
       app         = "api"
       "terraform" = true
@@ -224,7 +193,8 @@ resource "kubernetes_deployment" "deployment_api" {
 
 resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa_api" {
   metadata {
-    name = "hpa-api"
+    name      = "hpa-api"
+    namespace = kubernetes_namespace.orders.metadata.0.name
   }
   spec {
     max_replicas = 3
