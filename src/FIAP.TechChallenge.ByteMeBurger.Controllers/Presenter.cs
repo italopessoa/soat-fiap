@@ -42,20 +42,6 @@ public static class Presenter
         return (ProductCategoryDto)category;
     }
 
-    public static PaymentDto FromEntityToDto(this Payment payment)
-    {
-        return new PaymentDto
-        {
-            Id = payment.Id.Value,
-            OrderId = payment.OrderId,
-            Status = (PaymentStatusDto)payment.Status,
-            PaymentType = (PaymentTypeDto)payment.PaymentType,
-            Amount = payment.Amount,
-            ExternalReference = payment.ExternalReference,
-            QrCode = payment.QrCode
-        };
-    }
-
     public static OrderListItemDto FromEntityToListDto(this Order order)
     {
         return new OrderListItemDto(order.Id, order.TrackingCode.Value, order.Total,

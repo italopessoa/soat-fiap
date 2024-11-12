@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Bmb.Domain.Core.Entities;
@@ -7,19 +6,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Api;
 
 internal static class Mappers
 {
-    internal static OrderListItemDto ToOrderListViewModel(this Order order)
-    {
-        return new OrderListItemDto(order.Id, order.TrackingCode.Value, order.Total,
-            (OrderStatusDto)order.Status,
-            order.Created,
-            order.Updated);
-    }
-
-    internal static IReadOnlyCollection<OrderListItemDto> ToOrderListViewModel(this ReadOnlyCollection<Order> orders)
-    {
-        return orders.Select(o => o.ToOrderListViewModel()).ToList();
-    }
-
     internal static OrderDetailDto? ToOrderViewModel(this Order? order)
     {
         if (order is null) return null;

@@ -28,11 +28,12 @@ public class Dispatcher : IDispatcher
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error when trying to publish event: {Event}", @event);
+            _logger.LogCritical(e, "Error when trying to publish event: {@Event}", @event);
         }
     }
 
-    public async Task PublishIntegrationAsync<T>(T @event, CancellationToken cancellationToken = new CancellationToken()) where T : IBmbIntegrationEvent
+    public async Task PublishIntegrationAsync<T>(T @event, CancellationToken cancellationToken = default)
+        where T : IBmbIntegrationEvent
     {
         try
         {
@@ -42,7 +43,7 @@ public class Dispatcher : IDispatcher
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error when trying to publish event: {Event}", @event);
+            _logger.LogCritical(e, "Error when trying to publish event: {@Event}", @event);
         }
     }
 }

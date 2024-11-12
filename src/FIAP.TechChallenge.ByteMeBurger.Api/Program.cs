@@ -33,7 +33,6 @@ public class Program
             // Add services to the container.
             builder.Services.ConfigureJwt(builder.Configuration);
             builder.Services.AddAuthorization();
-            builder.Services.AddSingleton<DomainEventsHandler>();
             builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
             // Add CORS services to the DI container.
@@ -104,7 +103,6 @@ public class Program
             var app = builder.Build();
             logger = app.Services.GetService<ILogger<Program>>();
             app.UseExceptionHandler();
-            app.Services.GetService<DomainEventsHandler>();
 
             if (app.Environment.IsDevelopment())
             {

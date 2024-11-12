@@ -20,7 +20,6 @@ public static class ServiceCollectionsExtensions
         ConfigHybridCache(serviceCollection, configuration);
         serviceCollection.AddUseCases();
         serviceCollection.AddControllers();
-        serviceCollection.ConfigureAnalyticsService();
         serviceCollection.ConfigureDispatcher();
     }
 

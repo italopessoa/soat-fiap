@@ -1,18 +1,16 @@
 using AutoFixture;
-using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
-using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
-using FIAP.TechChallenge.ByteMeBurger.Controllers;
-using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;
+using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Test.Common;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;
 using Moq;
 
-namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.Services;
+namespace FIAP.TechChallenge.ByteMeBurger.Controllers.Test;
 
 [TestSubject(typeof(ProductService))]
 public class ProductServiceTest
