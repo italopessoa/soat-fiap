@@ -14,7 +14,6 @@ public static class ServiceCollectionsExtensions
         services.AddScoped<ICustomerService, CustomerService>()
             .AddScoped<IProductService, ProductService>()
             .AddScoped<IOrderService, OrderService>()
-            .AddScoped<IOrderTrackingCodeService, OrderTrackingCodeService>()
-            .AddScoped<IPaymentService, PaymentService>();
+            .AddScoped<IOrderTrackingCodeService, OrderTrackingCodeService>();
     }
 }

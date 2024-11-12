@@ -2,9 +2,6 @@
 using FIAP.TechChallenge.ByteMeBurger.Application;
 using FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.Controllers;
-using Bmb.Domain.Core.Interfaces;
-using FIAP.TechChallenge.ByteMeBurger.FakePayment.Gateway;
-using FIAP.TechChallenge.ByteMeBurger.MercadoPago.Gateway;
 using FIAP.TechChallenge.ByteMeBurger.Persistence;
 using FIAP.TechChallenge.ByteMeBurger.Masstransit;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -20,7 +17,6 @@ public static class ServiceCollectionsExtensions
     {
         serviceCollection.ConfigureCognito();
         serviceCollection.ConfigurePersistenceApp(configuration);
-        ConfigurePaymentGateway(serviceCollection);
         ConfigHybridCache(serviceCollection, configuration);
         serviceCollection.AddUseCases();
         serviceCollection.AddControllers();
@@ -40,12 +36,5 @@ public static class ServiceCollectionsExtensions
                 Flags = hybridCacheSettings.Flags,
             }
         );
-    }
-
-    private static void ConfigurePaymentGateway(IServiceCollection services)
-    {
-        services.AddMercadoPagoGateway();
-        services.AddFakePaymentGateway();
-        services.AddScoped<IPaymentGatewayFactoryMethod, PaymentGatewayFactory>();
     }
 }

@@ -98,8 +98,6 @@ public class CognitoUserManager(
                 UserPoolId = _userPoolId,
             });
 
-
-
             if (response.Users.Count > 0)
             {
                 var attributes = response.Users[0].Attributes;
