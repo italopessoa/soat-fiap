@@ -57,9 +57,9 @@ locals {
   docker_image                = var.api_docker_image
   cognito_user_pool_id        = data.aws_cognito_user_pools.user_pool.ids[0]
   cognito_user_pool_client_id = data.aws_cognito_user_pool_clients.api_client.client_ids[0]
-  aws_access_key        = var.api_access_key_id
-  aws_secret_access_key = var.api_secret_access_key
-  aws_region            = "us-east-1"
+  aws_access_key              = var.api_access_key_id
+  aws_secret_access_key       = var.api_secret_access_key
+  aws_region                  = "us-east-1"
 }
 
 
@@ -111,9 +111,9 @@ resource "kubernetes_secret" "secret_mercadopago" {
     }
   }
   data = {
-    "AWS_SECRET_ACCESS_KEY"      = local.aws_secret_access_key
-    "AWS_ACCESS_KEY_ID"          = local.aws_access_key
-    "AWS_REGION"                 = local.aws_region
+    "AWS_SECRET_ACCESS_KEY" = local.aws_secret_access_key
+    "AWS_ACCESS_KEY_ID"     = local.aws_access_key
+    "AWS_REGION"            = local.aws_region
   }
   type = "Opaque"
 }

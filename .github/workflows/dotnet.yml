@@ -127,10 +127,47 @@ jobs:
           dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
+  semantic-release:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    name: Create Semantic Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    outputs:
+      version: ${{ steps.semantic-release.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Install dependencies
+        run: npm clean-install
+      
+      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
+        run: npm audit signatures
+      
+      - name: Release
+        id: semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: | 
+          npx semantic-release
+          VERSION=$(cat VERSION)
+          echo "Resolved version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
   build-docker-image:
     if: github.ref == 'refs/heads/main'
-    needs: [build]
+    needs: semantic-release
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -142,6 +179,13 @@ jobs:
       API_IMAGE_TAG: ${{ fromJson(steps.meta.outputs.json).tags[0] }}
 
     steps:
+      - name: Extract version
+        id: sanitize-version
+        run: |
+          echo ${{ needs.semantic-release.outputs.version }}
+          TAG=${{ needs.semantic-release.outputs.version }}
+          echo "version=${TAG#v}" >> $GITHUB_OUTPUT
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -156,12 +200,12 @@ jobs:
       # multi-platform images and export cache
       # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+        uses: docker/setup-buildx-action@v3
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -171,21 +215,22 @@ jobs:
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: latest=true
-          tags: type=sha
+          tags: |
+            type=raw,value=${{ steps.sanitize-version.outputs.version }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+        uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./src/FIAP.TechChallenge.ByteMeBurger.Api/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          file: ./src/Bmb.Payment.Api/Dockerfile
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
