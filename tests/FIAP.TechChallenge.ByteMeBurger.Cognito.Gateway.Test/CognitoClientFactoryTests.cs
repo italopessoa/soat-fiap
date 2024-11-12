@@ -14,14 +14,9 @@ public class CognitoClientFactoryTests
     {
         // Arrange
         var settingsMock = new Mock<IOptions<CognitoSettings>>();
-        settingsMock.Setup(s => s.Value).Returns(new CognitoSettings
-        {
-            ClientId = "test-client-id",
-            ClientSecret = "test-client-secret",
-            Region = "us-west-2"
-        });
+        settingsMock.Setup(s => s.Value).Returns(new CognitoSettings());
 
-        var factory = new CognitoClientFactory(settingsMock.Object);
+        var factory = new CognitoClientFactory();
 
         // Act
         var client = factory.CreateClient();
