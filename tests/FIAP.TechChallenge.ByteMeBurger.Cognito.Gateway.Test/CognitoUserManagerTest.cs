@@ -1,5 +1,6 @@
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using Bmb.Domain.Core.Base;
 using FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Factory;
 using Bmb.Domain.Core.Entities;
 using FluentAssertions;
@@ -34,7 +35,6 @@ public class CognitoUserManagerTest
     public async Task FindByCpfAsync_ShouldReturnCustomer_WhenUserExists()
     {
         // Arrange
-
         var response = new AdminGetUserResponse
         {
             UserAttributes =
@@ -104,6 +104,41 @@ public class CognitoUserManagerTest
             result.Email.Should().Be(customer.Email);
             result.Id.Should().NotBeEmpty();
         }
+    }
+
+    [Fact]
+    public async Task CreateAsync_ShouldThrowDomainException_WhenUsernameExists()
+    {
+        // Arrange
+        var customer = new Customer(Guid.NewGuid(), "28642827041", "Test User", "test@example.com");
+
+        _cognitoClientMock.Setup(c => c.AdminCreateUserAsync(It.IsAny<AdminCreateUserRequest>(), default))
+            .ThrowsAsync(new UsernameExistsException("Username already exists"));
+
+        // Act
+        Func<Task> act = async () => await _userManager.CreateAsync(customer);
+
+        // Assert
+        await act.Should().ThrowAsync<DomainException>()
+            .WithMessage("There's already a customer using the provided CPF value.");
+    }
+
+    [Fact]
+    public async Task CreateAsync_ShouldThrowException_WhenUnexpectedErrorOccurs()
+    {
+        // Arrange
+        var customer = new Customer(Guid.NewGuid(), "28642827041", "Test User", "test@example.com");
+        var exception = new Exception("Unexpected error");
+
+        _cognitoClientMock.Setup(c => c.AdminCreateUserAsync(It.IsAny<AdminCreateUserRequest>(), default))
+            .ThrowsAsync(exception);
+
+        // Act
+        Func<Task> act = async () => await _userManager.CreateAsync(customer);
+
+        // Assert
+        await act.Should().ThrowAsync<Exception>()
+            .WithMessage("Unexpected error");
     }
 
     [Fact]

@@ -167,4 +167,21 @@ public class OrderServiceTest
             updated.Should().BeTrue();
         }
     }
+
+    [Fact]
+    public async Task UpdateOrderPaymentAsync_ShouldThrowException_WhenUseCaseThrowsException()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        var paymentId = new PaymentId(Guid.NewGuid());
+        var exception = new Exception("Unexpected error");
+        _mockUpdateOrderPaymentUseCase.Setup(x => x.Execute(orderId, paymentId)).ThrowsAsync(exception);
+
+        // Act
+        Func<Task> act = async () => await _target.UpdateOrderPaymentAsync(orderId, paymentId);
+
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Unexpected error");
+        _mockUpdateOrderPaymentUseCase.Verify(x => x.Execute(orderId, paymentId), Times.Once);
+    }
 }
