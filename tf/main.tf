@@ -97,7 +97,7 @@ resource "kubernetes_service" "bmb-api-svc" {
     port {
       port        = 80
       target_port = 8080
-      node_port   = 30000
+      node_port   = 30001
       protocol    = "TCP"
     }
     type = "LoadBalancer"

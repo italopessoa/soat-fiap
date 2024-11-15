@@ -58,8 +58,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
     {
         logger.LogInformation("Getting all orders");
 
-        var ordersDto = await cache.GetOrCreateAsync($"orders-{(listAll ? "nonFilter" : "filter")}",
-            async cancel => await orderService.GetAllAsync(listAll), token: cancellationToken);
+        var ordersDto = await orderService.GetAllAsync(listAll);
 
         logger.LogInformation("Retrieved {Count} orders", ordersDto.Count);
         return Ok(ordersDto);
@@ -79,8 +78,7 @@ public class OrdersController(IOrderService orderService, ILogger<OrdersControll
         if (Guid.Empty == id)
             return BadRequest("Invalid OrderId: An order ID must not be empty.");
 
-        var order = await cache.GetOrCreateAsync($"order-{id}",
-            async cancel => await orderService.GetAsync(id), token: cancellationToken);
+        var order = await orderService.GetAsync(id);
 
         if (order is null)
         {

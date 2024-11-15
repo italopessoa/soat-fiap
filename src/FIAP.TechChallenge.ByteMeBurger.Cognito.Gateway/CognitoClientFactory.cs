@@ -3,7 +3,7 @@ using FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Factory;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway;
 
-public class CognitoClientFactory() : ICognitoClientFactory
+public class CognitoClientFactory : ICognitoClientFactory
 {
     public IAmazonCognitoIdentityProvider CreateClient()
     {
