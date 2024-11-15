@@ -158,6 +158,7 @@ jobs:
       
       - name: Release
         id: semantic-release
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: | 
@@ -166,6 +167,11 @@ jobs:
           echo "Resolved version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+          if [ $? -ne 0 ]; then
+            echo "Release failed, getting latest version from lates release"	
+            echo "version=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name' | sed 's/v//')" >> $GITHUB_OUTPUT
+          fi
+          
   build-docker-image:
     if: github.ref == 'refs/heads/main'
     needs: semantic-release
