@@ -62,7 +62,8 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
                 }
                 else
                 {
-                    order = new Order(orderListDto.Id, new Customer(customerDto.Id), (OrderStatus)orderListDto.Status,
+                    var customer = customerDto is not null ? new Customer(customerDto.Id) : default;
+                    order = new Order(orderListDto.Id, customer, (OrderStatus)orderListDto.Status,
                         new OrderTrackingCode(orderListDto.TrackingCode), orderListDto.Created,
                         orderListDto.Updated);
 
