@@ -163,8 +163,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: | 
           npx semantic-release
-          VERSION=$(cat VERSION)
-          echo "Resolved version: $VERSION"
+          if [ -f VERSION ]; then
+            VERSION=$(cat VERSION)
+          else
+            echo "VERSION file not found, getting latest version from latest release"
+            VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name' | sed 's/v//')
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
           if [ $? -ne 0 ]; then
