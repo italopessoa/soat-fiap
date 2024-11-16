@@ -77,7 +77,7 @@ public class OrderRepositoryDapper(IDbConnection dbConnection, ILogger<OrderRepo
 
                 return order;
             },
-            splitOn: "Id, ProductId"
+            splitOn: "Id , PaymentId, ProductId"
         );
 
         logger.LogInformation("Retrieved {Count} orders", ordersDictionary.Count);

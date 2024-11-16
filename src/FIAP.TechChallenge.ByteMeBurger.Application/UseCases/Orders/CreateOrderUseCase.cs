@@ -35,7 +35,7 @@ public class CreateOrderUseCase : ICreateOrderUseCase
 
         var trackingCode = await _orderTrackingCodeService.GetNextAsync();
         var order = new Order(customer, trackingCode, products);
-        await _analyticsPublisher.PublishIntegrationAsync(Teste(order));
+        await _analyticsPublisher.PublishIntegrationAsync(MapToEvent(order));
         return order;
     }
 
@@ -48,10 +48,10 @@ public class CreateOrderUseCase : ICreateOrderUseCase
         return product;
     }
 
-    private OrderCreated Teste(Order order)
+    private OrderCreated MapToEvent(Order order)
     {
         var orderItemsReplica = order.OrderItems.Select(i =>
-            new OrderCreated.OrderItemReplicaDto(i.OrderId, i.OrderId, i.ProductName, i.UnitPrice, i.Quantity));
+            new OrderCreated.OrderItemReplicaDto(i.ProductId, i.OrderId, i.ProductName, i.UnitPrice, i.Quantity));
 
         var customer = default(OrderCreated.CustomerReplicaDto);
         if (order.Customer is not null)

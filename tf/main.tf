@@ -182,7 +182,7 @@ resource "kubernetes_deployment" "deployment_api" {
           }
           env_from {
             secret_ref {
-              name = "secret-mercadopago"
+              name = "secret-api"
             }
           }
         }
