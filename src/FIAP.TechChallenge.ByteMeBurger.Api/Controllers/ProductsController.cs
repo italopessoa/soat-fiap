@@ -1,4 +1,4 @@
-using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
+using Bmb.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
