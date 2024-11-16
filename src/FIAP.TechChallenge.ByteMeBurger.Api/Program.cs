@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
+using Bmb.Auth;
 using FIAP.TechChallenge.ByteMeBurger.DI;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

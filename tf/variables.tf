@@ -1,6 +1,6 @@
 variable "rds_cluster_identifier" {
   type    = string
-  default = "techchallenge-mysql-default"
+  default = "gh-techchallenge-mysql"
 }
 
 variable "profile" {
@@ -17,7 +17,7 @@ variable "region" {
 
 variable "eks_cluster_name" {
   type    = string
-  default = "quixada"
+  default = "eks_dev_quixada"
 }
 
 variable "apgw_name" {
@@ -28,6 +28,7 @@ variable "apgw_name" {
 variable "jwt_signing_key" {
   type      = string
   sensitive = true
+  default = ""
 }
 
 variable "jwt_issuer" {
@@ -44,7 +45,7 @@ variable "jwt_aud" {
 
 variable "api_docker_image" {
   type    = string
-  default = "ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:sha-b83177c"
+  default = "ghcr.io/soat-fiap/fiap.techchallenge.bytemeburger/api:latest"
 }
 
 variable "internal_elb_name" {
@@ -55,28 +56,28 @@ variable "internal_elb_name" {
 variable "db_user" {
   type      = string
   sensitive = true
-  default   = "db_user"
+  default   = "test"
 }
-
 variable "db_pwd" {
   type      = string
   sensitive = true
-  default   = "db_password"
+  default   = "test"
 }
 
 variable "api_access_key_id" {
   type      = string
   nullable  = false
   sensitive = true
+  default = ""
 }
 
 variable "api_secret_access_key" {
   type      = string
   nullable  = false
   sensitive = true
+  default = ""
 }
-
 variable "user_pool_name" {
   type    = string
-  default = "bmb-users-pool-local"
+  default = "bmb-users-pool-dev"
 }

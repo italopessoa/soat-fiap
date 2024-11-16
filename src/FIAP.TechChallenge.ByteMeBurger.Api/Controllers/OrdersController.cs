@@ -1,9 +1,10 @@
 using System.Collections.ObjectModel;
-using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
+using Bmb.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Bmb.Domain.Core.ValueObjects;
+using FIAP.TechChallenge.ByteMeBurger.Api.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Hybrid;
