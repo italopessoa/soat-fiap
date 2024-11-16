@@ -29,4 +29,10 @@
       <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Test.Common\FIAP.TechChallenge.ByteMeBurger.Test.Common.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="UseCases\Orders\Gherkin\CreateOrder.feature">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
