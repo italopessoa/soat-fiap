@@ -9,10 +9,6 @@ namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders.Gherk
 [FeatureFile("./UseCases/Orders/Gherkin/CreateOrder.feature")]
 public class CreateOrderSteps : Feature
 {
-// Given Selected product exists
-// And Tracking code is created
-// When UseCase is called
-// Then it should create the order
     private readonly CreateOrderUseCase _useCase;
     private readonly Mock<IProductRepository> _mockProductRepository;
     private readonly Mock<IOrderTrackingCodeService> _mockOrderTrackingCodeService;
