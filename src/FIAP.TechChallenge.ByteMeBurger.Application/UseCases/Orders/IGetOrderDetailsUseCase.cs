@@ -1,4 +1,4 @@
-using Bmb.Domain.Core.Entities;
+using Bmb.Orders.Domain.Entities;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 

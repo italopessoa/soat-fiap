@@ -7,9 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bmb.Domain.Core" Version="0.0.12" />
+      <PackageReference Include="Bmb.Domain.Core" Version="0.0.17" />
       <PackageReference Include="Microsoft.Build.Framework" Version="17.8.3" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bmb.Orders.Domain\Bmb.Orders.Domain.csproj" />
     </ItemGroup>
 
 </Project>

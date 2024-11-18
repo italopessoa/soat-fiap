@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bmb.Domain.Core" Version="0.0.12" />
+      <PackageReference Include="Bmb.Domain.Core" Version="0.0.17" />
       <PackageReference Include="Dapper" Version="2.1.35" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
@@ -17,6 +17,10 @@
     <ItemGroup>
       <InternalsVisibleTo Include="FIAP.TechChallenge.ByteMeBurger.Persistence.Test" />
       <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bmb.Orders.Domain\Bmb.Orders.Domain.csproj" />
     </ItemGroup>
 
 </Project>

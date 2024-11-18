@@ -1,5 +1,6 @@
 using Bmb.Domain.Core.Entities;
-using Bmb.Domain.Core.ValueObjects;
+using Bmb.Orders.Domain.Entities;
+using Bmb.Orders.Domain.ValueObjects;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 

@@ -4,6 +4,7 @@ using Moq;
 using Xunit;
 using FluentAssertions;
 using Bmb.Domain.Core.Events.Notifications;
+using Bmb.Domain.Core.Interfaces;
 using Bmb.Domain.Core.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using JetBrains.Annotations;

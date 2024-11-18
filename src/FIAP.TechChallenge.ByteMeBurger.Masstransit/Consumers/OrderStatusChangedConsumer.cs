@@ -1,4 +1,5 @@
 using Bmb.Domain.Core.Events.Notifications;
+using Bmb.Domain.Core.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using Microsoft.Extensions.Logging;
 

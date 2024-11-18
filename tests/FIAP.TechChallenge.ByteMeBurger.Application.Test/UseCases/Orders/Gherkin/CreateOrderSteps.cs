@@ -1,5 +1,8 @@
 using Bmb.Domain.Core.Events;
 using Bmb.Domain.Core.Interfaces;
+using Bmb.Orders.Domain.Contracts;
+using Bmb.Orders.Domain.Entities;
+using Bmb.Orders.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using Xunit.Gherkin.Quick;
 using OrderCreated = Bmb.Domain.Core.Events.Integration.OrderCreated;

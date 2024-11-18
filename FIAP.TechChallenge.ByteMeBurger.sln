@@ -83,6 +83,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Test", "tests\FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Test\FIAP.TechChallenge.ByteMeBurger.Cognito.Gateway.Test.csproj", "{46B22CD7-BB91-4E80-870F-28DA476ED6A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Orders.Domain", "src\Bmb.Orders.Domain\Bmb.Orders.Domain.csproj", "{291A60C8-8CD9-49DC-863E-8A7222285B68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bmb.Orders.Domain.Test", "tests\Bmb.Orders.Domain.Test\Bmb.Orders.Domain.Test.csproj", "{55229833-4E62-4046-9B17-C4BD08C559BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +113,8 @@ Global
 		{B2898AA3-86A6-4AF1-B27F-A3706B2B0557} = {2F192BA8-59FC-4B0C-B59D-511EFA89F428}
 		{36FD200F-16AB-44A6-A103-E5EABD6EA263} = {5EC029C6-230A-4782-9B62-CB475C7D05F8}
 		{46B22CD7-BB91-4E80-870F-28DA476ED6A3} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
+		{291A60C8-8CD9-49DC-863E-8A7222285B68} = {35A721E2-4C27-436D-A461-1BDB9D58DCC8}
+		{55229833-4E62-4046-9B17-C4BD08C559BB} = {C244E1D6-E1EB-4314-9F39-BB59FA1F7C71}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DBAD3C48-1539-4385-AC13-138C2874D7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -167,5 +173,13 @@ Global
 		{46B22CD7-BB91-4E80-870F-28DA476ED6A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46B22CD7-BB91-4E80-870F-28DA476ED6A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46B22CD7-BB91-4E80-870F-28DA476ED6A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{291A60C8-8CD9-49DC-863E-8A7222285B68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{291A60C8-8CD9-49DC-863E-8A7222285B68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{291A60C8-8CD9-49DC-863E-8A7222285B68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{291A60C8-8CD9-49DC-863E-8A7222285B68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55229833-4E62-4046-9B17-C4BD08C559BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55229833-4E62-4046-9B17-C4BD08C559BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55229833-4E62-4046-9B17-C4BD08C559BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55229833-4E62-4046-9B17-C4BD08C559BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

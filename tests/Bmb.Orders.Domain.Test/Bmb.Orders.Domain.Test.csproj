@@ -10,11 +10,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoFixture" Version="4.18.1" />
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
+        <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="xunit" Version="2.5.3"/>
-        <PackageReference Include="Xunit.Gherkin.Quick" Version="4.5.0" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
     </ItemGroup>
 
@@ -24,6 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Bmb.Orders.Domain\Bmb.Orders.Domain.csproj" />
+      <ProjectReference Include="..\FIAP.TechChallenge.ByteMeBurger.Test.Common\FIAP.TechChallenge.ByteMeBurger.Test.Common.csproj" />
     </ItemGroup>
 
 </Project>
