@@ -1,6 +1,7 @@
 using Bmb.Domain.Core.Base;
 using Bmb.Domain.Core.Interfaces;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Orders.Domain.Contracts;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 

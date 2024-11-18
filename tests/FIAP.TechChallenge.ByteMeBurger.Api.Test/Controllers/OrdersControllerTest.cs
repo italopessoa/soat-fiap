@@ -7,6 +7,8 @@ using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Orders.Domain.Entities;
+using Bmb.Orders.Domain.ValueObjects;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using JetBrains.Annotations;

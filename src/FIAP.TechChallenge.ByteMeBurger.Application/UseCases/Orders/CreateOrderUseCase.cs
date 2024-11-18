@@ -3,6 +3,9 @@ using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.Events;
 using Bmb.Domain.Core.Interfaces;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Orders.Domain.Contracts;
+using Bmb.Orders.Domain.Entities;
+using Bmb.Orders.Domain.ValueObjects;
 using OrderCreated = Bmb.Domain.Core.Events.Integration.OrderCreated;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;

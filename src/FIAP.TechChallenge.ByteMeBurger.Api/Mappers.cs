@@ -1,6 +1,6 @@
+using Bmb.Orders.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Controllers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
-using Bmb.Domain.Core.Entities;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Api;
 

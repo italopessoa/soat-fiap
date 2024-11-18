@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Bmb.Domain.Core.Interfaces;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Products;

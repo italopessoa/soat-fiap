@@ -1,5 +1,6 @@
 ﻿using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Orders.Domain.Entities;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Controllers;

@@ -3,8 +3,10 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Dapper;
 using Bmb.Domain.Core.Entities;
-using Bmb.Domain.Core.Interfaces;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Orders.Domain.Contracts;
+using Bmb.Orders.Domain.Entities;
+using Bmb.Orders.Domain.ValueObjects;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 using Microsoft.Extensions.Logging;
 

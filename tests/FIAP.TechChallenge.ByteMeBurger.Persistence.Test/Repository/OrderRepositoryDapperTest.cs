@@ -1,6 +1,8 @@
 using System.Data;
 using Bmb.Domain.Core.Entities;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Orders.Domain.Entities;
+using Bmb.Orders.Domain.ValueObjects;
 using Dapper;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Dto;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;

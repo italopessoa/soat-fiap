@@ -2,6 +2,7 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Bmb.Domain.Core.Interfaces;
+using Bmb.Orders.Domain.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Persistence.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

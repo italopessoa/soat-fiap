@@ -1,4 +1,4 @@
-using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
+using Bmb.Domain.Core.Interfaces;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 

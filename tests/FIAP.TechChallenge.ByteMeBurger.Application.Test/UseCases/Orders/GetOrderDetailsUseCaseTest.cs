@@ -1,5 +1,7 @@
 using FIAP.TechChallenge.ByteMeBurger.Application.UseCases.Orders;
 using Bmb.Domain.Core.Interfaces;
+using Bmb.Orders.Domain.Contracts;
+using Bmb.Orders.Domain.Entities;
 
 namespace FIAP.TechChallenge.ByteMeBurger.Application.Test.UseCases.Orders;
 
