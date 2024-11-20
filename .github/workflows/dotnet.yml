@@ -220,6 +220,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          build-args: |
+            API_VERSION=${{ steps.sanitize-version.outputs.version }}
           file: ./src/FIAP.TechChallenge.ByteMeBurger.Api/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}

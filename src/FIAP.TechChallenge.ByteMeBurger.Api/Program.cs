@@ -52,11 +52,12 @@ public class Program
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                c.SwaggerDoc($"v{version.Major}", new OpenApiInfo
                 {
-                    Title = "Tech Challenge Restaurant API", Version = "v1", Extensions =
+                    Title = "Tech Challenge Restaurant API", Version = $"v{version.Major}.{version.Minor}.{version.Build}", Extensions =
                     {
                         {
                             "x-logo",
@@ -107,7 +108,11 @@ public class Program
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    var version = Assembly.GetExecutingAssembly().GetName().Version.Major;
+                    options.SwaggerEndpoint($"/swagger/v{version}/swagger.yaml", $"v{version}");
+                });
             }
 
             app.UseSerilogRequestLogging();
