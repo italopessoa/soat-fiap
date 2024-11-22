@@ -1,12 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Text.Json.Serialization;
-using Bmb.Auth;
+using Bmb.Tools.Auth;
+using Bmb.Tools.OpenApi;
 using FIAP.TechChallenge.ByteMeBurger.DI;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -52,37 +50,7 @@ public class Program
             // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#log-automatic-400-responses
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc($"v{version.Major}", new OpenApiInfo
-                {
-                    Title = "Tech Challenge Restaurant API", Version = $"v{version.Major}.{version.Minor}.{version.Build}", Extensions =
-                    {
-                        {
-                            "x-logo",
-                            new OpenApiObject
-                            {
-                                {
-                                    "url",
-                                    new OpenApiString(
-                                        "https://avatars.githubusercontent.com/u/165858718?s=384")
-                                },
-                                {
-                                    "background",
-                                    new OpenApiString(
-                                        "#FF0000")
-                                }
-                            }
-                        }
-                    }
-                });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
-
+            builder.Services.ConfigBmbSwaggerGen();
             var jwtOptions = builder.Configuration
                 .GetSection("JwtOptions")
                 .Get<JwtOptions>();
@@ -108,11 +76,7 @@ public class Program
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    var version = Assembly.GetExecutingAssembly().GetName().Version.Major;
-                    options.SwaggerEndpoint($"/swagger/v{version}/swagger.yaml", $"v{version}");
-                });
+                app.UseBmbSwaggerUi();
             }
 
             app.UseSerilogRequestLogging();

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
-using Bmb.Auth;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Tools.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Orders;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;

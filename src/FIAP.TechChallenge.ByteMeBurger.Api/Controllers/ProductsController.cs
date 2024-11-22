@@ -1,8 +1,8 @@
-using Bmb.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Products;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
 using Bmb.Domain.Core.ValueObjects;
+using Bmb.Tools.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

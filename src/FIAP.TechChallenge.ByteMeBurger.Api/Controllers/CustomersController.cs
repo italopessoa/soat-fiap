@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Bmb.Auth;
+using Bmb.Tools.Auth;
 using FIAP.TechChallenge.ByteMeBurger.Api.Model.Customers;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Contracts;
 using FIAP.TechChallenge.ByteMeBurger.Controllers.Dto;
