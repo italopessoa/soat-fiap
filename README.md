@@ -75,7 +75,6 @@ Endpoints are protected since JWT token is now required. Since this application 
 
 ### Prerequisites
 - Docker with Minikube configured
-- [webhook.site](https://webhook.site) token
 
 
 <details>
@@ -124,10 +123,6 @@ kubectl port-forward service/svc-seq 30008:80
 ```bash
 minikube tunnel
 ```
-#### To forward mercado pago webhook notifications to host
-```bash
-whcli forward --token=f513d4a6-4dbd-4e32-93f5-b35376f33c89 --target=http://localhost/api/notifications/mercadopago
-```
 
 #### Testing
 You can use the [postman collection](/postman) for testing
@@ -156,11 +151,6 @@ Once you are done, you can stop the services running [rollback.ps1](kubernetes/r
 - **Endpoint:** `POST /api/customers`
    - Requires `Customer/Admin` role
 
-### PaymentsController
-
-- **Endpoint:** `POST /api/payments`
-   - Requires `Admin` role
-
 ### OrdersController
 
 - **Endpoint:** `POST /api/orders`
@@ -168,11 +158,9 @@ Once you are done, you can stop the services running [rollback.ps1](kubernetes/r
 - **Endpoint:** `GET /api/orders/{id}`
    - Requires `Admin/Kitchen` role
 
-### NotificationsController
-
-- **Endpoint:** `POST /api/notifications`
-   - No role required
-
 ## This repo on the infrastructure
 
-![Architecture Diagram](aws-infra-phase-4.png)
+![Architecture Diagram](doc/aws-infra-phase-4.png)
+
+### K8S
+![Architecture Diagram](doc/k8s.png)
