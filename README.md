@@ -10,16 +10,8 @@ This repository contains the source code for the ByteMeBurger API, part of the F
 
 Endpoints are protected since JWT token is now required. Since this application will run on EKS Cluster inside a private VPC, Customers endpoint will be deprecated or splited into a different service. Customers information can be extracted from token, since it's generated and validated internally.
 
-## Tech challenge deliverables
-- You can find all Phase 1 deliverables on the [Wiki page](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki)
-- Phase 2 Deliverables
-   - [Business requirements](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Business-Requirements-Document)
-   - [Infrastructure](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Kubernetes-Infrastructure-Requirements)
-   - Diagrams
-     - [Sequence Diagram (Main Flow)](https://github.com/soat-fiap/FIAP.TechChallenge.ByteMeBurger/wiki/Main-flow-sequence-Diagrams-(Phase-2))
-   - [Testing locally](#running-with-kubernetes-locally)
-      -  to get some help with application flow testing, click [here](#testing)
-   - [Video](https://www.youtube.com/watch?v=34ffDcUoUTg)
+### Masstransit
+It uses Masstransit to manage communication between services. Masstransit automatically creates Topics, Queues and Subscriptions.
 
 ## Getting Started
 
